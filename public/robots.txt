@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://displaylab.vercel.app/sitemap.xml
