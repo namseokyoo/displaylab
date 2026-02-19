@@ -76,8 +76,8 @@ const TOOLS: ToolItem[] = [
         />
       </svg>
     ),
-    status: 'coming-soon',
-    cta: 'Coming in MVP-B',
+    status: 'available',
+    cta: 'Analyze Viewing Angle',
   },
 ];
 

@@ -1,0 +1,106 @@
+/**
+ * Viewing Angle Data Table Component
+ *
+ * Displays parsed + computed viewing angle data in a responsive table.
+ * Includes CSV export button.
+ */
+
+import type { ViewingAngleData } from '@/types';
+import { exportViewingAngleCSV } from '@/lib/viewing-angle';
+
+interface DataTableProps {
+  data: ViewingAngleData[];
+}
+
+function formatNum(val: number | undefined, decimals: number): string {
+  if (val === undefined || val === null) return '-';
+  return val.toFixed(decimals);
+}
+
+/** Get color class based on ΔE value */
+function getDeltaEColor(de: number | undefined): string {
+  if (de === undefined) return 'text-gray-400';
+  if (de < 1) return 'text-green-400';
+  if (de < 3) return 'text-yellow-400';
+  return 'text-red-400';
+}
+
+export default function DataTable({ data }: DataTableProps) {
+  const handleExport = () => {
+    const csv = exportViewingAngleCSV(data);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'viewing-angle-results.csv';
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-sm font-medium text-gray-300">Measurement Data</h3>
+        <button
+          onClick={handleExport}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md border border-gray-700 text-gray-400 hover:border-gray-500 hover:text-gray-300 transition-colors"
+        >
+          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Export CSV
+        </button>
+      </div>
+
+      <div className="overflow-x-auto rounded-lg border border-gray-800">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="bg-gray-800/50 text-gray-400 text-xs">
+              <th className="px-3 py-2 text-right font-medium">Angle</th>
+              <th className="px-3 py-2 text-right font-medium">Luminance</th>
+              <th className="px-3 py-2 text-right font-medium">CIE x</th>
+              <th className="px-3 py-2 text-right font-medium">CIE y</th>
+              <th className="px-3 py-2 text-right font-medium">ΔE*ab</th>
+              <th className="px-3 py-2 text-right font-medium">ΔE₀₀</th>
+              <th className="px-3 py-2 text-right font-medium">CR</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((d, i) => (
+              <tr
+                key={d.angle}
+                className={`border-t border-gray-800/50 ${
+                  i % 2 === 0 ? 'bg-gray-900/30' : ''
+                }`}
+              >
+                <td className="px-3 py-1.5 text-right text-gray-300 font-mono">
+                  {d.angle}&deg;
+                </td>
+                <td className="px-3 py-1.5 text-right text-gray-300 font-mono">
+                  {formatNum(d.luminance, 1)}
+                </td>
+                <td className="px-3 py-1.5 text-right text-gray-400 font-mono">
+                  {formatNum(d.cieX, 4)}
+                </td>
+                <td className="px-3 py-1.5 text-right text-gray-400 font-mono">
+                  {formatNum(d.cieY, 4)}
+                </td>
+                <td className={`px-3 py-1.5 text-right font-mono ${getDeltaEColor(d.deltaE_ab)}`}>
+                  {formatNum(d.deltaE_ab, 2)}
+                </td>
+                <td className={`px-3 py-1.5 text-right font-mono ${getDeltaEColor(d.deltaE_2000)}`}>
+                  {formatNum(d.deltaE_2000, 2)}
+                </td>
+                <td className="px-3 py-1.5 text-right text-gray-400 font-mono">
+                  {d.contrastRatio !== undefined
+                    ? `${(d.contrastRatio * 100).toFixed(1)}%`
+                    : '-'}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
