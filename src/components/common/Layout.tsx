@@ -8,6 +8,7 @@
 import { useCallback, useState } from 'react';
 import { Link, useLocation, Outlet } from 'react-router-dom';
 import { useTheme } from '@/contexts/ThemeContext';
+import AdBanner from '@/components/ad/AdBanner';
 
 const NAV_ITEMS = [
   { path: '/gamut-analyzer', label: 'Gamut Analyzer' },
@@ -206,6 +207,9 @@ export default function Layout() {
       <main className="flex-1">
         <Outlet />
       </main>
+
+      {/* Ad banner – between content and footer */}
+      <AdBanner className="border-t border-gray-200/50 dark:border-gray-800/50" />
 
       {/* Footer */}
       <footer className="border-t border-gray-200 dark:border-gray-800 py-8 mt-auto">
