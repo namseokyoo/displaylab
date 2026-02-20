@@ -5,12 +5,16 @@
  * With color temperature interpretation and illuminant presets.
  */
 
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { calculateCCT, calculateDuv, interpretCCT, CCT_PRESETS } from '@/lib/cct';
 
 export default function CCTCalculator() {
-  const [inputX, setInputX] = useState('0.3127');
-  const [inputY, setInputY] = useState('0.3290');
+  const [values, setValues] = useLocalStorage('displaylab::calc::cct::values', {
+    inputX: '0.3127',
+    inputY: '0.3290',
+  });
+  const { inputX, inputY } = values;
 
   const parseNum = (s: string): number => {
     const n = parseFloat(s);
@@ -34,8 +38,10 @@ export default function CCTCalculator() {
 
   const loadPreset = (key: keyof typeof CCT_PRESETS) => {
     const preset = CCT_PRESETS[key];
-    setInputX(preset.x.toFixed(4));
-    setInputY(preset.y.toFixed(4));
+    setValues({
+      inputX: preset.x.toFixed(4),
+      inputY: preset.y.toFixed(4),
+    });
   };
 
   const result = getResult();
@@ -86,7 +92,7 @@ export default function CCTCalculator() {
             min="0"
             max="1"
             value={inputX}
-            onChange={(e) => setInputX(e.target.value)}
+            onChange={(e) => setValues({ ...values, inputX: e.target.value })}
             className="mt-1 block w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
           />
         </label>
@@ -98,7 +104,7 @@ export default function CCTCalculator() {
             min="0"
             max="1"
             value={inputY}
-            onChange={(e) => setInputY(e.target.value)}
+            onChange={(e) => setValues({ ...values, inputY: e.target.value })}
             className="mt-1 block w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
           />
         </label>

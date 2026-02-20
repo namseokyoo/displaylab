@@ -10,10 +10,14 @@
  */
 
 import { useState, useCallback, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import GamutDiagram from '@/components/gamut-analyzer/GamutDiagram';
 import ComparisonPanel from '@/components/gamut-analyzer/ComparisonPanel';
+import ShareButton from '@/components/common/ShareButton';
 import { STANDARD_GAMUTS } from '@/data/gamut-primaries';
 import SEO from '@/components/common/SEO';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { encodeGamutState, decodeGamutState } from '@/lib/url-share';
 import { toolJsonLd } from '@/lib/seo-data';
 import type { DiagramMode, GamutType, GamutData } from '@/types';
 
@@ -36,15 +40,34 @@ const GAMUT_TOGGLE_ACTIVE: Record<string, string> = {
 };
 
 export default function GamutAnalyzer() {
-  const [mode, setMode] = useState<DiagramMode>('CIE1931');
-  const [enabledGamuts, setEnabledGamuts] = useState<GamutType[]>(['sRGB']);
+  const [mode, setMode] = useLocalStorage<DiagramMode>('displaylab::gamut::mode', 'CIE1931');
+  const [enabledGamuts, setEnabledGamuts] = useLocalStorage<GamutType[]>(
+    'displaylab::gamut::standards',
+    ['sRGB'],
+  );
   const [activeDisplayIndex, setActiveDisplayIndex] = useState(0);
-  const [displays, setDisplays] = useState<GamutData[]>([
+  const [displays, setDisplays] = useLocalStorage<GamutData[]>('displaylab::gamut::displays', [
     {
       name: 'My Display',
       primaries: { ...STANDARD_GAMUTS.sRGB.primaries },
     },
   ]);
+
+  // URL param restoration (one-time on mount)
+  const [searchParams, setSearchParams] = useSearchParams();
+  const urlRestored = useRef(false);
+
+  useEffect(() => {
+    if (urlRestored.current) return;
+    const decoded = decodeGamutState(searchParams);
+    if (decoded) {
+      setDisplays(decoded.displays);
+      setMode(decoded.mode);
+      // Clear URL params after restore
+      setSearchParams(new URLSearchParams(), { replace: true });
+    }
+    urlRestored.current = true;
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Responsive diagram sizing
   const diagramContainerRef = useRef<HTMLDivElement>(null);
@@ -68,10 +91,17 @@ export default function GamutAnalyzer() {
   }, []);
 
   const toggleGamut = useCallback((gamut: GamutType) => {
-    setEnabledGamuts((prev) =>
-      prev.includes(gamut) ? prev.filter((g) => g !== gamut) : [...prev, gamut],
+    setEnabledGamuts(
+      enabledGamuts.includes(gamut)
+        ? enabledGamuts.filter((g) => g !== gamut)
+        : [...enabledGamuts, gamut],
     );
-  }, []);
+  }, [enabledGamuts, setEnabledGamuts]);
+
+  const getShareUrl = useCallback(() => {
+    const params = encodeGamutState(displays, mode);
+    return `${window.location.origin}${window.location.pathname}?${params}`;
+  }, [displays, mode]);
 
   // Primary display is first, rest are comparison
   const primaryGamut = displays[0];
@@ -132,6 +162,7 @@ export default function GamutAnalyzer() {
                   CIE 1976 u&apos;v&apos;
                 </button>
               </div>
+              <ShareButton getShareUrl={getShareUrl} className="ml-auto" />
             </div>
 
             {/* Standard gamut toggles */}

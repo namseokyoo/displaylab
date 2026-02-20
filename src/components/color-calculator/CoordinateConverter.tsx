@@ -4,24 +4,36 @@
  * Bidirectional XYZ <-> xyY real-time conversion.
  */
 
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { xyzToXY } from '@/lib/cie';
 import { xyYToXYZ } from '@/lib/color-convert';
 
 type Mode = 'xyz-to-xyY' | 'xyY-to-xyz';
+type CoordinateValues = {
+  xyzX: string;
+  xyzY: string;
+  xyzZ: string;
+  xyX: string;
+  xyY: string;
+  xyYY: string;
+};
 
 export default function CoordinateConverter() {
-  const [mode, setMode] = useState<Mode>('xyz-to-xyY');
+  const [mode, setMode] = useLocalStorage<Mode>('displaylab::calc::coord::mode', 'xyz-to-xyY');
+  const [values, setValues] = useLocalStorage<CoordinateValues>('displaylab::calc::coord::values', {
+    xyzX: '95.047',
+    xyzY: '100.000',
+    xyzZ: '108.883',
+    xyX: '0.3127',
+    xyY: '0.3290',
+    xyYY: '100.000',
+  });
+  const { xyzX, xyzY, xyzZ, xyX, xyY, xyYY } = values;
 
-  // XYZ inputs
-  const [xyzX, setXyzX] = useState('95.047');
-  const [xyzY, setXyzY] = useState('100.000');
-  const [xyzZ, setXyzZ] = useState('108.883');
-
-  // xyY inputs
-  const [xyX, setXyX] = useState('0.3127');
-  const [xyY, setXyY] = useState('0.3290');
-  const [xyYY, setXyYY] = useState('100.000');
+  const updateValues = useCallback((patch: Partial<CoordinateValues>) => {
+    setValues({ ...values, ...patch });
+  }, [setValues, values]);
 
   const parseNum = (s: string): number => {
     const n = parseFloat(s);
@@ -83,7 +95,7 @@ export default function CoordinateConverter() {
                 type="number"
                 step="any"
                 value={xyzX}
-                onChange={(e) => setXyzX(e.target.value)}
+                onChange={(e) => updateValues({ xyzX: e.target.value })}
                 className="mt-1 block w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
               />
             </label>
@@ -93,7 +105,7 @@ export default function CoordinateConverter() {
                 type="number"
                 step="any"
                 value={xyzY}
-                onChange={(e) => setXyzY(e.target.value)}
+                onChange={(e) => updateValues({ xyzY: e.target.value })}
                 className="mt-1 block w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
               />
             </label>
@@ -103,7 +115,7 @@ export default function CoordinateConverter() {
                 type="number"
                 step="any"
                 value={xyzZ}
-                onChange={(e) => setXyzZ(e.target.value)}
+                onChange={(e) => updateValues({ xyzZ: e.target.value })}
                 className="mt-1 block w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
               />
             </label>
@@ -143,7 +155,7 @@ export default function CoordinateConverter() {
                 type="number"
                 step="any"
                 value={xyX}
-                onChange={(e) => setXyX(e.target.value)}
+                onChange={(e) => updateValues({ xyX: e.target.value })}
                 className="mt-1 block w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
               />
             </label>
@@ -153,7 +165,7 @@ export default function CoordinateConverter() {
                 type="number"
                 step="any"
                 value={xyY}
-                onChange={(e) => setXyY(e.target.value)}
+                onChange={(e) => updateValues({ xyY: e.target.value })}
                 className="mt-1 block w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
               />
             </label>
@@ -163,7 +175,7 @@ export default function CoordinateConverter() {
                 type="number"
                 step="any"
                 value={xyYY}
-                onChange={(e) => setXyYY(e.target.value)}
+                onChange={(e) => updateValues({ xyYY: e.target.value })}
                 className="mt-1 block w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
               />
             </label>

@@ -5,7 +5,8 @@
  * Includes difference interpretation guide and preset color pairs.
  */
 
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { deltaE76, deltaE94, deltaE2000 } from '@/lib/delta-e';
 import type { LabColor } from '@/types';
 
@@ -48,13 +49,15 @@ function interpretDeltaE(de: number): { level: string; color: string } {
 }
 
 export default function DeltaECalculator() {
-  const [l1, setL1] = useState('50.0000');
-  const [a1, setA1] = useState('2.6772');
-  const [b1, setB1] = useState('-79.7751');
-
-  const [l2, setL2] = useState('50.0000');
-  const [a2, setA2] = useState('0.0000');
-  const [b2, setB2] = useState('-82.7485');
+  const [values, setValues] = useLocalStorage('displaylab::calc::deltae::values', {
+    l1: '50.0000',
+    a1: '2.6772',
+    b1: '-79.7751',
+    l2: '50.0000',
+    a2: '0.0000',
+    b2: '-82.7485',
+  });
+  const { l1, a1, b1, l2, a2, b2 } = values;
 
   const parseNum = (s: string): number => {
     const n = parseFloat(s);
@@ -73,12 +76,14 @@ export default function DeltaECalculator() {
   }, [l1, a1, b1, l2, a2, b2]);
 
   const loadPreset = (preset: ColorPairPreset) => {
-    setL1(preset.lab1.L.toFixed(4));
-    setA1(preset.lab1.a.toFixed(4));
-    setB1(preset.lab1.b.toFixed(4));
-    setL2(preset.lab2.L.toFixed(4));
-    setA2(preset.lab2.a.toFixed(4));
-    setB2(preset.lab2.b.toFixed(4));
+    setValues({
+      l1: preset.lab1.L.toFixed(4),
+      a1: preset.lab1.a.toFixed(4),
+      b1: preset.lab1.b.toFixed(4),
+      l2: preset.lab2.L.toFixed(4),
+      a2: preset.lab2.a.toFixed(4),
+      b2: preset.lab2.b.toFixed(4),
+    });
   };
 
   const result = getResult();
@@ -119,7 +124,7 @@ export default function DeltaECalculator() {
                 type="number"
                 step="any"
                 value={l1}
-                onChange={(e) => setL1(e.target.value)}
+                onChange={(e) => setValues({ ...values, l1: e.target.value })}
                 className="mt-0.5 block w-full px-2.5 py-1.5 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
               />
             </label>
@@ -129,7 +134,7 @@ export default function DeltaECalculator() {
                 type="number"
                 step="any"
                 value={a1}
-                onChange={(e) => setA1(e.target.value)}
+                onChange={(e) => setValues({ ...values, a1: e.target.value })}
                 className="mt-0.5 block w-full px-2.5 py-1.5 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
               />
             </label>
@@ -139,7 +144,7 @@ export default function DeltaECalculator() {
                 type="number"
                 step="any"
                 value={b1}
-                onChange={(e) => setB1(e.target.value)}
+                onChange={(e) => setValues({ ...values, b1: e.target.value })}
                 className="mt-0.5 block w-full px-2.5 py-1.5 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
               />
             </label>
@@ -156,7 +161,7 @@ export default function DeltaECalculator() {
                 type="number"
                 step="any"
                 value={l2}
-                onChange={(e) => setL2(e.target.value)}
+                onChange={(e) => setValues({ ...values, l2: e.target.value })}
                 className="mt-0.5 block w-full px-2.5 py-1.5 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
               />
             </label>
@@ -166,7 +171,7 @@ export default function DeltaECalculator() {
                 type="number"
                 step="any"
                 value={a2}
-                onChange={(e) => setA2(e.target.value)}
+                onChange={(e) => setValues({ ...values, a2: e.target.value })}
                 className="mt-0.5 block w-full px-2.5 py-1.5 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
               />
             </label>
@@ -176,7 +181,7 @@ export default function DeltaECalculator() {
                 type="number"
                 step="any"
                 value={b2}
-                onChange={(e) => setB2(e.target.value)}
+                onChange={(e) => setValues({ ...values, b2: e.target.value })}
                 className="mt-0.5 block w-full px-2.5 py-1.5 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
               />
             </label>

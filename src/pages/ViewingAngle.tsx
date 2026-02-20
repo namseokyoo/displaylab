@@ -18,6 +18,7 @@ import ColorShiftTrack from '@/components/viewing-angle/ColorShiftTrack';
 import DeltaEHeatmap from '@/components/viewing-angle/DeltaEHeatmap';
 import DataTable from '@/components/viewing-angle/DataTable';
 import SEO from '@/components/common/SEO';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { toolJsonLd } from '@/lib/seo-data';
 import {
   parseViewingAngleRows,
@@ -65,7 +66,7 @@ function downloadSvgAsPng(svgElement: SVGSVGElement | null, filename: string) {
 export default function ViewingAngle() {
   const [data, setData] = useState<ViewingAngleData[]>([]);
   const [comparisonData, setComparisonData] = useState<ViewingAngleData[]>([]);
-  const [activePreset, setActivePreset] = useState<PresetType>('none');
+  const [activePreset, setActivePreset] = useLocalStorage<PresetType>('displaylab::va::preset', 'none');
   const [comparisonMode, setComparisonMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [dataLabel, setDataLabel] = useState('Custom');
@@ -75,6 +76,7 @@ export default function ViewingAngle() {
   const polarRef = useRef<HTMLDivElement>(null);
   const colorShiftRef = useRef<HTMLDivElement>(null);
   const deltaERef = useRef<HTMLDivElement>(null);
+  const restoredPresetLoadedRef = useRef(false);
 
   // Responsive chart sizing
   const chartContainerRef = useRef<HTMLDivElement>(null);
@@ -138,8 +140,16 @@ export default function ViewingAngle() {
         setLoading(false);
       }
     },
-    [comparisonMode, data.length],
+    [comparisonMode, data.length, setActivePreset],
   );
+
+  useEffect(() => {
+    if (restoredPresetLoadedRef.current) return;
+    restoredPresetLoadedRef.current = true;
+    if (activePreset !== 'none') {
+      void loadPreset(activePreset);
+    }
+  }, [activePreset, loadPreset]);
 
   // Handle CSV upload
   const handleCSVLoaded = useCallback(
@@ -160,7 +170,7 @@ export default function ViewingAngle() {
         console.error('Failed to parse CSV:', err);
       }
     },
-    [comparisonMode, data.length],
+    [comparisonMode, data.length, setActivePreset],
   );
 
   // Comparison mode toggle
@@ -206,7 +216,7 @@ export default function ViewingAngle() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [setActivePreset]);
 
   const handleDownloadSvg = useCallback(
     (ref: React.RefObject<HTMLDivElement | null>, filename: string) => {

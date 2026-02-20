@@ -5,7 +5,7 @@
  * Supports: XYZ, xyY, u'v'Y, Lab, LCh, sRGB, Linear RGB, HSL, Hex, CMYK.
  */
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import type { XYZColor } from '@/types';
 import { xyzToXY } from '@/lib/cie';
 import {
@@ -153,6 +153,8 @@ const COLOR_SPACES: ColorSpaceDefinition[] = [
     ],
   },
 ];
+
+const COLOR_SPACE_IDS: ColorSpaceId[] = ['xyz', 'xyY', 'uvY', 'lab', 'lch', 'srgb', 'linear-rgb', 'hsl', 'hex', 'cmyk'];
 
 // ============================================================
 // Default values
@@ -368,9 +370,27 @@ function ResultCard({
 // Main Component
 // ============================================================
 
-export default function UniversalConverter() {
-  const [sourceSpace, setSourceSpace] = useState<ColorSpaceId>('xyz');
-  const [values, setValues] = useState<Record<string, string>>(getDefaultValues('xyz'));
+interface UniversalConverterProps {
+  initialSpace?: string | null;
+  initialValues?: Record<string, string> | null;
+  onStateChange?: (space: string, values: Record<string, string>) => void;
+}
+
+export default function UniversalConverter({ initialSpace, initialValues, onStateChange }: UniversalConverterProps) {
+  const hasValidInitialSpace = initialSpace
+    ? COLOR_SPACE_IDS.includes(initialSpace as ColorSpaceId)
+    : false;
+  const initialSourceSpace = hasValidInitialSpace ? (initialSpace as ColorSpaceId) : 'xyz';
+
+  const [sourceSpace, setSourceSpace] = useState<ColorSpaceId>(initialSourceSpace);
+  const [values, setValues] = useState<Record<string, string>>(
+    initialValues && hasValidInitialSpace ? initialValues : getDefaultValues(initialSourceSpace),
+  );
+
+  // Report state changes to parent
+  useEffect(() => {
+    onStateChange?.(sourceSpace, values);
+  }, [sourceSpace, values, onStateChange]);
 
   const handleSourceChange = useCallback((newSpace: ColorSpaceId) => {
     setSourceSpace(newSpace);
@@ -383,13 +403,13 @@ export default function UniversalConverter() {
 
   const spaceDef = COLOR_SPACES.find((s) => s.id === sourceSpace)!;
 
-  const results = useMemo(() => {
+  const results = (() => {
     const xyz = sourceToXYZ(sourceSpace, values);
     if (!xyz) return null;
     return xyzToAllSpaces(xyz);
-  }, [sourceSpace, values]);
+  })();
 
-  const resultCards = useMemo(() => {
+  const resultCards = (() => {
     if (!results) return [];
 
     return [
@@ -481,7 +501,7 @@ export default function UniversalConverter() {
         ],
       },
     ];
-  }, [results]);
+  })();
 
   return (
     <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">

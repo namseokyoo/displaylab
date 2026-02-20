@@ -5,14 +5,49 @@
  * and Universal Color Space Converter.
  */
 
+import { useEffect, useRef, useCallback, useState, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import CoordinateConverter from '@/components/color-calculator/CoordinateConverter';
 import CCTCalculator from '@/components/color-calculator/CCTCalculator';
 import DeltaECalculator from '@/components/color-calculator/DeltaECalculator';
 import UniversalConverter from '@/components/color-calculator/UniversalConverter';
+import ShareButton from '@/components/common/ShareButton';
 import SEO from '@/components/common/SEO';
+import { encodeColorState, decodeColorState } from '@/lib/url-share';
 import { toolJsonLd } from '@/lib/seo-data';
 
 export default function ColorCalculator() {
+  // URL param restoration seed (read once)
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialDecoded = useMemo(() => decodeColorState(searchParams), [searchParams]);
+
+  // Shared state for URL sharing with UniversalConverter
+  const [sharedSpace] = useState<string | null>(() => initialDecoded?.space ?? null);
+  const [sharedValues] = useState<Record<string, string> | null>(() => initialDecoded?.values ?? null);
+
+  // Current converter state for share button
+  const converterStateRef = useRef<{ space: string; values: Record<string, string> }>({ space: 'xyz', values: {} });
+
+  const handleConverterStateChange = useCallback((space: string, values: Record<string, string>) => {
+    converterStateRef.current = { space, values };
+  }, []);
+
+  const urlRestored = useRef(false);
+
+  useEffect(() => {
+    if (urlRestored.current) return;
+    if (initialDecoded) {
+      setSearchParams(new URLSearchParams(), { replace: true });
+    }
+    urlRestored.current = true;
+  }, [initialDecoded, setSearchParams]);
+
+  const getShareUrl = useCallback(() => {
+    const { space, values } = converterStateRef.current;
+    const params = encodeColorState(space, values);
+    return `${window.location.origin}${window.location.pathname}?${params}`;
+  }, []);
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <SEO
@@ -27,7 +62,10 @@ export default function ColorCalculator() {
         )}
       />
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Color Science Calculator</h1>
+        <div className="flex items-center gap-3 mb-2">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Color Science Calculator</h1>
+          <ShareButton getShareUrl={getShareUrl} />
+        </div>
         <p className="text-gray-500 dark:text-gray-400">
           Quick CIE color calculations: coordinate conversion, CCT &amp; Duv, Delta E, and universal color space converter.
         </p>
@@ -40,7 +78,11 @@ export default function ColorCalculator() {
       </div>
 
       <div className="mt-6">
-        <UniversalConverter />
+        <UniversalConverter
+          initialSpace={sharedSpace}
+          initialValues={sharedValues}
+          onStateChange={handleConverterStateChange}
+        />
       </div>
     </div>
   );

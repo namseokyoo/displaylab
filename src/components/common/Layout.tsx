@@ -5,7 +5,7 @@
  * Responsive: hamburger menu on mobile.
  */
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Link, useLocation, Outlet } from 'react-router-dom';
 import { useTheme } from '@/contexts/ThemeContext';
 
@@ -19,6 +19,20 @@ export default function Layout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const { isDark, toggleTheme } = useTheme();
+  const handleResetSettings = useCallback(() => {
+    if (typeof window === 'undefined') return;
+    const confirmed = window.confirm('Reset all saved settings except theme?');
+    if (!confirmed) return;
+
+    for (const key of Object.keys(window.localStorage)) {
+      if (key.startsWith('displaylab::') && key !== 'displaylab::theme') {
+        window.localStorage.removeItem(key);
+      }
+    }
+
+    window.alert('Settings reset. Reloading...');
+    window.location.reload();
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100">
@@ -50,8 +64,18 @@ export default function Layout() {
 
               {/* Theme toggle button */}
               <button
-                onClick={toggleTheme}
+                onClick={handleResetSettings}
                 className="ml-2 p-2 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800 transition-colors"
+                aria-label="Reset saved settings"
+                title="Reset saved settings"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h5M20 20v-5h-5M20 9A8 8 0 006.34 5.34L4 7m16 10l-2.34 1.66A8 8 0 013.99 15" />
+                </svg>
+              </button>
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800 transition-colors"
                 aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
                 title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
               >
@@ -69,6 +93,16 @@ export default function Layout() {
 
             {/* Mobile: theme toggle + menu button */}
             <div className="flex items-center gap-1 md:hidden">
+              <button
+                onClick={handleResetSettings}
+                className="p-2 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800 transition-colors"
+                aria-label="Reset saved settings"
+                title="Reset saved settings"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h5M20 20v-5h-5M20 9A8 8 0 006.34 5.34L4 7m16 10l-2.34 1.66A8 8 0 013.99 15" />
+                </svg>
+              </button>
               <button
                 onClick={toggleTheme}
                 className="p-2 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800 transition-colors"
