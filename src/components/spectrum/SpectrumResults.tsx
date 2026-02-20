@@ -1,3 +1,5 @@
+import { useTranslation } from '@/lib/i18n';
+
 interface SpectrumResultsProps {
   cct?: number;
   duv?: number;
@@ -61,26 +63,27 @@ export default function SpectrumResults({
   fwhm,
   hexColor,
 }: SpectrumResultsProps) {
+  const { t } = useTranslation();
   const resolvedHex = getHexColor(hexColor);
 
   return (
     <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Spectrum Analysis Results</h2>
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{t('spectrum.resultsTitle')}</h2>
       <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-        Chromaticity and spectral metrics calculated from the loaded spectrum.
+        {t('spectrum.resultsDesc')}
       </p>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        <ResultCard label="CCT" value={formatNumber(cct, 0)} unit="K" />
-        <ResultCard label="Duv" value={formatDuv(duv)} />
-        <ResultCard label="Dominant Wavelength" value={formatNumber(dominantWavelength, 1)} unit="nm" />
-        <ResultCard label="Purity" value={formatPurity(purity)} unit="%" />
-        <ResultCard label="Peak Wavelength" value={formatNumber(peakWavelength, 1)} unit="nm" />
-        <ResultCard label="FWHM" value={formatNumber(fwhm, 1)} unit="nm" />
+        <ResultCard label={t('spectrum.cct')} value={formatNumber(cct, 0)} unit="K" />
+        <ResultCard label={t('spectrum.duv')} value={formatDuv(duv)} />
+        <ResultCard label={t('spectrum.dominantWavelength')} value={formatNumber(dominantWavelength, 1)} unit="nm" />
+        <ResultCard label={t('spectrum.purity')} value={formatPurity(purity)} unit="%" />
+        <ResultCard label={t('spectrum.peakWavelength')} value={formatNumber(peakWavelength, 1)} unit="nm" />
+        <ResultCard label={t('spectrum.fwhm')} value={formatNumber(fwhm, 1)} unit="nm" />
       </div>
 
       <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700/60 dark:bg-gray-800/50">
-        <p className="text-xs text-gray-500 dark:text-gray-400">Estimated Color</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400">{t('spectrum.estimatedColor')}</p>
         <div className="mt-2 flex items-center gap-3">
           <span
             className="h-8 w-8 rounded-md border border-gray-300 dark:border-gray-600"

@@ -8,8 +8,10 @@
 import { useCallback } from 'react';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { calculateCCT, calculateDuv, interpretCCT, CCT_PRESETS } from '@/lib/cct';
+import { useTranslation } from '@/lib/i18n';
 
 export default function CCTCalculator() {
+  const { t } = useTranslation();
   const [values, setValues] = useLocalStorage('displaylab::calc::cct::values', {
     inputX: '0.3127',
     inputY: '0.3290',
@@ -61,14 +63,14 @@ export default function CCTCalculator() {
 
   return (
     <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">CCT Calculator</h2>
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{t('color.cctTitle')}</h2>
       <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-        Correlated Color Temperature + Duv from CIE xy
+        {t('color.cctSubtitle')}
       </p>
 
       {/* Presets */}
       <div className="mb-4">
-        <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">Presets</div>
+        <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">{t('common.presets')}</div>
         <div className="flex flex-wrap gap-1.5">
           {(Object.keys(CCT_PRESETS) as (keyof typeof CCT_PRESETS)[]).map((key) => (
             <button
@@ -139,7 +141,7 @@ export default function CCTCalculator() {
             </div>
             {Math.abs(result.duv) > 0.006 && (
               <div className="text-xs text-gray-500 mt-1">
-                Duv {result.duv > 0 ? '> 0: greenish tint' : '< 0: pinkish tint'}
+                Duv {result.duv > 0 ? t('color.cctGreenish') : t('color.cctPinkish')}
               </div>
             )}
           </div>
@@ -148,7 +150,7 @@ export default function CCTCalculator() {
 
       {!result && (
         <div className="p-4 rounded-lg bg-gray-50 border border-gray-200 dark:bg-gray-800/50 dark:border-gray-700/50 text-sm text-gray-400 dark:text-gray-500">
-          Enter valid CIE xy coordinates (0-1 range)
+          {t('color.cctValidation')}
         </div>
       )}
     </div>

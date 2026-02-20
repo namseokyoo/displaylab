@@ -12,11 +12,13 @@ import PanelCard from '@/components/panel-comparison/PanelCard';
 import RadarChart from '@/components/panel-comparison/RadarChart';
 import UseCaseRecommendation from '@/components/panel-comparison/UseCaseRecommendation';
 import { PANEL_TECHNOLOGIES } from '@/data/panel-technologies';
+import { useTranslation } from '@/lib/i18n';
 import { toolJsonLd } from '@/lib/seo-data';
 
 const ALL_PANEL_IDS = PANEL_TECHNOLOGIES.map((panel) => panel.id);
 
 export default function PanelComparison() {
+  const { t } = useTranslation();
   const [selectedPanelIds, setSelectedPanelIds] = useState<string[]>(() => {
     if (typeof window === 'undefined') return ALL_PANEL_IDS;
     const queryValue = new URLSearchParams(window.location.search).get('panels');
@@ -53,8 +55,8 @@ export default function PanelComparison() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 space-y-12">
       <SEO
-        title="Panel Technology Comparator - Display Lab"
-        description="Compare panel technologies side by side: IPS, VA, OLED, Mini-LED, and QD-OLED with interactive radar charts and detailed specs."
+        title={t('panel.seoTitle')}
+        description={t('panel.seoDesc')}
         keywords="panel technology comparator, IPS vs VA, OLED, Mini-LED, QD-OLED, display panel comparison"
         path="/panel-comparison"
         jsonLd={toolJsonLd(
@@ -65,16 +67,15 @@ export default function PanelComparison() {
       />
 
       <section className="space-y-3">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">Panel Technology Comparator</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">{t('panel.title')}</h1>
         <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 max-w-3xl">
-          Compare IPS, VA, OLED, Mini-LED, and QD-OLED using normalized performance scores.
-          Toggle panel types to overlay them on a radar chart, then inspect detailed strengths and tradeoffs.
+          {t('panel.subtitle')}
         </p>
       </section>
 
       <section className="rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-5">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Select Panels</h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Choose one or more panel technologies to compare.</p>
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t('panel.selectPanels')}</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t('panel.selectPanelsDesc')}</p>
 
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           {PANEL_TECHNOLOGIES.map((panel) => {
@@ -100,17 +101,17 @@ export default function PanelComparison() {
       </section>
 
       <section className="rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-6">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Radar Comparison</h2>
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">{t('panel.radarComparison')}</h2>
         <RadarChart panels={selectedPanels} />
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Specification Comparison</h2>
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{t('panel.specComparison')}</h2>
         <ComparisonTable panels={selectedPanels} />
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Panel Technologies</h2>
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{t('panel.panelTechnologies')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {PANEL_TECHNOLOGIES.map((panel) => (
             <PanelCard key={panel.id} panel={panel} />
@@ -119,7 +120,7 @@ export default function PanelComparison() {
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Best Panel by Use Case</h2>
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{t('panel.bestByUseCase')}</h2>
         <UseCaseRecommendation />
       </section>
 

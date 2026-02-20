@@ -10,6 +10,7 @@
  */
 
 import { AD_CONFIG, isAdEnabled } from '@/config/ad-config';
+import { useTranslation } from '@/lib/i18n';
 import KakaoAdFit from './KakaoAdFit';
 
 interface AdBannerProps {
@@ -17,6 +18,7 @@ interface AdBannerProps {
 }
 
 export default function AdBanner({ className = '' }: AdBannerProps) {
+  const { t } = useTranslation();
   if (!isAdEnabled()) return null;
 
   const { desktop, mobile } = AD_CONFIG;
@@ -25,7 +27,7 @@ export default function AdBanner({ className = '' }: AdBannerProps) {
     <div
       className={`w-full flex justify-center py-4 ${className}`}
       role="complementary"
-      aria-label="Sponsored content"
+      aria-label={t('common.sponsoredContent')}
     >
       {/* Desktop banner (hidden on mobile) */}
       {desktop.unitId && (

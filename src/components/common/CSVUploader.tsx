@@ -7,6 +7,7 @@
 import { useState, useRef, useCallback } from 'react';
 import type { DragEvent, ChangeEvent } from 'react';
 import { parseCSVFile, type ParsedRow } from '@/lib/csv-parser';
+import { useTranslation } from '@/lib/i18n';
 
 interface CSVUploaderProps {
   onDataLoaded: (data: ParsedRow[]) => void;
@@ -21,6 +22,7 @@ export default function CSVUploader({
   acceptedFormats = '.csv,.txt',
   maxRows = 1000,
 }: CSVUploaderProps) {
+  const { t } = useTranslation();
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
@@ -34,19 +36,19 @@ export default function CSVUploader({
       try {
         const rows = await parseCSVFile(file, expectedColumns);
         if (rows.length === 0) {
-          setError('No valid data found in file');
+          setError(t('csv.noValidData'));
           return;
         }
         if (rows.length > maxRows) {
-          setError(`File exceeds maximum ${maxRows} rows (Free tier limit)`);
+          setError(t('csv.exceedsMax').replace('{maxRows}', String(maxRows)));
           return;
         }
         onDataLoaded(rows);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to parse file');
+        setError(err instanceof Error ? err.message : t('csv.parseFailed'));
       }
     },
-    [expectedColumns, maxRows, onDataLoaded],
+    [expectedColumns, maxRows, onDataLoaded, t],
   );
 
   const handleDrop = useCallback(
@@ -114,9 +116,9 @@ export default function CSVUploader({
             <p className="text-sm text-blue-400">{fileName}</p>
           ) : (
             <>
-              <p className="text-sm font-medium">Drop CSV file here or click to browse</p>
+              <p className="text-sm font-medium">{t('csv.dropText')}</p>
               <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                Supports CSV, TSV, TXT (max {maxRows} rows)
+                {t('csv.supportedFormats').replace('{maxRows}', String(maxRows))}
               </p>
             </>
           )}

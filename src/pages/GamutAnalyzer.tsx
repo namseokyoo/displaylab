@@ -17,6 +17,7 @@ import ShareButton from '@/components/common/ShareButton';
 import { STANDARD_GAMUTS } from '@/data/gamut-primaries';
 import SEO from '@/components/common/SEO';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useTranslation } from '@/lib/i18n';
 import { encodeGamutState, decodeGamutState } from '@/lib/url-share';
 import { toolJsonLd } from '@/lib/seo-data';
 import type { DiagramMode, GamutType, GamutData } from '@/types';
@@ -40,6 +41,7 @@ const GAMUT_TOGGLE_ACTIVE: Record<string, string> = {
 };
 
 export default function GamutAnalyzer() {
+  const { t } = useTranslation();
   const [mode, setMode] = useLocalStorage<DiagramMode>('displaylab::gamut::mode', 'CIE1931');
   const [enabledGamuts, setEnabledGamuts] = useLocalStorage<GamutType[]>(
     'displaylab::gamut::standards',
@@ -110,8 +112,8 @@ export default function GamutAnalyzer() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8 overflow-x-hidden">
       <SEO
-        title="Color Gamut Analyzer - Display Lab"
-        description="Compare display color gamuts against sRGB, DCI-P3, BT.2020 standards. Calculate coverage percentage with CIE 1931 and 1976 diagrams."
+        title={t('gamut.seoTitle')}
+        description={t('gamut.seoDesc')}
         keywords="color gamut analyzer, CIE 1931, CIE 1976, sRGB coverage, DCI-P3, BT.2020, display color gamut comparison"
         path="/gamut-analyzer"
         jsonLd={toolJsonLd(
@@ -122,10 +124,9 @@ export default function GamutAnalyzer() {
       />
       {/* Page header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Color Gamut Analyzer</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{t('gamut.title')}</h1>
         <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base">
-          Compare display color gamuts against industry standards. Input your display
-          primaries or select from device presets.
+          {t('gamut.subtitle')}
         </p>
       </div>
 
@@ -138,7 +139,7 @@ export default function GamutAnalyzer() {
             {/* Mode toggle */}
             <div className="flex items-center gap-3">
               <span className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider shrink-0">
-                Coordinate
+                {t('common.coordinate')}
               </span>
               <div className="flex gap-1">
                 <button
@@ -168,7 +169,7 @@ export default function GamutAnalyzer() {
             {/* Standard gamut toggles */}
             <div className="flex items-center gap-3">
               <span className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider shrink-0">
-                Standards
+                {t('common.standards')}
               </span>
               <div className="flex flex-wrap gap-1.5">
                 {GAMUT_OPTIONS.map((gamut) => (
@@ -205,7 +206,7 @@ export default function GamutAnalyzer() {
         <div className="order-2 space-y-6">
           {/* Comparison panel with tabs */}
           <div className="bg-white/50 rounded-xl border border-gray-200 dark:bg-gray-900/30 dark:border-gray-800 p-4">
-            <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Display Gamuts</h2>
+            <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">{t('gamut.displayGamuts')}</h2>
             <ComparisonPanel
               displays={displays}
               onDisplaysChange={setDisplays}
@@ -218,13 +219,10 @@ export default function GamutAnalyzer() {
           {/* Info card */}
           <div className="bg-white/50 rounded-xl border border-gray-200 dark:bg-gray-900/30 dark:border-gray-800 p-4">
             <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">
-              About Coverage Calculation
+              {t('gamut.aboutCoverage')}
             </h3>
             <p className="text-xs text-gray-400 dark:text-gray-500 leading-relaxed">
-              Coverage is calculated as the area ratio of the display gamut triangle
-              to each standard gamut triangle using the Shoelace formula. This method
-              gives the overall area percentage, not the intersection-based coverage.
-              Intersection-based calculation will be available in a future update.
+              {t('gamut.aboutCoverageText')}
             </p>
           </div>
         </div>

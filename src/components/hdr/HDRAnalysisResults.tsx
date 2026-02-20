@@ -1,4 +1,5 @@
 import type { HDRAnalysisResult } from '@/lib/hdr';
+import { useTranslation } from '@/lib/i18n';
 
 interface HDRAnalysisResultsProps {
   result: HDRAnalysisResult | null;
@@ -45,14 +46,16 @@ function MetricCard({ label, value, helper }: { label: string; value: string; he
 }
 
 export default function HDRAnalysisResults({ result }: HDRAnalysisResultsProps) {
+  const { t } = useTranslation();
+
   if (!result) {
     return (
       <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-          HDR Analysis Results
+          {t('hdr.resultsTitle')}
         </h2>
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          Enter HDR10 metadata values to see analysis results.
+          {t('hdr.resultsEmpty')}
         </p>
       </div>
     );
@@ -66,15 +69,15 @@ export default function HDRAnalysisResults({ result }: HDRAnalysisResultsProps) 
   return (
     <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
       <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-        HDR Analysis Results
+        {t('hdr.resultsTitle')}
       </h2>
       <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-        Real-time capability metrics derived from HDR10 static metadata.
+        {t('hdr.resultsDesc')}
       </p>
 
       <div className="mb-4 space-y-3">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm text-gray-600 dark:text-gray-300">Peak Brightness Score:</span>
+          <span className="text-sm text-gray-600 dark:text-gray-300">{t('hdr.peakBrightnessScore')}</span>
           <span
             className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold ${getPeakScoreBadgeClass(result.peakBrightnessScore.score)}`}
           >
@@ -86,7 +89,7 @@ export default function HDRAnalysisResults({ result }: HDRAnalysisResultsProps) 
         </p>
 
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm text-gray-600 dark:text-gray-300">HDR10 Compatibility:</span>
+          <span className="text-sm text-gray-600 dark:text-gray-300">{t('hdr.hdr10Compatibility')}</span>
           <span
             className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold ${getHDRGradeBadgeClass(result.hdr10Grade)}`}
           >
@@ -97,13 +100,13 @@ export default function HDRAnalysisResults({ result }: HDRAnalysisResultsProps) 
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <MetricCard
-          label="Dynamic Range"
+          label={t('hdr.dynamicRange')}
           value={`${result.dynamicRange.toFixed(2)} stops`}
-          helper="Calculated from mastering max/min luminance"
+          helper={t('hdr.dynamicRangeHelper')}
         />
-        <MetricCard label="MaxCLL vs MaxFALL" value={ratioValue} />
-        <MetricCard label="BT.2020 Gamut Coverage" value={`${result.gamutCoverage.toFixed(1)}%`} />
-        <MetricCard label="HDR10 Grade" value={result.hdr10Grade} />
+        <MetricCard label={t('hdr.maxCLLvsMaxFALL')} value={ratioValue} />
+        <MetricCard label={t('hdr.bt2020Coverage')} value={`${result.gamutCoverage.toFixed(1)}%`} />
+        <MetricCard label={t('hdr.hdr10Grade')} value={result.hdr10Grade} />
       </div>
     </div>
   );

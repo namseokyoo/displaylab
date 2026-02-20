@@ -5,16 +5,17 @@
  */
 
 import type { PanelTechnology } from '@/data/panel-technologies';
+import { useTranslation } from '@/lib/i18n';
 
 interface PanelCardProps {
   panel: PanelTechnology;
 }
 
-const PRICE_LABELS: Record<PanelTechnology['priceRange'], string> = {
-  budget: 'Budget',
-  mid: 'Mid-Range',
-  premium: 'Premium',
-  flagship: 'Flagship',
+const PRICE_LABEL_KEYS: Record<PanelTechnology['priceRange'], string> = {
+  budget: 'panel.priceBudget',
+  mid: 'panel.priceMid',
+  premium: 'panel.pricePremium',
+  flagship: 'panel.priceFlagship',
 };
 
 const PRICE_BADGE_STYLES: Record<PanelTechnology['priceRange'], string> = {
@@ -25,6 +26,8 @@ const PRICE_BADGE_STYLES: Record<PanelTechnology['priceRange'], string> = {
 };
 
 export default function PanelCard({ panel }: PanelCardProps) {
+  const { t } = useTranslation();
+
   return (
     <article className="relative rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-6">
       <span
@@ -38,7 +41,7 @@ export default function PanelCard({ panel }: PanelCardProps) {
         <span
           className={`inline-flex px-2.5 py-1 rounded-md border text-xs font-medium ${PRICE_BADGE_STYLES[panel.priceRange]}`}
         >
-          {PRICE_LABELS[panel.priceRange]}
+          {t(PRICE_LABEL_KEYS[panel.priceRange])}
         </span>
       </header>
 
@@ -46,7 +49,7 @@ export default function PanelCard({ panel }: PanelCardProps) {
 
       <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
         <section>
-          <h4 className="text-xs font-semibold uppercase tracking-wide text-green-700 dark:text-green-400 mb-2">Pros</h4>
+          <h4 className="text-xs font-semibold uppercase tracking-wide text-green-700 dark:text-green-400 mb-2">{t('panel.pros')}</h4>
           <ul className="space-y-1.5">
             {panel.pros.map((item) => (
               <li key={item} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
@@ -60,7 +63,7 @@ export default function PanelCard({ panel }: PanelCardProps) {
         </section>
 
         <section>
-          <h4 className="text-xs font-semibold uppercase tracking-wide text-red-700 dark:text-red-400 mb-2">Cons</h4>
+          <h4 className="text-xs font-semibold uppercase tracking-wide text-red-700 dark:text-red-400 mb-2">{t('panel.cons')}</h4>
           <ul className="space-y-1.5">
             {panel.cons.map((item) => (
               <li key={item} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
@@ -75,7 +78,7 @@ export default function PanelCard({ panel }: PanelCardProps) {
       </div>
 
       <section className="mt-5">
-        <h4 className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">Best For</h4>
+        <h4 className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">{t('panel.bestFor')}</h4>
         <div className="flex flex-wrap gap-2">
           {panel.bestFor.map((item) => (
             <span

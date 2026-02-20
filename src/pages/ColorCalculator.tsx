@@ -13,10 +13,12 @@ import DeltaECalculator from '@/components/color-calculator/DeltaECalculator';
 import UniversalConverter from '@/components/color-calculator/UniversalConverter';
 import ShareButton from '@/components/common/ShareButton';
 import SEO from '@/components/common/SEO';
+import { useTranslation } from '@/lib/i18n';
 import { encodeColorState, decodeColorState } from '@/lib/url-share';
 import { toolJsonLd } from '@/lib/seo-data';
 
 export default function ColorCalculator() {
+  const { t } = useTranslation();
   // URL param restoration seed (read once)
   const [searchParams, setSearchParams] = useSearchParams();
   const initialDecoded = useMemo(() => decodeColorState(searchParams), [searchParams]);
@@ -51,8 +53,8 @@ export default function ColorCalculator() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <SEO
-        title="Color Science Calculator - Display Lab"
-        description="Quick CIE color calculations: XYZ to xyY conversion, CCT & Duv, Delta E (CIE76, CIE94, CIEDE2000), and universal color space converter (10 color spaces)."
+        title={t('color.seoTitle')}
+        description={t('color.seoDesc')}
         keywords="delta E calculator, CIEDE2000, CIE94, CIE76, CCT calculator, XYZ to xyY, color science, CIE Lab, color converter, sRGB, CMYK, HSL, LCh"
         path="/color-calculator"
         jsonLd={toolJsonLd(
@@ -63,11 +65,11 @@ export default function ColorCalculator() {
       />
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Color Science Calculator</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('color.title')}</h1>
           <ShareButton getShareUrl={getShareUrl} />
         </div>
         <p className="text-gray-500 dark:text-gray-400">
-          Quick CIE color calculations: coordinate conversion, CCT &amp; Duv, Delta E, and universal color space converter.
+          {t('color.subtitle')}
         </p>
       </div>
 

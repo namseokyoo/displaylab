@@ -7,16 +7,19 @@
 
 import { SPEC_LABELS } from '@/data/panel-technologies';
 import type { PanelTechnology } from '@/data/panel-technologies';
+import { useTranslation } from '@/lib/i18n';
 
 interface ComparisonTableProps {
   panels: PanelTechnology[];
 }
 
 export default function ComparisonTable({ panels }: ComparisonTableProps) {
+  const { t } = useTranslation();
+
   if (panels.length === 0) {
     return (
       <div className="rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-6 text-center text-sm text-gray-500 dark:text-gray-400">
-        Select at least one panel technology to show comparison data.
+        {t('panel.emptyTable')}
       </div>
     );
   }
@@ -26,7 +29,7 @@ export default function ComparisonTable({ panels }: ComparisonTableProps) {
       <table className="w-full min-w-[720px] text-sm">
         <thead>
           <tr className="border-b border-gray-200 dark:border-gray-700">
-            <th className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-200">Spec</th>
+            <th className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-200">{t('panel.spec')}</th>
             {panels.map((panel) => (
               <th key={panel.id} className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-200">
                 <span className="inline-flex items-center gap-2">

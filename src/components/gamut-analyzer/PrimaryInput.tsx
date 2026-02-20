@@ -10,6 +10,7 @@
 import { useState, useCallback } from 'react';
 import { STANDARD_GAMUTS } from '@/data/gamut-primaries';
 import { GAMUT_PRESETS } from '@/data/presets/gamut-samples';
+import { useTranslation } from '@/lib/i18n';
 import type { GamutData } from '@/types';
 
 interface PrimaryInputProps {
@@ -61,6 +62,7 @@ function CoordInput({
 }
 
 export default function PrimaryInput({ value, onChange, label, color = '#3b82f6' }: PrimaryInputProps) {
+  const { t } = useTranslation();
   // Local string state for controlled inputs (allows partial typing like "0.")
   const [localValues, setLocalValues] = useState<Record<PrimaryKey, { x: string; y: string }>>({
     red: { x: value.primaries.red.x.toFixed(4), y: value.primaries.red.y.toFixed(4) },
@@ -144,7 +146,7 @@ export default function PrimaryInput({ value, onChange, label, color = '#3b82f6'
             onChange={(e) => handleNameChange(e.target.value)}
             className="text-sm font-medium text-gray-700 dark:text-gray-300 bg-transparent border-b border-gray-300 dark:border-gray-700
               focus:outline-none focus:border-blue-500 transition-colors"
-            placeholder="Display name"
+            placeholder={t('gamut.displayName')}
           />
         )}
       </div>
@@ -161,7 +163,7 @@ export default function PrimaryInput({ value, onChange, label, color = '#3b82f6'
           className="flex-1 min-w-0 px-2 py-1 text-xs bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded
             text-gray-500 dark:text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 truncate"
         >
-          <option value="">Standard gamut...</option>
+          <option value="">{t('gamut.standardGamut')}</option>
           {Object.entries(STANDARD_GAMUTS).map(([key, g]) => (
             <option key={key} value={key}>{g.name}</option>
           ))}
@@ -178,7 +180,7 @@ export default function PrimaryInput({ value, onChange, label, color = '#3b82f6'
           className="flex-1 min-w-0 px-2 py-1 text-xs bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded
             text-gray-500 dark:text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 truncate"
         >
-          <option value="">Device preset...</option>
+          <option value="">{t('gamut.devicePreset')}</option>
           {GAMUT_PRESETS.map((p, i) => (
             <option key={p.name} value={i}>{p.name}</option>
           ))}

@@ -8,6 +8,7 @@
 import { useCallback } from 'react';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { deltaE76, deltaE94, deltaE2000 } from '@/lib/delta-e';
+import { useTranslation } from '@/lib/i18n';
 import type { LabColor } from '@/types';
 
 interface ColorPairPreset {
@@ -18,37 +19,38 @@ interface ColorPairPreset {
 
 const PRESETS: ColorPairPreset[] = [
   {
-    name: 'Near identical',
+    name: 'color.presetNearIdentical',
     lab1: { L: 50, a: 2.6772, b: -79.7751 },
     lab2: { L: 50, a: 0, b: -82.7485 },
   },
   {
-    name: 'Subtle difference',
+    name: 'color.presetSubtle',
     lab1: { L: 60.2574, a: -34.0099, b: 36.2677 },
     lab2: { L: 60.4626, a: -34.1751, b: 39.4387 },
   },
   {
-    name: 'Noticeable difference',
+    name: 'color.presetNoticeable',
     lab1: { L: 50, a: 2.5, b: 0 },
     lab2: { L: 73, a: 25, b: -18 },
   },
   {
-    name: 'Large difference',
+    name: 'color.presetLarge',
     lab1: { L: 50, a: 2.5, b: 0 },
     lab2: { L: 56, a: -27, b: -3 },
   },
 ];
 
-/** Interpret Delta E value into human-readable description */
-function interpretDeltaE(de: number): { level: string; color: string } {
-  if (de < 1.0) return { level: 'Imperceptible', color: 'text-green-400' };
-  if (de < 2.0) return { level: 'Barely perceptible', color: 'text-emerald-400' };
-  if (de < 3.5) return { level: 'Noticeable on close inspection', color: 'text-yellow-400' };
-  if (de < 5.0) return { level: 'Clearly noticeable', color: 'text-orange-400' };
-  return { level: 'Obvious difference', color: 'text-red-400' };
+/** Interpret Delta E value into translation key + color */
+function interpretDeltaE(de: number): { levelKey: string; color: string } {
+  if (de < 1.0) return { levelKey: 'color.deImperceptible', color: 'text-green-400' };
+  if (de < 2.0) return { levelKey: 'color.deBarelyPerceptible', color: 'text-emerald-400' };
+  if (de < 3.5) return { levelKey: 'color.deNoticeable', color: 'text-yellow-400' };
+  if (de < 5.0) return { levelKey: 'color.deClearlyNoticeable', color: 'text-orange-400' };
+  return { levelKey: 'color.deObvious', color: 'text-red-400' };
 }
 
 export default function DeltaECalculator() {
+  const { t } = useTranslation();
   const [values, setValues] = useLocalStorage('displaylab::calc::deltae::values', {
     l1: '50.0000',
     a1: '2.6772',
@@ -91,14 +93,14 @@ export default function DeltaECalculator() {
 
   return (
     <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Delta E Calculator</h2>
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{t('color.deltaETitle')}</h2>
       <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-        CIE76, CIE94, CIEDE2000 color difference
+        {t('color.deltaESubtitle')}
       </p>
 
       {/* Presets */}
       <div className="mb-4">
-        <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">Presets</div>
+        <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">{t('common.presets')}</div>
         <div className="flex flex-wrap gap-1.5">
           {PRESETS.map((preset) => (
             <button
@@ -106,7 +108,7 @@ export default function DeltaECalculator() {
               onClick={() => loadPreset(preset)}
               className="px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white transition-colors border border-gray-300 dark:border-gray-700"
             >
-              {preset.name}
+              {t(preset.name)}
             </button>
           ))}
         </div>
@@ -116,7 +118,7 @@ export default function DeltaECalculator() {
       <div className="grid grid-cols-2 gap-4 mb-4">
         {/* Color 1 */}
         <div>
-          <div className="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Color 1</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">{t('color.color1')}</div>
           <div className="space-y-2">
             <label className="block">
               <span className="text-xs text-gray-400 dark:text-gray-500">L*</span>
@@ -153,7 +155,7 @@ export default function DeltaECalculator() {
 
         {/* Color 2 */}
         <div>
-          <div className="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Color 2</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">{t('color.color2')}</div>
           <div className="space-y-2">
             <label className="block">
               <span className="text-xs text-gray-400 dark:text-gray-500">L*</span>
@@ -215,20 +217,20 @@ export default function DeltaECalculator() {
         {/* Interpretation */}
         <div className="pt-2 border-t border-gray-200 dark:border-gray-700/50">
           <div className={`text-sm font-medium ${interpretation.color}`}>
-            {interpretation.level}
+            {t(interpretation.levelKey)}
           </div>
         </div>
       </div>
 
       {/* Reference guide */}
       <div className="mt-4 p-3 rounded-lg bg-gray-50 border border-gray-200 dark:bg-gray-800/30 dark:border-gray-700/30">
-        <div className="text-xs text-gray-400 dark:text-gray-500 mb-2 font-medium">CIEDE2000 Interpretation Guide</div>
+        <div className="text-xs text-gray-400 dark:text-gray-500 mb-2 font-medium">{t('color.interpretGuide')}</div>
         <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
-          <div className="text-green-400">&lt; 1.0 &mdash; Imperceptible</div>
-          <div className="text-emerald-400">1.0-2.0 &mdash; Barely perceptible</div>
-          <div className="text-yellow-400">2.0-3.5 &mdash; Noticeable</div>
-          <div className="text-orange-400">3.5-5.0 &mdash; Clearly noticeable</div>
-          <div className="text-red-400">&gt; 5.0 &mdash; Obvious difference</div>
+          <div className="text-green-400">{t('color.deGuideImperceptible')}</div>
+          <div className="text-emerald-400">{t('color.deGuideBarelyPerceptible')}</div>
+          <div className="text-yellow-400">{t('color.deGuideNoticeable')}</div>
+          <div className="text-orange-400">{t('color.deGuideClearlyNoticeable')}</div>
+          <div className="text-red-400">{t('color.deGuideObvious')}</div>
         </div>
       </div>
     </div>

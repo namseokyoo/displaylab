@@ -8,6 +8,7 @@ import LightQualityDashboard from '@/components/spectrum/LightQualityDashboard';
 import SpectrumResults from '@/components/spectrum/SpectrumResults';
 import { SPECTRAL_LOCUS_XY } from '@/data/cie1931';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useTranslation } from '@/lib/i18n';
 import { toolJsonLd } from '@/lib/seo-data';
 import { analyzeSpectrum, calculateChromaticity } from '@/lib/spectrum';
 import type { DiagramMarker, DiagramMode, SpectrumPoint } from '@/types';
@@ -56,6 +57,7 @@ function calculateExcitationPurity(
 }
 
 export default function SpectrumAnalyzer() {
+  const { t } = useTranslation();
   const [mode, setMode] = useState<DiagramMode>('CIE1931');
   const [spectrumData, setSpectrumData] = useLocalStorage<SpectrumPoint[]>(
     'displaylab::spectrum::lastData',
@@ -151,8 +153,8 @@ export default function SpectrumAnalyzer() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <SEO
-        title="Spectrum Analyzer - Display Lab"
-        description="Analyze emission spectra (SPD): calculate CIE chromaticity, CCT, Duv, FWHM, and visualize on CIE diagram."
+        title={t('spectrum.seoTitle')}
+        description={t('spectrum.seoDesc')}
         keywords="spectrum analyzer, SPD analysis, CIE chromaticity, CCT, Duv, FWHM, emission spectrum, CIE diagram"
         path="/spectrum-analyzer"
         jsonLd={toolJsonLd(
@@ -164,11 +166,11 @@ export default function SpectrumAnalyzer() {
 
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Spectrum Analyzer</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('spectrum.title')}</h1>
           <ShareButton getShareUrl={getShareUrl} />
         </div>
         <p className="text-gray-500 dark:text-gray-400">
-          Analyze emission spectra (SPD) to estimate chromaticity, CCT, Duv, and spectral width metrics.
+          {t('spectrum.subtitle')}
         </p>
       </div>
 
@@ -188,16 +190,16 @@ export default function SpectrumAnalyzer() {
 
         <div className="space-y-6">
           <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Spectrum Chart</h2>
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{t('spectrum.spectrumChart')}</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              Wavelength versus normalized intensity (380-780nm).
+              {t('spectrum.spectrumChartDesc')}
             </p>
             <SpectrumChart data={spectrumData} peakWavelength={analysis?.peakWavelength} />
           </div>
 
           <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
             <div className="flex flex-wrap items-center gap-3 mb-4">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">CIE Diagram</h2>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t('spectrum.cieDiagram')}</h2>
               <div className="flex gap-1">
                 <button
                   onClick={() => setMode('CIE1931')}

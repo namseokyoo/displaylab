@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useRef, useState, type ChangeEvent, type DragEvent } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import type { SpectrumPoint } from '@/types';
 import {
   PRESETS,
@@ -26,23 +27,23 @@ const CUSTOM_PRESETS: Array<{ key: string; name: string; peak: number; fwhm: num
   { key: 'amber-590', name: 'Amber (590nm)', peak: 590, fwhm: 18 },
 ];
 
-function getInputWarnings(rawData: SpectrumPoint[]): string[] {
+function getInputWarningKeys(rawData: SpectrumPoint[]): string[] {
   if (rawData.length === 0) return [];
 
-  const warnings: string[] = [];
+  const keys: string[] = [];
   const wavelengths = rawData.map((point) => point.wavelength);
   const minWavelength = Math.min(...wavelengths);
   const maxWavelength = Math.max(...wavelengths);
 
   if (minWavelength > 380 || maxWavelength < 780) {
-    warnings.push('Input does not fully cover 380-780nm; edge regions may be filled with zeros after interpolation.');
+    keys.push('spectrum.warnCoverage');
   }
 
   if (rawData.length < 20) {
-    warnings.push('Data point count is low; analysis accuracy may be reduced.');
+    keys.push('spectrum.warnLowCount');
   }
 
-  return warnings;
+  return keys;
 }
 
 function processSpectrum(rawData: SpectrumPoint[]): SpectrumPoint[] {
@@ -51,6 +52,7 @@ function processSpectrum(rawData: SpectrumPoint[]): SpectrumPoint[] {
 }
 
 export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputProps) {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<InputTab>('preset');
   const [pasteText, setPasteText] = useState('');
   const [isDragging, setIsDragging] = useState(false);
@@ -63,20 +65,20 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
 
   const applyData = useCallback((rawData: SpectrumPoint[], extraWarnings: string[] = []) => {
     if (rawData.length === 0) {
-      setError('No valid spectrum data points were found.');
+      setError(t('spectrum.noDataPoints'));
       return;
     }
 
     const processed = processSpectrum(rawData);
     if (processed.length === 0) {
-      setError('Spectrum processing failed.');
+      setError(t('spectrum.processingFailed'));
       return;
     }
 
     setError(null);
     setWarnings(extraWarnings);
     onDataLoaded(processed);
-  }, [onDataLoaded]);
+  }, [onDataLoaded, t]);
 
   const handleFileSelect = useCallback(async (files: FileList | null) => {
     if (!files || files.length === 0) return;
@@ -86,7 +88,7 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
     const extension = dotIndex >= 0 ? file.name.slice(dotIndex).toLowerCase() : '';
 
     if (!EXTENSIONS.includes(extension)) {
-      setError('Only CSV, TSV, or TXT files are supported.');
+      setError(t('spectrum.fileOnly'));
       setWarnings([]);
       return;
     }
@@ -97,7 +99,7 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
 
     try {
       const rawData = await parseSpectrumFile(file);
-      const autoWarnings = getInputWarnings(rawData);
+      const autoWarnings = getInputWarningKeys(rawData);
       applyData(rawData, autoWarnings);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while parsing the file.');
@@ -108,7 +110,7 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
 
   const handlePasteApply = useCallback(() => {
     if (!pasteText.trim()) {
-      setError('Paste spectrum data first.');
+      setError(t('spectrum.pasteFirst'));
       setWarnings([]);
       return;
     }
@@ -125,7 +127,7 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
       return;
     }
 
-    const autoWarnings = getInputWarnings(result.data);
+    const autoWarnings = getInputWarningKeys(result.data);
     applyData(result.data, [...result.warnings, ...autoWarnings]);
     setIsLoading(false);
   }, [applyData, pasteText]);
@@ -165,15 +167,15 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
       setPasteText(text);
       setError(null);
     } catch {
-      setError('Clipboard access is unavailable. Please paste data manually.');
+      setError(t('spectrum.clipboardUnavailable'));
     }
   }, []);
 
   return (
     <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Spectrum Data Input</h2>
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{t('spectrum.dataInputTitle')}</h2>
       <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-        Load spectrum data from file upload, clipboard paste, or built-in presets.
+        {t('spectrum.dataInputDesc')}
       </p>
 
       <div className="flex gap-1 mb-4 p-1 rounded-lg bg-gray-100 dark:bg-gray-800">
@@ -186,7 +188,7 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
               : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
           }`}
         >
-          Presets
+          {t('spectrum.tabPresets')}
         </button>
         <button
           type="button"
@@ -197,7 +199,7 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
               : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
           }`}
         >
-          File
+          {t('spectrum.tabFile')}
         </button>
         <button
           type="button"
@@ -208,7 +210,7 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
               : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
           }`}
         >
-          Paste
+          {t('spectrum.tabPaste')}
         </button>
       </div>
 
@@ -221,7 +223,7 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
       {warnings.length > 0 && (
         <div className="mb-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300">
           {warnings.map((warning) => (
-            <p key={warning}>• {warning}</p>
+            <p key={warning}>• {t(warning)}</p>
           ))}
         </div>
       )}
@@ -229,7 +231,7 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
       {activeTab === 'preset' && (
         <div className="space-y-4">
           <div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Built-in presets</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">{t('spectrum.builtInPresets')}</p>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
               {Object.entries(PRESETS).map(([key, preset]) => (
                 <button
@@ -245,7 +247,7 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
           </div>
 
           <div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Generated Gaussian presets</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">{t('spectrum.generatedPresets')}</p>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
               {CUSTOM_PRESETS.map((preset) => (
                 <button
@@ -282,10 +284,10 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
               onChange={(event: ChangeEvent<HTMLInputElement>) => void handleFileSelect(event.target.files)}
               className="hidden"
             />
-            <p className="text-sm font-medium text-gray-700 dark:text-gray-200">Drag a file here or click to upload</p>
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Supported formats: CSV, TSV, TXT</p>
+            <p className="text-sm font-medium text-gray-700 dark:text-gray-200">{t('spectrum.fileDragDrop')}</p>
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{t('spectrum.fileFormats')}</p>
           </div>
-          {isLoading && <p className="text-sm text-gray-500 dark:text-gray-400">Processing spectrum data...</p>}
+          {isLoading && <p className="text-sm text-gray-500 dark:text-gray-400">{t('spectrum.processing')}</p>}
         </div>
       )}
 
@@ -304,21 +306,21 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
               className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
               disabled={isLoading}
             >
-              Apply Data
+              {t('spectrum.applyData')}
             </button>
             <button
               type="button"
               onClick={handleReadClipboard}
               className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
             >
-              Read Clipboard
+              {t('spectrum.readClipboard')}
             </button>
             <button
               type="button"
               onClick={() => setPasteText(createSampleData())}
               className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
             >
-              Sample Data
+              {t('spectrum.sampleData')}
             </button>
           </div>
         </div>

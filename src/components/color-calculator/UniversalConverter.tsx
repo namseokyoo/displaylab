@@ -6,6 +6,7 @@
  */
 
 import { useState, useCallback, useEffect } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import type { XYZColor } from '@/types';
 import { xyzToXY } from '@/lib/cie';
 import {
@@ -337,10 +338,12 @@ function ResultCard({
   label,
   values,
   isSource,
+  sourceLabel,
 }: {
   label: string;
   values: { label: string; value: string }[];
   isSource: boolean;
+  sourceLabel?: string;
 }) {
   return (
     <div
@@ -352,7 +355,7 @@ function ResultCard({
     >
       <div className={`text-xs mb-2 font-medium ${isSource ? 'text-blue-500 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'}`}>
         {label}
-        {isSource && <span className="ml-1 text-blue-500">(source)</span>}
+        {isSource && <span className="ml-1 text-blue-500">{sourceLabel}</span>}
       </div>
       <div className={`grid gap-1 ${values.length === 4 ? 'grid-cols-4' : values.length === 1 ? 'grid-cols-1' : 'grid-cols-3'}`}>
         {values.map((v) => (
@@ -377,6 +380,7 @@ interface UniversalConverterProps {
 }
 
 export default function UniversalConverter({ initialSpace, initialValues, onStateChange }: UniversalConverterProps) {
+  const { t } = useTranslation();
   const hasValidInitialSpace = initialSpace
     ? COLOR_SPACE_IDS.includes(initialSpace as ColorSpaceId)
     : false;
@@ -505,14 +509,14 @@ export default function UniversalConverter({ initialSpace, initialValues, onStat
 
   return (
     <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Universal Converter</h2>
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{t('color.uniTitle')}</h2>
       <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-        Convert between 10 color spaces via XYZ hub
+        {t('color.uniSubtitle')}
       </p>
 
       {/* Source color space selector */}
       <div className="mb-4">
-        <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Source Color Space</label>
+        <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">{t('color.sourceColorSpace')}</label>
         <select
           value={sourceSpace}
           onChange={(e) => handleSourceChange(e.target.value as ColorSpaceId)}
@@ -562,7 +566,7 @@ export default function UniversalConverter({ initialSpace, initialValues, onStat
             style={{ backgroundColor: results.previewHex }}
           />
           <div className="flex-1">
-            <div className="text-xs text-gray-500 dark:text-gray-400">Preview (sRGB)</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">{t('color.previewSrgb')}</div>
             <div className="text-sm font-mono text-gray-900 dark:text-white">{results.previewHex}</div>
             {!results.inGamut && (
               <div className="text-xs text-amber-400 mt-1 flex items-center gap-1">
@@ -577,7 +581,7 @@ export default function UniversalConverter({ initialSpace, initialValues, onStat
                     clipRule="evenodd"
                   />
                 </svg>
-                Out of sRGB gamut (preview is clipped)
+                {t('color.outOfGamut')}
               </div>
             )}
           </div>
@@ -587,19 +591,20 @@ export default function UniversalConverter({ initialSpace, initialValues, onStat
       {/* Conversion results */}
       {results ? (
         <div className="space-y-2">
-          <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">All Color Spaces</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('color.allColorSpaces')}</div>
           {resultCards.map((card) => (
             <ResultCard
               key={card.id}
               label={card.label}
               values={card.values}
               isSource={card.id === sourceSpace}
+              sourceLabel={t('color.source')}
             />
           ))}
         </div>
       ) : (
         <div className="p-4 rounded-lg bg-gray-50 border border-gray-200 dark:bg-gray-800/50 dark:border-gray-700/50 text-center">
-          <div className="text-sm text-gray-400 dark:text-gray-500">Invalid input</div>
+          <div className="text-sm text-gray-400 dark:text-gray-500">{t('common.invalid')}</div>
         </div>
       )}
     </div>

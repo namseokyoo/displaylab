@@ -7,6 +7,7 @@
 
 import { useMemo } from 'react';
 import { calculateAllCoverages, calculateGamutAreaXY, calculateGamutAreaUV } from '@/lib/gamut';
+import { useTranslation } from '@/lib/i18n';
 import type { GamutData, DiagramMode } from '@/types';
 import type { CoverageEntry } from '@/lib/gamut';
 
@@ -38,6 +39,7 @@ export default function CoverageTable({
   mode,
   showBothModes = true,
 }: CoverageTableProps) {
+  const { t } = useTranslation();
   const coverages: CoverageEntry[] = useMemo(
     () => calculateAllCoverages(gamutData.primaries),
     [gamutData.primaries],
@@ -56,7 +58,7 @@ export default function CoverageTable({
     <div className="space-y-3">
       {/* Custom gamut area summary */}
       <div className="flex items-center gap-4 text-sm">
-        <span className="text-gray-500 dark:text-gray-400">Gamut Area:</span>
+        <span className="text-gray-500 dark:text-gray-400">{t('gamut.gamutArea')}</span>
         {(showBothModes || mode === 'CIE1931') && (
           <span className="text-gray-700 dark:text-gray-300 font-mono">
             <span className="text-gray-400 dark:text-gray-500 text-xs">xy: </span>
@@ -76,7 +78,7 @@ export default function CoverageTable({
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-200 dark:border-gray-700">
-              <th className="text-left py-2 px-2 text-gray-500 dark:text-gray-400 font-medium">Standard</th>
+              <th className="text-left py-2 px-2 text-gray-500 dark:text-gray-400 font-medium">{t('gamut.standard')}</th>
               {(showBothModes || mode === 'CIE1931') && (
                 <th className="text-right py-2 px-2 text-gray-500 dark:text-gray-400 font-medium">
                   CIE 1931
@@ -110,7 +112,7 @@ export default function CoverageTable({
       </div>
 
       <p className="text-xs text-gray-400 dark:text-gray-600">
-        * Area ratio method. Intersection-based coverage in Phase 2.
+        {t('gamut.areaRatioNote')}
       </p>
     </div>
   );

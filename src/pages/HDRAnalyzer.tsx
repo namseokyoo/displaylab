@@ -6,6 +6,7 @@ import ToneMappingChart from '@/components/hdr/ToneMappingChart';
 import SEO from '@/components/common/SEO';
 import ShareButton from '@/components/common/ShareButton';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useTranslation } from '@/lib/i18n';
 import { analyzeHDR10 } from '@/lib/hdr';
 import { toolJsonLd } from '@/lib/seo-data';
 import type { HDR10Metadata } from '@/lib/hdr';
@@ -32,6 +33,7 @@ function cloneDefaultMetadata() {
 }
 
 export default function HDRAnalyzer() {
+  const { t } = useTranslation();
   const [metadata, setMetadata] = useLocalStorage(
     'displaylab::hdr::metadata',
     cloneDefaultMetadata(),
@@ -50,8 +52,8 @@ export default function HDRAnalyzer() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <SEO
-        title="HDR Analyzer - Display Lab"
-        description="Visualize PQ/HLG EOTF curves, compare tone mapping algorithms, and analyze HDR10 metadata including peak brightness and dynamic range."
+        title={t('hdr.seoTitle')}
+        description={t('hdr.seoDesc')}
         keywords="HDR analyzer, HDR10 metadata, PQ EOTF, HLG curve, tone mapping, reinhard, ACES, display analysis"
         path="/hdr-analyzer"
         jsonLd={toolJsonLd(
@@ -63,12 +65,11 @@ export default function HDRAnalyzer() {
 
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">HDR Analyzer</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('hdr.title')}</h1>
           <ShareButton getShareUrl={getShareUrl} />
         </div>
         <p className="text-gray-500 dark:text-gray-400">
-          Visualize HDR transfer functions and evaluate HDR10 metadata quality for mastering and
-          playback targets.
+          {t('hdr.subtitle')}
         </p>
       </div>
 
@@ -81,20 +82,20 @@ export default function HDRAnalyzer() {
         <div className="space-y-6">
           <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-              EOTF Curves
+              {t('hdr.eotfTitle')}
             </h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              Compare PQ, HLG, and SDR gamma response against display luminance.
+              {t('hdr.eotfDesc')}
             </p>
             <EOTFChart />
           </div>
 
           <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-              Tone Mapping Curves
+              {t('hdr.toneMappingTitle')}
             </h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              Compare Reinhard, Hable, and ACES operators from HDR luminance to normalized output.
+              {t('hdr.toneMappingDesc')}
             </p>
             <ToneMappingChart />
           </div>

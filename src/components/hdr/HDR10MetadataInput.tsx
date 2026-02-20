@@ -1,4 +1,5 @@
 import type { HDR10Metadata } from '@/lib/hdr';
+import { useTranslation } from '@/lib/i18n';
 
 interface HDR10MetadataInputProps {
   value: HDR10Metadata;
@@ -101,6 +102,7 @@ function NumericField({
 }
 
 export default function HDR10MetadataInput({ value, onChange }: HDR10MetadataInputProps) {
+  const { t } = useTranslation();
   const updateNumericField = (
     key: NumericMetadataKey,
     rawValue: string,
@@ -133,10 +135,10 @@ export default function HDR10MetadataInput({ value, onChange }: HDR10MetadataInp
     <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
       <div className="mb-4">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-          HDR10 Metadata Input
+          {t('hdr.metadataTitle')}
         </h2>
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          Enter static metadata values or load a preset profile for instant HDR capability analysis.
+          {t('hdr.metadataDesc')}
         </p>
       </div>
 
@@ -164,7 +166,7 @@ export default function HDR10MetadataInput({ value, onChange }: HDR10MetadataInp
       <div className="space-y-5">
         <div>
           <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">
-            Luminance Metadata
+            {t('hdr.luminanceMetadata')}
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <NumericField
@@ -206,7 +208,7 @@ export default function HDR10MetadataInput({ value, onChange }: HDR10MetadataInp
 
         <div>
           <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">
-            Primaries (x, y)
+            {t('hdr.primaries')}
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <NumericField
@@ -250,7 +252,7 @@ export default function HDR10MetadataInput({ value, onChange }: HDR10MetadataInp
 
         <div>
           <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">
-            White Point (x, y)
+            {t('hdr.whitePoint')}
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <NumericField

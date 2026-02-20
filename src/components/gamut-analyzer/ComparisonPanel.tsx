@@ -10,6 +10,7 @@ import PrimaryInput from '@/components/gamut-analyzer/PrimaryInput';
 import CoverageTable from '@/components/gamut-analyzer/CoverageTable';
 import { STANDARD_GAMUTS } from '@/data/gamut-primaries';
 import { calculateCoverage } from '@/lib/gamut';
+import { useTranslation } from '@/lib/i18n';
 import type { GamutData, DiagramMode } from '@/types';
 
 const MAX_DISPLAYS = 4;
@@ -43,6 +44,8 @@ export default function ComparisonPanel({
   activeIndex,
   onActiveIndexChange,
 }: ComparisonPanelProps) {
+  const { t } = useTranslation();
+
   const handleDisplayChange = useCallback(
     (index: number, data: GamutData) => {
       const updated = [...displays];
@@ -92,7 +95,7 @@ export default function ComparisonPanel({
                 className="w-2.5 h-2.5 rounded-full shrink-0"
                 style={{ backgroundColor: COMPARISON_COLORS[i % COMPARISON_COLORS.length] }}
               />
-              <span className="truncate max-w-[120px]">{d.name || `Display ${i + 1}`}</span>
+              <span className="truncate max-w-[120px]">{d.name || `${t('gamut.display')} ${i + 1}`}</span>
               {displays.length > 1 && (
                 <button
                   onClick={(e) => {
@@ -100,7 +103,7 @@ export default function ComparisonPanel({
                     removeDisplay(i);
                   }}
                   className="ml-1 text-gray-600 hover:text-red-400 transition-colors"
-                  title="Remove display"
+                  title={t('gamut.removeDisplay')}
                 >
                   &times;
                 </button>
@@ -116,7 +119,7 @@ export default function ComparisonPanel({
               hover:bg-gray-200 hover:text-gray-900 dark:bg-gray-800 dark:text-gray-400
               dark:hover:bg-gray-700 dark:hover:text-white transition-colors shrink-0"
           >
-            + Add
+            {t('gamut.addDisplay')}
           </button>
         )}
       </div>
@@ -155,6 +158,7 @@ function ComparisonSummary({
   displays: GamutData[];
   mode: DiagramMode;
 }) {
+  const { t } = useTranslation();
   const coverageData = useMemo(() => {
     return displays.map((d) => {
       const coverages: Record<string, number> = {};
@@ -171,13 +175,13 @@ function ComparisonSummary({
   return (
     <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-800">
       <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">
-        Comparison Summary
+        {t('gamut.comparisonSummary')}
       </h4>
       <div className="overflow-x-auto">
         <table className="w-full text-xs">
           <thead>
             <tr className="border-b border-gray-200 dark:border-gray-700">
-              <th className="text-left py-1.5 px-2 text-gray-400 dark:text-gray-500">Display</th>
+              <th className="text-left py-1.5 px-2 text-gray-400 dark:text-gray-500">{t('gamut.display')}</th>
               {SUMMARY_STANDARDS.map((s) => (
                 <th key={s} className="text-right py-1.5 px-2 text-gray-400 dark:text-gray-500">
                   {s}
@@ -197,7 +201,7 @@ function ComparisonSummary({
                       }}
                     />
                     <span className="text-gray-700 dark:text-gray-300 truncate max-w-[100px]">
-                      {d.name || `Display ${i + 1}`}
+                      {d.name || `${t('gamut.display')} ${i + 1}`}
                     </span>
                   </div>
                 </td>

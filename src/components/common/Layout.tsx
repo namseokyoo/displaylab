@@ -1,42 +1,49 @@
 /**
  * Layout Component
  *
- * Navigation (Logo + tool menu + theme toggle) + Footer.
+ * Navigation (Logo + tool menu + language toggle + theme toggle) + Footer.
  * Responsive: hamburger menu on mobile.
  */
 
 import { useCallback, useState } from 'react';
 import { Link, useLocation, Outlet } from 'react-router-dom';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useTranslation } from '@/lib/i18n';
 import AdBanner from '@/components/ad/AdBanner';
 
-const NAV_ITEMS = [
-  { path: '/gamut-analyzer', label: 'Gamut Analyzer' },
-  { path: '/color-calculator', label: 'Color Calculator' },
-  { path: '/viewing-angle', label: 'Viewing Angle' },
-  { path: '/spectrum-analyzer', label: 'Spectrum Analyzer' },
-  { path: '/panel-comparison', label: 'Panel Compare' },
-  { path: '/hdr-analyzer', label: 'HDR Analyzer' },
+const NAV_KEYS: Array<{ path: string; labelKey: string }> = [
+  { path: '/gamut-analyzer', labelKey: 'nav.gamutAnalyzer' },
+  { path: '/color-calculator', labelKey: 'nav.colorCalculator' },
+  { path: '/viewing-angle', labelKey: 'nav.viewingAngle' },
+  { path: '/spectrum-analyzer', labelKey: 'nav.spectrumAnalyzer' },
+  { path: '/panel-comparison', labelKey: 'nav.panelCompare' },
+  { path: '/hdr-analyzer', labelKey: 'nav.hdrAnalyzer' },
 ];
 
 export default function Layout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const { isDark, toggleTheme } = useTheme();
+  const { t, locale, setLocale } = useTranslation();
+
   const handleResetSettings = useCallback(() => {
     if (typeof window === 'undefined') return;
-    const confirmed = window.confirm('Reset all saved settings except theme?');
+    const confirmed = window.confirm(t('common.resetConfirm'));
     if (!confirmed) return;
 
     for (const key of Object.keys(window.localStorage)) {
-      if (key.startsWith('displaylab::') && key !== 'displaylab::theme') {
+      if (key.startsWith('displaylab::') && key !== 'displaylab::theme' && key !== 'displaylab::settings::language') {
         window.localStorage.removeItem(key);
       }
     }
 
-    window.alert('Settings reset. Reloading...');
+    window.alert(t('common.resetDone'));
     window.location.reload();
-  }, []);
+  }, [t]);
+
+  const toggleLocale = useCallback(() => {
+    setLocale(locale === 'en' ? 'ko' : 'en');
+  }, [locale, setLocale]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100">
@@ -53,9 +60,9 @@ export default function Layout() {
               <span>Lab</span>
             </Link>
 
-            {/* Desktop nav + theme toggle */}
+            {/* Desktop nav + toggles */}
             <div className="hidden md:flex items-center gap-1">
-              {NAV_ITEMS.map((item) => (
+              {NAV_KEYS.map((item) => (
                 <Link
                   key={item.path}
                   to={item.path}
@@ -65,16 +72,16 @@ export default function Layout() {
                       : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800'
                   }`}
                 >
-                  {item.label}
+                  {t(item.labelKey)}
                 </Link>
               ))}
 
-              {/* Theme toggle button */}
+              {/* Reset settings button */}
               <button
                 onClick={handleResetSettings}
                 className="ml-2 p-2 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800 transition-colors"
-                aria-label="Reset saved settings"
-                title="Reset saved settings"
+                aria-label={t('common.resetSettings')}
+                title={t('common.resetSettings')}
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path
@@ -85,11 +92,23 @@ export default function Layout() {
                   />
                 </svg>
               </button>
+
+              {/* Language toggle */}
+              <button
+                onClick={toggleLocale}
+                className="px-2 py-1.5 rounded-lg text-xs font-bold text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800 transition-colors"
+                aria-label={locale === 'en' ? 'Switch to Korean' : 'Switch to English'}
+                title={locale === 'en' ? '한국어로 전환' : 'Switch to English'}
+              >
+                {locale === 'en' ? 'KR' : 'EN'}
+              </button>
+
+              {/* Theme toggle */}
               <button
                 onClick={toggleTheme}
                 className="p-2 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800 transition-colors"
-                aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-                title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+                aria-label={isDark ? t('common.switchToLight') : t('common.switchToDark')}
+                title={isDark ? t('common.switchToLight') : t('common.switchToDark')}
               >
                 {isDark ? (
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -113,13 +132,13 @@ export default function Layout() {
               </button>
             </div>
 
-            {/* Mobile: theme toggle + menu button */}
+            {/* Mobile: toggles + menu button */}
             <div className="flex items-center gap-1 md:hidden">
               <button
                 onClick={handleResetSettings}
                 className="p-2 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800 transition-colors"
-                aria-label="Reset saved settings"
-                title="Reset saved settings"
+                aria-label={t('common.resetSettings')}
+                title={t('common.resetSettings')}
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path
@@ -131,9 +150,16 @@ export default function Layout() {
                 </svg>
               </button>
               <button
+                onClick={toggleLocale}
+                className="px-2 py-1.5 rounded-lg text-xs font-bold text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800 transition-colors"
+                aria-label={locale === 'en' ? 'Switch to Korean' : 'Switch to English'}
+              >
+                {locale === 'en' ? 'KR' : 'EN'}
+              </button>
+              <button
                 onClick={toggleTheme}
                 className="p-2 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800 transition-colors"
-                aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+                aria-label={isDark ? t('common.switchToLight') : t('common.switchToDark')}
               >
                 {isDark ? (
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -184,7 +210,7 @@ export default function Layout() {
           {/* Mobile nav */}
           {mobileMenuOpen && (
             <nav className="md:hidden pb-4 space-y-1">
-              {NAV_ITEMS.map((item) => (
+              {NAV_KEYS.map((item) => (
                 <Link
                   key={item.path}
                   to={item.path}
@@ -195,7 +221,7 @@ export default function Layout() {
                   }`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  {item.label}
+                  {t(item.labelKey)}
                 </Link>
               ))}
             </nav>
@@ -219,7 +245,7 @@ export default function Layout() {
               <span>&copy; {new Date().getFullYear()} SidequestLab</span>
               <span className="hidden sm:inline">&middot;</span>
               <span className="text-xs px-2 py-0.5 rounded bg-green-100 text-green-700 border border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800/50">
-                Your data stays in your browser
+                {t('common.dataStaysLocal')}
               </span>
             </div>
             <div className="flex items-center gap-4 text-sm text-gray-400 dark:text-gray-500">

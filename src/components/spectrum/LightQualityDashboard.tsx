@@ -9,6 +9,7 @@ import { useMemo, useRef, useState, useEffect } from 'react';
 import type { SpectrumPoint } from '@/types';
 import { calculateCRI, calculateTLCI, calculateTM30 } from '@/lib/cri';
 import type { CRIResult, TLCIResult, TM30Result } from '@/lib/cri';
+import { useTranslation } from '@/lib/i18n';
 import CRIResults from './CRIResults';
 import TM30VectorGraphic from './TM30VectorGraphic';
 
@@ -63,6 +64,7 @@ function MetricCard({
 }
 
 export default function LightQualityDashboard({ spectrumData }: LightQualityDashboardProps) {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabKey>('cri');
   const vectorContainerRef = useRef<HTMLDivElement>(null);
   const [vectorSize, setVectorSize] = useState(350);
@@ -126,32 +128,32 @@ export default function LightQualityDashboard({ spectrumData }: LightQualityDash
       {/* Summary Cards */}
       <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-          Light Quality Metrics
+          {t('cri.lightQualityTitle')}
         </h2>
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-          Color rendering quality analysis based on the loaded spectrum.
+          {t('cri.lightQualityDesc')}
         </p>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <MetricCard
-            label="CRI Ra"
+            label={t('cri.criRa')}
             value={criResult?.Ra ?? null}
-            description="General CRI"
+            description={t('cri.generalCri')}
           />
           <MetricCard
-            label="TM-30 Rf"
+            label={t('cri.tm30Rf')}
             value={tm30Result?.Rf ?? null}
-            description="Fidelity Index"
+            description={t('cri.fidelityIndex')}
           />
           <MetricCard
-            label="TM-30 Rg"
+            label={t('cri.tm30Rg')}
             value={tm30Result?.Rg ?? null}
-            description="Gamut Index"
+            description={t('cri.gamutIndex')}
           />
           <MetricCard
-            label="TLCI Qa"
+            label={t('cri.tlciQa')}
             value={tlciResult?.Qa ?? null}
-            description="TV Lighting"
+            description={t('cri.tvLighting')}
           />
         </div>
 
@@ -162,12 +164,12 @@ export default function LightQualityDashboard({ spectrumData }: LightQualityDash
               <div className={`h-2.5 w-2.5 rounded-full ${getBarColor(criResult.Ra)}`} />
               <p className="text-sm text-gray-700 dark:text-gray-300">
                 {criResult.Ra >= 90
-                  ? 'Excellent color rendering. Suitable for all applications.'
+                  ? t('cri.interpretExcellent')
                   : criResult.Ra >= 80
-                    ? 'Good color rendering. Suitable for most applications.'
+                    ? t('cri.interpretGood')
                     : criResult.Ra >= 60
-                      ? 'Fair color rendering. Some color distortion may be noticeable.'
-                      : 'Poor color rendering. Significant color distortion expected.'}
+                      ? t('cri.interpretFair')
+                      : t('cri.interpretPoor')}
               </p>
             </div>
           </div>
@@ -200,10 +202,10 @@ export default function LightQualityDashboard({ spectrumData }: LightQualityDash
           <div className="space-y-4">
             <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-                IES TM-30-20 Color Vector Graphic
+                {t('cri.tm30Title')}
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                16-bin gamut comparison in CIELAB a*b* plane. Arrows show color shift from reference to test.
+                {t('cri.tm30Desc')}
               </p>
 
               <div ref={vectorContainerRef} className="flex justify-center">
@@ -217,16 +219,16 @@ export default function LightQualityDashboard({ spectrumData }: LightQualityDash
               {tm30Result && (
                 <div className="mt-4 grid grid-cols-2 gap-3">
                   <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700/60 dark:bg-gray-800/50 text-center">
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Fidelity (Rf)</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{t('cri.fidelity')}</p>
                     <p className={`text-3xl font-bold ${getRatingColor(tm30Result.Rf)}`}>
                       {tm30Result.Rf.toFixed(1)}
                     </p>
                     <p className="text-xs text-gray-400 mt-1">
-                      {tm30Result.Rf >= 85 ? 'Excellent' : tm30Result.Rf >= 75 ? 'Good' : tm30Result.Rf >= 65 ? 'Fair' : 'Poor'}
+                      {tm30Result.Rf >= 85 ? t('cri.excellent') : tm30Result.Rf >= 75 ? t('cri.good') : tm30Result.Rf >= 65 ? t('cri.fair') : t('cri.poor')}
                     </p>
                   </div>
                   <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700/60 dark:bg-gray-800/50 text-center">
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Gamut (Rg)</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{t('cri.gamut')}</p>
                     <p className={`text-3xl font-bold ${
                       tm30Result.Rg >= 95 && tm30Result.Rg <= 105
                         ? 'text-green-600 dark:text-green-400'
@@ -237,7 +239,7 @@ export default function LightQualityDashboard({ spectrumData }: LightQualityDash
                       {tm30Result.Rg.toFixed(1)}
                     </p>
                     <p className="text-xs text-gray-400 mt-1">
-                      {tm30Result.Rg > 105 ? 'Expanded gamut' : tm30Result.Rg < 95 ? 'Reduced gamut' : 'Neutral gamut'}
+                      {tm30Result.Rg > 105 ? t('cri.expandedGamut') : tm30Result.Rg < 95 ? t('cri.reducedGamut') : t('cri.neutralGamut')}
                     </p>
                   </div>
                 </div>
@@ -250,33 +252,33 @@ export default function LightQualityDashboard({ spectrumData }: LightQualityDash
         {activeTab === 'tlci' && (
           <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-              TLCI (Television Lighting Consistency Index)
+              {t('cri.tlciTitle')}
             </h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              Evaluates color rendering quality for broadcast camera capture.
+              {t('cri.tlciDesc')}
             </p>
 
             {!tlciResult ? (
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Load spectrum data to calculate TLCI.
+                {t('cri.tlciEmpty')}
               </p>
             ) : (
               <>
                 {/* TLCI Score */}
                 <div className="flex items-center gap-4 mb-6 p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/60">
                   <div className="text-center">
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">TLCI Score</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('cri.tlciScore')}</p>
                     <p className={`text-4xl font-bold ${getRatingColor(tlciResult.Qa)}`}>
                       {tlciResult.Qa.toFixed(1)}
                     </p>
                     <p className={`text-sm mt-1 ${getRatingColor(tlciResult.Qa)}`}>
                       {tlciResult.Qa >= 85
-                        ? 'Broadcast Ready'
+                        ? t('cri.broadcastReady')
                         : tlciResult.Qa >= 75
-                          ? 'Acceptable'
+                          ? t('cri.acceptable')
                           : tlciResult.Qa >= 50
-                            ? 'Needs Correction'
-                            : 'Not Recommended'}
+                            ? t('cri.needsCorrection')
+                            : t('cri.notRecommended')}
                     </p>
                   </div>
                   <div className="flex-1">
@@ -296,13 +298,13 @@ export default function LightQualityDashboard({ spectrumData }: LightQualityDash
 
                 {/* TLCI Interpretation Guide */}
                 <div className="space-y-2">
-                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Interpretation Guide</p>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('cri.interpretationGuide')}</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                     {[
-                      { range: '85-100', label: 'Excellent', desc: 'Use with confidence', color: 'bg-green-500' },
-                      { range: '75-85', label: 'Good', desc: 'Minor correction may help', color: 'bg-blue-500' },
-                      { range: '50-75', label: 'Fair', desc: 'Post-production correction needed', color: 'bg-yellow-500' },
-                      { range: '0-50', label: 'Poor', desc: 'Not recommended for broadcast', color: 'bg-red-500' },
+                      { range: '85-100', label: t('cri.excellent'), desc: t('cri.tlci85'), color: 'bg-green-500' },
+                      { range: '75-85', label: t('cri.good'), desc: t('cri.tlci75'), color: 'bg-blue-500' },
+                      { range: '50-75', label: t('cri.fair'), desc: t('cri.tlci50'), color: 'bg-yellow-500' },
+                      { range: '0-50', label: t('cri.poor'), desc: t('cri.tlci0'), color: 'bg-red-500' },
                     ].map((item) => (
                       <div
                         key={item.range}
