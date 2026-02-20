@@ -4,6 +4,7 @@ import SEO from '@/components/common/SEO';
 import ShareButton from '@/components/common/ShareButton';
 import SpectrumChart from '@/components/spectrum/SpectrumChart';
 import SpectrumDataInput from '@/components/spectrum/SpectrumDataInput';
+import LightQualityDashboard from '@/components/spectrum/LightQualityDashboard';
 import SpectrumResults from '@/components/spectrum/SpectrumResults';
 import { SPECTRAL_LOCUS_XY } from '@/data/cie1931';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
@@ -226,6 +227,13 @@ export default function SpectrumAnalyzer() {
           </div>
         </div>
       </div>
+
+      {/* Light Quality Metrics (CRI / TM-30 / TLCI) */}
+      {spectrumData.length >= 10 && (
+        <div className="mt-8">
+          <LightQualityDashboard spectrumData={spectrumData} />
+        </div>
+      )}
     </div>
   );
 }
