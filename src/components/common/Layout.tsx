@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { path: '/gamut-analyzer', label: 'Gamut Analyzer' },
   { path: '/color-calculator', label: 'Color Calculator' },
   { path: '/viewing-angle', label: 'Viewing Angle' },
+  { path: '/spectrum-analyzer', label: 'Spectrum Analyzer' },
 ];
 
 export default function Layout() {

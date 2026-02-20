@@ -79,6 +79,31 @@ const TOOLS: ToolItem[] = [
     status: 'available',
     cta: 'Analyze Viewing Angle',
   },
+  {
+    title: 'Spectrum Analyzer',
+    description:
+      'Analyze emission spectra (SPD): calculate CIE chromaticity, CCT, Duv, FWHM, and visualize on CIE diagram.',
+    path: '/spectrum-analyzer',
+    icon: (
+      <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.5}
+          d="M3 17.25l4.286-4.286a1.5 1.5 0 012.122 0l2.184 2.184a1.5 1.5 0 002.122 0L21 8.25"
+        />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.5}
+          d="M3 6.75h18M3 12h18M3 17.25h18"
+          opacity="0.4"
+        />
+      </svg>
+    ),
+    status: 'available',
+    cta: 'Analyze Spectrum',
+  },
 ];
 
 export default function Home() {

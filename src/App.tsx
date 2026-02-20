@@ -4,6 +4,7 @@ import Home from '@/pages/Home';
 import GamutAnalyzer from '@/pages/GamutAnalyzer';
 import ColorCalculator from '@/pages/ColorCalculator';
 import ViewingAngle from '@/pages/ViewingAngle';
+import SpectrumAnalyzer from '@/pages/SpectrumAnalyzer';
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
           <Route path="/gamut-analyzer" element={<GamutAnalyzer />} />
           <Route path="/color-calculator" element={<ColorCalculator />} />
           <Route path="/viewing-angle" element={<ViewingAngle />} />
+          <Route path="/spectrum-analyzer" element={<SpectrumAnalyzer />} />
         </Route>
       </Routes>
     </BrowserRouter>
