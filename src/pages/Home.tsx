@@ -1,7 +1,7 @@
 /**
  * Home / Landing Page
  *
- * Hero section + 3 tool cards + trust badges + SidequestLab credit.
+ * Hero section + tool cards + trust badges + SidequestLab credit.
  */
 
 import type { ReactNode } from 'react';
@@ -104,6 +104,42 @@ const TOOLS: ToolItem[] = [
     status: 'available',
     cta: 'Analyze Spectrum',
   },
+  {
+    title: 'Panel Technology Comparator',
+    description:
+      'Compare display panel technologies side by side: IPS, VA, OLED, Mini-LED, QD-OLED. Interactive radar charts and detailed specifications.',
+    path: '/panel-comparison',
+    icon: (
+      <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.5}
+          d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+        />
+      </svg>
+    ),
+    status: 'available',
+    cta: 'Compare Panels',
+  },
+  {
+    title: 'HDR Analyzer',
+    description:
+      'Visualize PQ/HLG EOTF curves, compare tone mapping algorithms, and analyze HDR10 metadata including peak brightness and dynamic range.',
+    path: '/hdr-analyzer',
+    icon: (
+      <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.5}
+          d="M12 3v2.25m0 13.5V21m6.364-14.864-1.591 1.591M7.227 16.773l-1.591 1.591M21 12h-2.25M5.25 12H3m15.364 4.773-1.591-1.591M7.227 7.227 5.636 5.636M16.5 12a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z"
+        />
+      </svg>
+    ),
+    status: 'available',
+    cta: 'Analyze HDR',
+  },
 ];
 
 export default function Home() {
@@ -188,7 +224,9 @@ export default function Home() {
       {/* Tools Grid */}
       <section className="py-12 px-4">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-8">Analysis Tools</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-8">
+            Analysis Tools
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {TOOLS.map((tool) => (
               <Link
@@ -200,7 +238,9 @@ export default function Home() {
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
                   {tool.title}
                 </h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed flex-1">{tool.description}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed flex-1">
+                  {tool.description}
+                </p>
                 <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
                   {tool.status === 'coming-soon' ? (
                     <span className="text-xs px-2.5 py-1 rounded bg-amber-50 text-amber-600 border border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50">
@@ -225,12 +265,16 @@ export default function Home() {
             <div className="p-6 rounded-xl bg-white/50 border border-gray-200/50 dark:bg-gray-900/50 dark:border-gray-800/50">
               <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">100%</div>
               <div className="text-sm text-gray-500 dark:text-gray-400">Client-side Processing</div>
-              <div className="text-xs text-gray-400 dark:text-gray-600 mt-1">No data sent to servers</div>
+              <div className="text-xs text-gray-400 dark:text-gray-600 mt-1">
+                No data sent to servers
+              </div>
             </div>
             <div className="p-6 rounded-xl bg-white/50 border border-gray-200/50 dark:bg-gray-900/50 dark:border-gray-800/50">
               <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">CIE</div>
               <div className="text-sm text-gray-500 dark:text-gray-400">Standard Validated</div>
-              <div className="text-xs text-gray-400 dark:text-gray-600 mt-1">Sharma 2005, CIE 15:2004</div>
+              <div className="text-xs text-gray-400 dark:text-gray-600 mt-1">
+                Sharma 2005, CIE 15:2004
+              </div>
             </div>
             <div className="p-6 rounded-xl bg-white/50 border border-gray-200/50 dark:bg-gray-900/50 dark:border-gray-800/50">
               <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Free</div>

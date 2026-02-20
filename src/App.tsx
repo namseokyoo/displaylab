@@ -5,6 +5,8 @@ import GamutAnalyzer from '@/pages/GamutAnalyzer';
 import ColorCalculator from '@/pages/ColorCalculator';
 import ViewingAngle from '@/pages/ViewingAngle';
 import SpectrumAnalyzer from '@/pages/SpectrumAnalyzer';
+import HDRAnalyzer from '@/pages/HDRAnalyzer';
+import PanelComparison from '@/pages/PanelComparison';
 
 export default function App() {
   return (
@@ -16,6 +18,8 @@ export default function App() {
           <Route path="/color-calculator" element={<ColorCalculator />} />
           <Route path="/viewing-angle" element={<ViewingAngle />} />
           <Route path="/spectrum-analyzer" element={<SpectrumAnalyzer />} />
+          <Route path="/hdr-analyzer" element={<HDRAnalyzer />} />
+          <Route path="/panel-comparison" element={<PanelComparison />} />
         </Route>
       </Routes>
     </BrowserRouter>
