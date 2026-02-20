@@ -34,7 +34,7 @@ export default function UseCaseRecommendation() {
 
         return (
           <article
-            key={item.category}
+            key={item.categoryKey}
             className="rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-5"
           >
             <h3 className="text-base font-semibold text-gray-900 dark:text-white">{t(item.categoryKey)}</h3>

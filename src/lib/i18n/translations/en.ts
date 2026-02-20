@@ -394,4 +394,9 @@ const en = {
 
 export default en;
 
-export type TranslationKeys = typeof en;
+/** Recursively widen string-literal leaves to `string` so other locales can provide different text. */
+type DeepStringify<T> = {
+  [K in keyof T]: T[K] extends string ? string : DeepStringify<T[K]>;
+};
+
+export type TranslationKeys = DeepStringify<typeof en>;
