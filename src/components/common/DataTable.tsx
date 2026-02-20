@@ -25,14 +25,14 @@ export default function DataTable<T extends Record<string, unknown>>({
 
   if (data.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500 text-sm">No data to display</div>
+      <div className="text-center py-8 text-gray-400 dark:text-gray-500 text-sm">No data to display</div>
     );
   }
 
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm text-left">
-        <thead className="text-xs text-gray-400 uppercase bg-gray-800/50">
+        <thead className="text-xs text-gray-500 dark:text-gray-400 uppercase bg-gray-50 dark:bg-gray-800/50">
           <tr>
             {columns.map((col) => (
               <th key={String(col.key)} className="px-4 py-3">
@@ -41,11 +41,11 @@ export default function DataTable<T extends Record<string, unknown>>({
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-800">
+        <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
           {displayData.map((row, i) => (
-            <tr key={i} className="hover:bg-gray-800/30">
+            <tr key={i} className="hover:bg-gray-50 dark:hover:bg-gray-800/30">
               {columns.map((col) => (
-                <td key={String(col.key)} className="px-4 py-2 text-gray-300">
+                <td key={String(col.key)} className="px-4 py-2 text-gray-700 dark:text-gray-300">
                   {col.format
                     ? col.format(row[col.key])
                     : String(row[col.key] ?? '')}
@@ -56,7 +56,7 @@ export default function DataTable<T extends Record<string, unknown>>({
         </tbody>
       </table>
       {data.length > maxRows && (
-        <div className="text-center py-2 text-xs text-gray-500">
+        <div className="text-center py-2 text-xs text-gray-400 dark:text-gray-500">
           Showing {maxRows} of {data.length} rows
         </div>
       )}

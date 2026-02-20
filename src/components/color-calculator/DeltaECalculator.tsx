@@ -85,21 +85,21 @@ export default function DeltaECalculator() {
   const interpretation = interpretDeltaE(result.de2000);
 
   return (
-    <div className="p-6 rounded-xl bg-gray-900 border border-gray-800">
-      <h2 className="text-lg font-semibold text-white mb-1">Delta E Calculator</h2>
-      <p className="text-sm text-gray-400 mb-4">
+    <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">Delta E Calculator</h2>
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
         CIE76, CIE94, CIEDE2000 color difference
       </p>
 
       {/* Presets */}
       <div className="mb-4">
-        <div className="text-xs text-gray-400 mb-2">Presets</div>
+        <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">Presets</div>
         <div className="flex flex-wrap gap-1.5">
           {PRESETS.map((preset) => (
             <button
               key={preset.name}
               onClick={() => loadPreset(preset)}
-              className="px-2.5 py-1 rounded-md text-xs font-medium bg-gray-800 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors border border-gray-700"
+              className="px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white transition-colors border border-gray-300 dark:border-gray-700"
             >
               {preset.name}
             </button>
@@ -111,36 +111,36 @@ export default function DeltaECalculator() {
       <div className="grid grid-cols-2 gap-4 mb-4">
         {/* Color 1 */}
         <div>
-          <div className="text-xs text-gray-400 mb-2 font-medium">Color 1</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Color 1</div>
           <div className="space-y-2">
             <label className="block">
-              <span className="text-xs text-gray-500">L*</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">L*</span>
               <input
                 type="number"
                 step="any"
                 value={l1}
                 onChange={(e) => setL1(e.target.value)}
-                className="mt-0.5 block w-full px-2.5 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-white text-sm focus:border-blue-500 focus:outline-none"
+                className="mt-0.5 block w-full px-2.5 py-1.5 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
               />
             </label>
             <label className="block">
-              <span className="text-xs text-gray-500">a*</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">a*</span>
               <input
                 type="number"
                 step="any"
                 value={a1}
                 onChange={(e) => setA1(e.target.value)}
-                className="mt-0.5 block w-full px-2.5 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-white text-sm focus:border-blue-500 focus:outline-none"
+                className="mt-0.5 block w-full px-2.5 py-1.5 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
               />
             </label>
             <label className="block">
-              <span className="text-xs text-gray-500">b*</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">b*</span>
               <input
                 type="number"
                 step="any"
                 value={b1}
                 onChange={(e) => setB1(e.target.value)}
-                className="mt-0.5 block w-full px-2.5 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-white text-sm focus:border-blue-500 focus:outline-none"
+                className="mt-0.5 block w-full px-2.5 py-1.5 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
               />
             </label>
           </div>
@@ -148,36 +148,36 @@ export default function DeltaECalculator() {
 
         {/* Color 2 */}
         <div>
-          <div className="text-xs text-gray-400 mb-2 font-medium">Color 2</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">Color 2</div>
           <div className="space-y-2">
             <label className="block">
-              <span className="text-xs text-gray-500">L*</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">L*</span>
               <input
                 type="number"
                 step="any"
                 value={l2}
                 onChange={(e) => setL2(e.target.value)}
-                className="mt-0.5 block w-full px-2.5 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-white text-sm focus:border-blue-500 focus:outline-none"
+                className="mt-0.5 block w-full px-2.5 py-1.5 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
               />
             </label>
             <label className="block">
-              <span className="text-xs text-gray-500">a*</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">a*</span>
               <input
                 type="number"
                 step="any"
                 value={a2}
                 onChange={(e) => setA2(e.target.value)}
-                className="mt-0.5 block w-full px-2.5 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-white text-sm focus:border-blue-500 focus:outline-none"
+                className="mt-0.5 block w-full px-2.5 py-1.5 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
               />
             </label>
             <label className="block">
-              <span className="text-xs text-gray-500">b*</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">b*</span>
               <input
                 type="number"
                 step="any"
                 value={b2}
                 onChange={(e) => setB2(e.target.value)}
-                className="mt-0.5 block w-full px-2.5 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-white text-sm focus:border-blue-500 focus:outline-none"
+                className="mt-0.5 block w-full px-2.5 py-1.5 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-white text-sm focus:border-blue-500 focus:outline-none"
               />
             </label>
           </div>
@@ -185,22 +185,22 @@ export default function DeltaECalculator() {
       </div>
 
       {/* Results */}
-      <div className="p-4 rounded-lg bg-gray-800/50 border border-gray-700/50 space-y-3">
+      <div className="p-4 rounded-lg bg-gray-50 border border-gray-200 dark:bg-gray-800/50 dark:border-gray-700/50 space-y-3">
         <div className="grid grid-cols-3 gap-3">
           <div>
-            <div className="text-xs text-gray-500">CIE76</div>
-            <div className="text-base font-mono font-semibold text-white">
+            <div className="text-xs text-gray-400 dark:text-gray-500">CIE76</div>
+            <div className="text-base font-mono font-semibold text-gray-900 dark:text-white">
               {result.de76.toFixed(4)}
             </div>
           </div>
           <div>
-            <div className="text-xs text-gray-500">CIE94</div>
-            <div className="text-base font-mono font-semibold text-white">
+            <div className="text-xs text-gray-400 dark:text-gray-500">CIE94</div>
+            <div className="text-base font-mono font-semibold text-gray-900 dark:text-white">
               {result.de94.toFixed(4)}
             </div>
           </div>
           <div>
-            <div className="text-xs text-gray-500">CIEDE2000</div>
+            <div className="text-xs text-gray-400 dark:text-gray-500">CIEDE2000</div>
             <div className="text-base font-mono font-semibold text-blue-400">
               {result.de2000.toFixed(4)}
             </div>
@@ -208,7 +208,7 @@ export default function DeltaECalculator() {
         </div>
 
         {/* Interpretation */}
-        <div className="pt-2 border-t border-gray-700/50">
+        <div className="pt-2 border-t border-gray-200 dark:border-gray-700/50">
           <div className={`text-sm font-medium ${interpretation.color}`}>
             {interpretation.level}
           </div>
@@ -216,8 +216,8 @@ export default function DeltaECalculator() {
       </div>
 
       {/* Reference guide */}
-      <div className="mt-4 p-3 rounded-lg bg-gray-800/30 border border-gray-700/30">
-        <div className="text-xs text-gray-500 mb-2 font-medium">CIEDE2000 Interpretation Guide</div>
+      <div className="mt-4 p-3 rounded-lg bg-gray-50 border border-gray-200 dark:bg-gray-800/30 dark:border-gray-700/30">
+        <div className="text-xs text-gray-400 dark:text-gray-500 mb-2 font-medium">CIEDE2000 Interpretation Guide</div>
         <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
           <div className="text-green-400">&lt; 1.0 &mdash; Imperceptible</div>
           <div className="text-emerald-400">1.0-2.0 &mdash; Barely perceptible</div>

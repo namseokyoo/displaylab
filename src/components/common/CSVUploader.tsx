@@ -86,7 +86,7 @@ export default function CSVUploader({
         className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${
           isDragging
             ? 'border-blue-400 bg-blue-400/10'
-            : 'border-gray-700 hover:border-gray-500 bg-gray-900/50'
+            : 'border-gray-300 hover:border-gray-400 bg-gray-50 dark:border-gray-700 dark:hover:border-gray-500 dark:bg-gray-900/50'
         }`}
       >
         <input
@@ -96,9 +96,9 @@ export default function CSVUploader({
           onChange={handleInputChange}
           className="hidden"
         />
-        <div className="text-gray-400">
+        <div className="text-gray-500 dark:text-gray-400">
           <svg
-            className="w-10 h-10 mx-auto mb-3 text-gray-500"
+            className="w-10 h-10 mx-auto mb-3 text-gray-400 dark:text-gray-500"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -115,7 +115,7 @@ export default function CSVUploader({
           ) : (
             <>
               <p className="text-sm font-medium">Drop CSV file here or click to browse</p>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                 Supports CSV, TSV, TXT (max {maxRows} rows)
               </p>
             </>

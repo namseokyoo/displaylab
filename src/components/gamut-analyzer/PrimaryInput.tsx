@@ -48,11 +48,11 @@ function CoordInput({
         inputMode="decimal"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className={`w-full px-2 py-1 text-sm bg-gray-800 border rounded text-gray-200 font-mono
+        className={`w-full px-2 py-1 text-sm bg-gray-50 dark:bg-gray-800 border rounded text-gray-800 dark:text-gray-200 font-mono
           focus:outline-none focus:ring-1 transition-colors
           ${error
             ? 'border-red-500 focus:ring-red-500'
-            : `border-gray-700 focus:ring-${accentColor}-500 focus:border-${accentColor}-500`
+            : `border-gray-300 dark:border-gray-700 focus:ring-${accentColor}-500 focus:border-${accentColor}-500`
           }`}
         placeholder="0.000"
       />
@@ -136,13 +136,13 @@ export default function PrimaryInput({ value, onChange, label, color = '#3b82f6'
           style={{ backgroundColor: color }}
         />
         {label ? (
-          <span className="text-sm font-medium text-gray-300">{label}</span>
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</span>
         ) : (
           <input
             type="text"
             value={value.name}
             onChange={(e) => handleNameChange(e.target.value)}
-            className="text-sm font-medium text-gray-300 bg-transparent border-b border-gray-700
+            className="text-sm font-medium text-gray-700 dark:text-gray-300 bg-transparent border-b border-gray-300 dark:border-gray-700
               focus:outline-none focus:border-blue-500 transition-colors"
             placeholder="Display name"
           />
@@ -158,8 +158,8 @@ export default function PrimaryInput({ value, onChange, label, color = '#3b82f6'
             e.target.value = '';
           }}
           value=""
-          className="flex-1 min-w-0 px-2 py-1 text-xs bg-gray-800 border border-gray-700 rounded
-            text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 truncate"
+          className="flex-1 min-w-0 px-2 py-1 text-xs bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded
+            text-gray-500 dark:text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 truncate"
         >
           <option value="">Standard gamut...</option>
           {Object.entries(STANDARD_GAMUTS).map(([key, g]) => (
@@ -175,8 +175,8 @@ export default function PrimaryInput({ value, onChange, label, color = '#3b82f6'
             e.target.value = '';
           }}
           value=""
-          className="flex-1 min-w-0 px-2 py-1 text-xs bg-gray-800 border border-gray-700 rounded
-            text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 truncate"
+          className="flex-1 min-w-0 px-2 py-1 text-xs bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded
+            text-gray-500 dark:text-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500 truncate"
         >
           <option value="">Device preset...</option>
           {GAMUT_PRESETS.map((p, i) => (
@@ -194,7 +194,7 @@ export default function PrimaryInput({ value, onChange, label, color = '#3b82f6'
                 className="w-2 h-2 rounded-full"
                 style={{ backgroundColor: dotColor }}
               />
-              <span className="text-xs font-medium text-gray-400">{pLabel}</span>
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400">{pLabel}</span>
             </div>
             <CoordInput
               label="x"

@@ -9,6 +9,8 @@
 import { useEffect, useRef, useMemo } from 'react';
 import * as d3 from 'd3';
 import { SPECTRAL_LOCUS_XY } from '@/data/cie1931';
+import { useTheme } from '@/contexts/ThemeContext';
+import { getChartColors } from '@/lib/chart-theme';
 import type { ViewingAngleData } from '@/types';
 
 /** Wavelength to approximate RGB color (simplified, same as CIEDiagram) */
@@ -68,6 +70,8 @@ export default function ColorShiftTrack({
   height = 450,
 }: ColorShiftTrackProps) {
   const svgRef = useRef<SVGSVGElement>(null);
+  const { isDark } = useTheme();
+  const colors = useMemo(() => getChartColors(isDark), [isDark]);
 
   const locusPoints = useMemo(() => {
     return SPECTRAL_LOCUS_XY.map((p) => ({ x: p.x, y: p.y, wavelength: p.wavelength }));
@@ -108,7 +112,7 @@ export default function ColorShiftTrack({
       .attr('x2', (d) => xScale(d))
       .attr('y1', 0)
       .attr('y2', innerHeight)
-      .attr('stroke', '#1f2937')
+      .attr('stroke', colors.grid)
       .attr('stroke-width', 0.5);
 
     g.selectAll('.grid-y')
@@ -119,23 +123,23 @@ export default function ColorShiftTrack({
       .attr('x2', innerWidth)
       .attr('y1', (d) => yScale(d))
       .attr('y2', (d) => yScale(d))
-      .attr('stroke', '#1f2937')
+      .attr('stroke', colors.grid)
       .attr('stroke-width', 0.5);
 
     // Axes
     g.append('g')
       .attr('transform', `translate(0,${innerHeight})`)
       .call(d3.axisBottom(xScale).ticks(8).tickSize(-4))
-      .attr('color', '#6b7280')
+      .attr('color', colors.axis)
       .selectAll('text')
-      .attr('fill', '#9ca3af')
+      .attr('fill', colors.axisLabel)
       .attr('font-size', '10px');
 
     g.append('g')
       .call(d3.axisLeft(yScale).ticks(8).tickSize(-4))
-      .attr('color', '#6b7280')
+      .attr('color', colors.axis)
       .selectAll('text')
-      .attr('fill', '#9ca3af')
+      .attr('fill', colors.axisLabel)
       .attr('font-size', '10px');
 
     // Axis labels
@@ -143,7 +147,7 @@ export default function ColorShiftTrack({
       .attr('x', innerWidth / 2)
       .attr('y', innerHeight + 38)
       .attr('text-anchor', 'middle')
-      .attr('fill', '#9ca3af')
+      .attr('fill', colors.axisLabel)
       .attr('font-size', '12px')
       .text('x');
 
@@ -152,7 +156,7 @@ export default function ColorShiftTrack({
       .attr('x', -innerHeight / 2)
       .attr('y', -35)
       .attr('text-anchor', 'middle')
-      .attr('fill', '#9ca3af')
+      .attr('fill', colors.axisLabel)
       .attr('font-size', '12px')
       .text('y');
 
@@ -166,7 +170,7 @@ export default function ColorShiftTrack({
     g.append('path')
       .datum(closedLocus)
       .attr('d', locusLine)
-      .attr('fill', 'rgba(50, 50, 50, 0.3)')
+      .attr('fill', colors.locusFill)
       .attr('stroke', 'none');
 
     for (let i = 0; i < locusPoints.length - 1; i++) {
@@ -198,14 +202,14 @@ export default function ColorShiftTrack({
       .attr('cx', xScale(0.3127))
       .attr('cy', yScale(0.329))
       .attr('r', 3)
-      .attr('fill', 'white')
-      .attr('stroke', '#374151')
+      .attr('fill', colors.d65Fill)
+      .attr('stroke', colors.d65Stroke)
       .attr('stroke-width', 1);
 
     g.append('text')
       .attr('x', xScale(0.3127) + 6)
       .attr('y', yScale(0.329) + 4)
-      .attr('fill', '#9ca3af')
+      .attr('fill', colors.annotation)
       .attr('font-size', '9px')
       .text('D65');
 
@@ -245,7 +249,7 @@ export default function ColorShiftTrack({
           .attr('cy', yScale(d.cieY))
           .attr('r', d.angle === 0 ? 5 : 3.5)
           .attr('fill', ptColor)
-          .attr('stroke', '#111827')
+          .attr('stroke', colors.pointStroke)
           .attr('stroke-width', 1);
 
         // Label 0-degree and last angle
@@ -273,7 +277,7 @@ export default function ColorShiftTrack({
       .attr('x', innerWidth / 2)
       .attr('y', -6)
       .attr('text-anchor', 'middle')
-      .attr('fill', '#d1d5db')
+      .attr('fill', colors.title)
       .attr('font-size', '13px')
       .attr('font-weight', '600')
       .text('CIE 1931 Color Shift Trajectory');
@@ -288,7 +292,7 @@ export default function ColorShiftTrack({
         .attr('y', 0)
         .attr('width', 155)
         .attr('height', 36)
-        .attr('fill', '#111827')
+        .attr('fill', colors.legendBg)
         .attr('fill-opacity', 0.8)
         .attr('rx', 4);
 
@@ -302,7 +306,7 @@ export default function ColorShiftTrack({
         .append('text')
         .attr('x', 18)
         .attr('y', 14)
-        .attr('fill', '#9ca3af')
+        .attr('fill', colors.legendText)
         .attr('font-size', '10px')
         .text(dataLabel);
 
@@ -316,15 +320,15 @@ export default function ColorShiftTrack({
         .append('text')
         .attr('x', 18)
         .attr('y', 30)
-        .attr('fill', '#9ca3af')
+        .attr('fill', colors.legendText)
         .attr('font-size', '10px')
         .text(comparisonLabel);
     }
-  }, [data, comparisonData, dataLabel, comparisonLabel, width, height, locusPoints]);
+  }, [data, comparisonData, dataLabel, comparisonLabel, width, height, locusPoints, colors]);
 
   return (
     <div className="inline-block">
-      <svg ref={svgRef} className="bg-gray-900 rounded-lg" />
+      <svg ref={svgRef} className="bg-white dark:bg-gray-900 rounded-lg" />
     </div>
   );
 }

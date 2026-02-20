@@ -56,16 +56,16 @@ export default function CoverageTable({
     <div className="space-y-3">
       {/* Custom gamut area summary */}
       <div className="flex items-center gap-4 text-sm">
-        <span className="text-gray-400">Gamut Area:</span>
+        <span className="text-gray-500 dark:text-gray-400">Gamut Area:</span>
         {(showBothModes || mode === 'CIE1931') && (
-          <span className="text-gray-300 font-mono">
-            <span className="text-gray-500 text-xs">xy: </span>
+          <span className="text-gray-700 dark:text-gray-300 font-mono">
+            <span className="text-gray-400 dark:text-gray-500 text-xs">xy: </span>
             {formatArea(customAreaXY)}
           </span>
         )}
         {(showBothModes || mode === 'CIE1976') && (
-          <span className="text-gray-300 font-mono">
-            <span className="text-gray-500 text-xs">u&apos;v&apos;: </span>
+          <span className="text-gray-700 dark:text-gray-300 font-mono">
+            <span className="text-gray-400 dark:text-gray-500 text-xs">u&apos;v&apos;: </span>
             {formatArea(customAreaUV)}
           </span>
         )}
@@ -75,15 +75,15 @@ export default function CoverageTable({
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-gray-700">
-              <th className="text-left py-2 px-2 text-gray-400 font-medium">Standard</th>
+            <tr className="border-b border-gray-200 dark:border-gray-700">
+              <th className="text-left py-2 px-2 text-gray-500 dark:text-gray-400 font-medium">Standard</th>
               {(showBothModes || mode === 'CIE1931') && (
-                <th className="text-right py-2 px-2 text-gray-400 font-medium">
+                <th className="text-right py-2 px-2 text-gray-500 dark:text-gray-400 font-medium">
                   CIE 1931
                 </th>
               )}
               {(showBothModes || mode === 'CIE1976') && (
-                <th className="text-right py-2 px-2 text-gray-400 font-medium">
+                <th className="text-right py-2 px-2 text-gray-500 dark:text-gray-400 font-medium">
                   CIE 1976
                 </th>
               )}
@@ -91,8 +91,8 @@ export default function CoverageTable({
           </thead>
           <tbody>
             {coverages.map((entry) => (
-              <tr key={entry.standardName} className="border-b border-gray-800 hover:bg-gray-800/50">
-                <td className="py-1.5 px-2 text-gray-300">{entry.standardName}</td>
+              <tr key={entry.standardName} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                <td className="py-1.5 px-2 text-gray-700 dark:text-gray-300">{entry.standardName}</td>
                 {(showBothModes || mode === 'CIE1931') && (
                   <td className={`py-1.5 px-2 text-right font-mono ${getCoverageColor(entry.coverageXY)}`}>
                     {formatPercent(entry.coverageXY)}
@@ -109,7 +109,7 @@ export default function CoverageTable({
         </table>
       </div>
 
-      <p className="text-xs text-gray-600">
+      <p className="text-xs text-gray-400 dark:text-gray-600">
         * Area ratio method. Intersection-based coverage in Phase 2.
       </p>
     </div>

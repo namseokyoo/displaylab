@@ -6,8 +6,10 @@
  * Responsive SVG with dark theme.
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import * as d3 from 'd3';
+import { useTheme } from '@/contexts/ThemeContext';
+import { getChartColors } from '@/lib/chart-theme';
 import type { ViewingAngleData } from '@/types';
 
 interface PolarPlotProps {
@@ -28,6 +30,8 @@ export default function PolarPlot({
   height = 450,
 }: PolarPlotProps) {
   const svgRef = useRef<SVGSVGElement>(null);
+  const { isDark } = useTheme();
+  const colors = useMemo(() => getChartColors(isDark), [isDark]);
 
   useEffect(() => {
     if (!svgRef.current || data.length === 0) return;
@@ -71,7 +75,7 @@ export default function PolarPlot({
       .attr('cy', 0)
       .attr('r', (d) => rScale(d))
       .attr('fill', 'none')
-      .attr('stroke', '#374151')
+      .attr('stroke', colors.ring)
       .attr('stroke-width', 0.5)
       .attr('stroke-dasharray', '2,2');
 
@@ -82,7 +86,7 @@ export default function PolarPlot({
       .append('text')
       .attr('x', 4)
       .attr('y', (d) => -rScale(d) - 2)
-      .attr('fill', '#6b7280')
+      .attr('fill', colors.axis)
       .attr('font-size', '9px')
       .text((d) => `${Math.round(d)}`);
 
@@ -98,7 +102,7 @@ export default function PolarPlot({
         .attr('y1', 0)
         .attr('x2', x2)
         .attr('y2', y2)
-        .attr('stroke', '#1f2937')
+        .attr('stroke', colors.spoke)
         .attr('stroke-width', 0.5);
 
       // Mirror
@@ -109,7 +113,7 @@ export default function PolarPlot({
           .attr('y1', 0)
           .attr('x2', radius * Math.cos(radMirror))
           .attr('y2', radius * Math.sin(radMirror))
-          .attr('stroke', '#1f2937')
+          .attr('stroke', colors.grid)
           .attr('stroke-width', 0.5);
       }
 
@@ -120,7 +124,7 @@ export default function PolarPlot({
         .attr('y', labelR * Math.sin(rad))
         .attr('text-anchor', 'middle')
         .attr('dominant-baseline', 'middle')
-        .attr('fill', '#9ca3af')
+        .attr('fill', colors.axisLabel)
         .attr('font-size', '9px')
         .text(`${deg}\u00B0`);
 
@@ -132,7 +136,7 @@ export default function PolarPlot({
           .attr('y', labelR * Math.sin(radMirror))
           .attr('text-anchor', 'middle')
           .attr('dominant-baseline', 'middle')
-          .attr('fill', '#9ca3af')
+          .attr('fill', colors.axisLabel)
           .attr('font-size', '9px')
           .text(`${deg}\u00B0`);
       }
@@ -192,7 +196,7 @@ export default function PolarPlot({
           .attr('cy', r * Math.sin(rad))
           .attr('r', 3)
           .attr('fill', color)
-          .attr('stroke', '#111827')
+          .attr('stroke', colors.pointStroke)
           .attr('stroke-width', 1);
 
         // Mirror point
@@ -203,7 +207,7 @@ export default function PolarPlot({
             .attr('cy', r * Math.sin(radM))
             .attr('r', 3)
             .attr('fill', color)
-            .attr('stroke', '#111827')
+            .attr('stroke', colors.pointStroke)
             .attr('stroke-width', 1);
         }
       });
@@ -223,7 +227,7 @@ export default function PolarPlot({
       .attr('x', cx)
       .attr('y', 16)
       .attr('text-anchor', 'middle')
-      .attr('fill', '#d1d5db')
+      .attr('fill', colors.title)
       .attr('font-size', '13px')
       .attr('font-weight', '600')
       .text('Angular Luminance Distribution (cd/m\u00B2)');
@@ -245,7 +249,7 @@ export default function PolarPlot({
         .append('text')
         .attr('x', 14)
         .attr('y', 4)
-        .attr('fill', '#9ca3af')
+        .attr('fill', colors.legendText)
         .attr('font-size', '10px')
         .text(dataLabel);
 
@@ -261,15 +265,15 @@ export default function PolarPlot({
         .append('text')
         .attr('x', 104)
         .attr('y', 4)
-        .attr('fill', '#9ca3af')
+        .attr('fill', colors.legendText)
         .attr('font-size', '10px')
         .text(comparisonLabel);
     }
-  }, [data, comparisonData, dataLabel, comparisonLabel, width, height]);
+  }, [data, comparisonData, dataLabel, comparisonLabel, width, height, colors]);
 
   return (
     <div className="inline-block">
-      <svg ref={svgRef} className="bg-gray-900 rounded-lg" />
+      <svg ref={svgRef} className="bg-white dark:bg-gray-900 rounded-lg" />
     </div>
   );
 }

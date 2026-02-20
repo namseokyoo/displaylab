@@ -10,8 +10,10 @@
  * JND threshold line at ΔE = 1.0.
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import * as d3 from 'd3';
+import { useTheme } from '@/contexts/ThemeContext';
+import { getChartColors } from '@/lib/chart-theme';
 import type { ViewingAngleData } from '@/types';
 
 type DeltaEMode = 'CIE76' | 'CIEDE2000';
@@ -42,6 +44,8 @@ export default function DeltaEHeatmap({
 }: DeltaEHeatmapProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [mode, setMode] = useState<DeltaEMode>('CIEDE2000');
+  const { isDark } = useTheme();
+  const colors = useMemo(() => getChartColors(isDark), [isDark]);
 
   useEffect(() => {
     if (!svgRef.current || data.length === 0) return;
@@ -103,7 +107,7 @@ export default function DeltaEHeatmap({
       .attr('x2', innerWidth)
       .attr('y1', (d) => yScale(d))
       .attr('y2', (d) => yScale(d))
-      .attr('stroke', '#1f2937')
+      .attr('stroke', colors.grid)
       .attr('stroke-width', 0.5);
 
     // Axes
@@ -114,16 +118,16 @@ export default function DeltaEHeatmap({
           .axisBottom(xScale)
           .tickFormat((d) => `${d}\u00B0`),
       )
-      .attr('color', '#6b7280')
+      .attr('color', colors.axis)
       .selectAll('text')
-      .attr('fill', '#9ca3af')
+      .attr('fill', colors.axisLabel)
       .attr('font-size', '10px');
 
     g.append('g')
       .call(d3.axisLeft(yScale).ticks(5))
-      .attr('color', '#6b7280')
+      .attr('color', colors.axis)
       .selectAll('text')
-      .attr('fill', '#9ca3af')
+      .attr('fill', colors.axisLabel)
       .attr('font-size', '10px');
 
     // Axis labels
@@ -131,7 +135,7 @@ export default function DeltaEHeatmap({
       .attr('x', innerWidth / 2)
       .attr('y', innerHeight + 42)
       .attr('text-anchor', 'middle')
-      .attr('fill', '#9ca3af')
+      .attr('fill', colors.axisLabel)
       .attr('font-size', '12px')
       .text('Viewing Angle');
 
@@ -140,7 +144,7 @@ export default function DeltaEHeatmap({
       .attr('x', -innerHeight / 2)
       .attr('y', -42)
       .attr('text-anchor', 'middle')
-      .attr('fill', '#9ca3af')
+      .attr('fill', colors.axisLabel)
       .attr('font-size', '12px')
       .text(mode === 'CIE76' ? '\u0394E*ab' : '\u0394E\u2080\u2080');
 
@@ -187,7 +191,7 @@ export default function DeltaEHeatmap({
         .attr('x', xPos + barWidth / 2)
         .attr('y', yScale(de) - 4)
         .attr('text-anchor', 'middle')
-        .attr('fill', '#d1d5db')
+        .attr('fill', colors.valueLabel)
         .attr('font-size', '8px')
         .text(de.toFixed(1));
     });
@@ -214,7 +218,7 @@ export default function DeltaEHeatmap({
           .attr('x', xPos + barWidth * 1.5)
           .attr('y', yScale(de) - 4)
           .attr('text-anchor', 'middle')
-          .attr('fill', '#9ca3af')
+          .attr('fill', colors.legendText)
           .attr('font-size', '8px')
           .text(de.toFixed(1));
       });
@@ -225,7 +229,7 @@ export default function DeltaEHeatmap({
       .attr('x', innerWidth / 2)
       .attr('y', -12)
       .attr('text-anchor', 'middle')
-      .attr('fill', '#d1d5db')
+      .attr('fill', colors.title)
       .attr('font-size', '13px')
       .attr('font-weight', '600')
       .text(`Color Difference by Viewing Angle (${mode})`);
@@ -253,11 +257,11 @@ export default function DeltaEHeatmap({
         .append('text')
         .attr('x', x + 12)
         .attr('y', 8)
-        .attr('fill', '#6b7280')
+        .attr('fill', colors.axis)
         .attr('font-size', '8px')
         .text(item.label);
     });
-  }, [data, comparisonData, dataLabel, comparisonLabel, width, height, mode]);
+  }, [data, comparisonData, dataLabel, comparisonLabel, width, height, mode, colors]);
 
   return (
     <div>
@@ -268,7 +272,7 @@ export default function DeltaEHeatmap({
           className={`px-3 py-1 text-xs rounded-md border transition-colors ${
             mode === 'CIE76'
               ? 'bg-blue-500/20 border-blue-500/60 text-blue-400'
-              : 'border-gray-700 text-gray-400 hover:border-gray-500'
+              : 'border-gray-300 text-gray-500 hover:border-gray-400 dark:border-gray-700 dark:text-gray-400 dark:hover:border-gray-500'
           }`}
         >
           ΔE*ab (CIE76)
@@ -278,14 +282,14 @@ export default function DeltaEHeatmap({
           className={`px-3 py-1 text-xs rounded-md border transition-colors ${
             mode === 'CIEDE2000'
               ? 'bg-blue-500/20 border-blue-500/60 text-blue-400'
-              : 'border-gray-700 text-gray-400 hover:border-gray-500'
+              : 'border-gray-300 text-gray-500 hover:border-gray-400 dark:border-gray-700 dark:text-gray-400 dark:hover:border-gray-500'
           }`}
         >
           CIEDE2000
         </button>
       </div>
       <div className="inline-block">
-        <svg ref={svgRef} className="bg-gray-900 rounded-lg" />
+        <svg ref={svgRef} className="bg-white dark:bg-gray-900 rounded-lg" />
       </div>
     </div>
   );

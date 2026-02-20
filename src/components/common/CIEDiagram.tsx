@@ -2,19 +2,146 @@
  * CIE Chromaticity Diagram Component
  *
  * Simplified from ISCV CIEDiagram (~2000 lines) to core rendering only (~400 lines):
- * - CIE 1931 xy / CIE 1976 u'v' spectral locus
+ * - CIE 1931 xy / CIE 1976 u'v' spectral locus (smooth curve via cubic spline)
  * - Color gamut triangles (standard + custom primaries)
  * - Point markers
  * - D65 white point
  *
  * Removed: spectrum ridge, drag, zoom/pan, axis range modal, snapshots
+ *
+ * Phase 2-A-1: Smooth spectral locus curve using cubic spline interpolation
+ * (ported from ISCV) + d3.curveCatmullRom for rendering
  */
 
 import { useEffect, useRef, useMemo } from 'react';
 import * as d3 from 'd3';
 import { SPECTRAL_LOCUS_XY, COLOR_GAMUTS } from '@/data/cie1931';
 import { xyToUV } from '@/lib/cie';
+import { useTheme } from '@/contexts/ThemeContext';
+import { getChartColors } from '@/lib/chart-theme';
 import type { DiagramMode, GamutType, DiagramMarker, CustomPrimaries, CIE1931Coordinates } from '@/types';
+
+/**
+ * Calculate natural cubic spline coefficients
+ * Returns array of {a, b, c, d} for each segment
+ * Uses the Thomas algorithm for tridiagonal systems
+ * (Ported from ISCV spectrum-visualizer)
+ */
+function calculateCubicSpline(
+  x: number[],
+  y: number[]
+): { a: number; b: number; c: number; d: number }[] {
+  const n = x.length - 1;
+  const h: number[] = [];
+  const alpha: number[] = [0];
+  const l: number[] = [1];
+  const mu: number[] = [0];
+  const z: number[] = [0];
+  const c: number[] = new Array(n + 1);
+  const b: number[] = new Array(n);
+  const d: number[] = new Array(n);
+
+  for (let i = 0; i < n; i++) {
+    h[i] = x[i + 1] - x[i];
+  }
+
+  for (let i = 1; i < n; i++) {
+    alpha[i] = (3 / h[i]) * (y[i + 1] - y[i]) - (3 / h[i - 1]) * (y[i] - y[i - 1]);
+  }
+
+  for (let i = 1; i < n; i++) {
+    l[i] = 2 * (x[i + 1] - x[i - 1]) - h[i - 1] * mu[i - 1];
+    mu[i] = h[i] / l[i];
+    z[i] = (alpha[i] - h[i - 1] * z[i - 1]) / l[i];
+  }
+
+  l[n] = 1;
+  z[n] = 0;
+  c[n] = 0;
+
+  for (let j = n - 1; j >= 0; j--) {
+    c[j] = z[j] - mu[j] * c[j + 1];
+    b[j] = (y[j + 1] - y[j]) / h[j] - h[j] * (c[j + 1] + 2 * c[j]) / 3;
+    d[j] = (c[j + 1] - c[j]) / (3 * h[j]);
+  }
+
+  const spline: { a: number; b: number; c: number; d: number }[] = [];
+  for (let i = 0; i < n; i++) {
+    spline.push({ a: y[i], b: b[i], c: c[i], d: d[i] });
+  }
+
+  return spline;
+}
+
+/**
+ * Evaluate cubic spline at a given point
+ * Uses binary search to find the correct segment
+ * (Ported from ISCV spectrum-visualizer)
+ */
+function evaluateSpline(
+  spline: { a: number; b: number; c: number; d: number }[],
+  x: number[],
+  t: number
+): number {
+  let low = 0;
+  let high = x.length - 2;
+
+  while (low < high) {
+    const mid = Math.floor((low + high + 1) / 2);
+    if (x[mid] <= t) {
+      low = mid;
+    } else {
+      high = mid - 1;
+    }
+  }
+
+  const i = low;
+
+  if (i < 0 || i >= spline.length) {
+    return i < 0 ? spline[0].a : spline[spline.length - 1].a;
+  }
+
+  const dx = t - x[i];
+  const { a, b, c, d } = spline[i];
+  return a + b * dx + c * dx * dx + d * dx * dx * dx;
+}
+
+/**
+ * Generate high-resolution locus data using cubic spline interpolation
+ * Creates truly smooth curves from 5nm interval data to 1nm interval data
+ * (Ported from ISCV spectrum-visualizer)
+ */
+function generateHighResolutionLocus(
+  locusData: { wavelength: number; x: number; y: number }[],
+  stepNm: number = 1
+): { wavelength: number; x: number; y: number }[] {
+  if (locusData.length < 2) return locusData;
+
+  const n = locusData.length;
+  const wavelengths = locusData.map(p => p.wavelength);
+  const xValues = locusData.map(p => p.x);
+  const yValues = locusData.map(p => p.y);
+
+  const splineX = calculateCubicSpline(wavelengths, xValues);
+  const splineY = calculateCubicSpline(wavelengths, yValues);
+
+  const result: { wavelength: number; x: number; y: number }[] = [];
+
+  for (let wl = wavelengths[0]; wl <= wavelengths[n - 1]; wl += stepNm) {
+    result.push({
+      wavelength: wl,
+      x: evaluateSpline(splineX, wavelengths, wl),
+      y: evaluateSpline(splineY, wavelengths, wl),
+    });
+  }
+
+  const last = locusData[n - 1];
+  if (result.length === 0 || result[result.length - 1].wavelength !== last.wavelength) {
+    result.push({ wavelength: last.wavelength, x: last.x, y: last.y });
+  }
+
+  return result;
+}
 
 /** Wavelength to approximate RGB color */
 function wavelengthToRGB(wavelength: number): string {
@@ -94,14 +221,21 @@ export default function CIEDiagram({
   height = 500,
 }: CIEDiagramProps) {
   const svgRef = useRef<SVGSVGElement>(null);
+  const { isDark } = useTheme();
+  const colors = useMemo(() => getChartColors(isDark), [isDark]);
 
-  // Compute locus points for current mode
+  // Compute locus points for current mode (original 5nm data)
   const locusPoints = useMemo(() => {
     return SPECTRAL_LOCUS_XY.map((p) => ({
       ...p,
       ...convertToMode({ x: p.x, y: p.y }, mode),
     }));
   }, [mode]);
+
+  // Generate high-resolution locus data (1nm intervals) using cubic spline interpolation
+  const highResLocusPoints = useMemo(() => {
+    return generateHighResolutionLocus(locusPoints, 1);
+  }, [locusPoints]);
 
   // Axis ranges
   const axisConfig = useMemo(() => {
@@ -149,7 +283,7 @@ export default function CIEDiagram({
       .attr('x2', (d) => xScale(d))
       .attr('y1', 0)
       .attr('y2', innerHeight)
-      .attr('stroke', '#1f2937')
+      .attr('stroke', colors.grid)
       .attr('stroke-width', 0.5);
 
     g.selectAll('.grid-y')
@@ -160,23 +294,23 @@ export default function CIEDiagram({
       .attr('x2', innerWidth)
       .attr('y1', (d) => yScale(d))
       .attr('y2', (d) => yScale(d))
-      .attr('stroke', '#1f2937')
+      .attr('stroke', colors.grid)
       .attr('stroke-width', 0.5);
 
     // Axes
     g.append('g')
       .attr('transform', `translate(0,${innerHeight})`)
       .call(d3.axisBottom(xScale).ticks(8).tickSize(-4))
-      .attr('color', '#6b7280')
+      .attr('color', colors.axis)
       .selectAll('text')
-      .attr('fill', '#9ca3af')
+      .attr('fill', colors.axisLabel)
       .attr('font-size', '10px');
 
     g.append('g')
       .call(d3.axisLeft(yScale).ticks(8).tickSize(-4))
-      .attr('color', '#6b7280')
+      .attr('color', colors.axis)
       .selectAll('text')
-      .attr('fill', '#9ca3af')
+      .attr('fill', colors.axisLabel)
       .attr('font-size', '10px');
 
     // Axis labels
@@ -184,7 +318,7 @@ export default function CIEDiagram({
       .attr('x', innerWidth / 2)
       .attr('y', innerHeight + 38)
       .attr('text-anchor', 'middle')
-      .attr('fill', '#9ca3af')
+      .attr('fill', colors.axisLabel)
       .attr('font-size', '12px')
       .text(axisConfig.xLabel);
 
@@ -193,40 +327,57 @@ export default function CIEDiagram({
       .attr('x', -innerHeight / 2)
       .attr('y', -35)
       .attr('text-anchor', 'middle')
-      .attr('fill', '#9ca3af')
+      .attr('fill', colors.axisLabel)
       .attr('font-size', '12px')
       .text(axisConfig.yLabel);
 
-    // Spectral locus (filled with gradient-like segments)
+    // Spectral locus (smooth curve via cubic spline + CatmullRom)
     const locusLineGen = d3
       .line<{ x: number; y: number; wavelength: number }>()
       .x((d) => xScale(d.x))
-      .y((d) => yScale(d.y));
+      .y((d) => yScale(d.y))
+      .curve(d3.curveCatmullRom.alpha(0.5));
 
-    // Draw filled locus background
-    const closedLocus = [...locusPoints, locusPoints[0]];
+    // Draw filled locus background using high-resolution data
+    const closedLocus = [...highResLocusPoints, highResLocusPoints[0]];
     g.append('path')
       .datum(closedLocus)
       .attr('d', locusLineGen)
-      .attr('fill', 'rgba(50, 50, 50, 0.3)')
+      .attr('fill', colors.locusFill)
       .attr('stroke', 'none');
 
-    // Draw locus outline with wavelength colors
-    for (let i = 0; i < locusPoints.length - 1; i++) {
-      const p1 = locusPoints[i];
-      const p2 = locusPoints[i + 1];
-      g.append('line')
-        .attr('x1', xScale(p1.x))
-        .attr('y1', yScale(p1.y))
-        .attr('x2', xScale(p2.x))
-        .attr('y2', yScale(p2.y))
-        .attr('stroke', wavelengthToRGB(p1.wavelength))
-        .attr('stroke-width', 2);
-    }
+    // Draw smooth locus outline with spectral gradient
+    // Using high-resolution (1nm) data + CatmullRom curve for truly smooth rendering
+    const defs = svg.append('defs');
+    const gradient = defs
+      .append('linearGradient')
+      .attr('id', 'spectral-locus-gradient')
+      .attr('gradientUnits', 'userSpaceOnUse')
+      .attr('x1', xScale(highResLocusPoints[0].x))
+      .attr('y1', yScale(highResLocusPoints[0].y))
+      .attr('x2', xScale(highResLocusPoints[highResLocusPoints.length - 1].x))
+      .attr('y2', yScale(highResLocusPoints[highResLocusPoints.length - 1].y));
+
+    // Sample wavelengths for gradient stops
+    const gradientStops = locusPoints.filter((_, i) => i % 2 === 0 || i === locusPoints.length - 1);
+    gradientStops.forEach((p, i) => {
+      gradient
+        .append('stop')
+        .attr('offset', `${(i / (gradientStops.length - 1)) * 100}%`)
+        .attr('stop-color', wavelengthToRGB(p.wavelength));
+    });
+
+    g.append('path')
+      .datum(highResLocusPoints)
+      .attr('d', locusLineGen)
+      .attr('fill', 'none')
+      .attr('stroke', 'url(#spectral-locus-gradient)')
+      .attr('stroke-width', 2)
+      .attr('stroke-linecap', 'round');
 
     // Close locus (purple line from 780nm to 380nm)
-    const first = locusPoints[0];
-    const last = locusPoints[locusPoints.length - 1];
+    const first = highResLocusPoints[0];
+    const last = highResLocusPoints[highResLocusPoints.length - 1];
     g.append('line')
       .attr('x1', xScale(last.x))
       .attr('y1', yScale(last.y))
@@ -245,7 +396,7 @@ export default function CIEDiagram({
       .append('text')
       .attr('x', (d) => xScale(d.x) + 6)
       .attr('y', (d) => yScale(d.y) - 4)
-      .attr('fill', '#6b7280')
+      .attr('fill', colors.wavelengthLabel)
       .attr('font-size', '8px')
       .text((d) => `${d.wavelength}`);
 
@@ -300,14 +451,14 @@ export default function CIEDiagram({
       .attr('cx', xScale(d65.x))
       .attr('cy', yScale(d65.y))
       .attr('r', 3)
-      .attr('fill', 'white')
-      .attr('stroke', '#374151')
+      .attr('fill', colors.d65Fill)
+      .attr('stroke', colors.d65Stroke)
       .attr('stroke-width', 1);
 
     g.append('text')
       .attr('x', xScale(d65.x) + 6)
       .attr('y', yScale(d65.y) + 4)
-      .attr('fill', '#9ca3af')
+      .attr('fill', colors.annotation)
       .attr('font-size', '9px')
       .text('D65');
 
@@ -319,7 +470,7 @@ export default function CIEDiagram({
         .attr('cy', yScale(point.y))
         .attr('r', 4)
         .attr('fill', m.color)
-        .attr('stroke', '#111827')
+        .attr('stroke', colors.pointStroke)
         .attr('stroke-width', 1);
 
       if (m.label) {
@@ -337,15 +488,15 @@ export default function CIEDiagram({
       .attr('x', innerWidth / 2)
       .attr('y', -6)
       .attr('text-anchor', 'middle')
-      .attr('fill', '#d1d5db')
+      .attr('fill', colors.title)
       .attr('font-size', '13px')
       .attr('font-weight', '600')
       .text(mode === 'CIE1931' ? 'CIE 1931 Chromaticity Diagram' : "CIE 1976 u'v' Chromaticity Diagram");
-  }, [mode, enabledGamuts, customPrimaries, markers, width, height, locusPoints, axisConfig]);
+  }, [mode, enabledGamuts, customPrimaries, markers, width, height, locusPoints, highResLocusPoints, axisConfig, colors]);
 
   return (
     <div className="inline-block">
-      <svg ref={svgRef} className="bg-gray-900 rounded-lg" />
+      <svg ref={svgRef} className="bg-white dark:bg-gray-900 rounded-lg" />
     </div>
   );
 }

@@ -235,8 +235,8 @@ export default function ViewingAngle() {
 
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white mb-2">Viewing Angle Analyzer</h1>
-        <p className="text-gray-400 text-sm">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Viewing Angle Analyzer</h1>
+        <p className="text-gray-500 dark:text-gray-400 text-sm">
           Upload goniometer CSV data or select a preset to analyze display viewing angle
           performance. Visualize angular luminance, color shift trajectory, and Delta E
           distribution.
@@ -267,7 +267,7 @@ export default function ViewingAngle() {
                   className={`px-4 py-2 text-sm rounded-lg border transition-colors ${
                     activePreset === 'oled' && !comparisonMode
                       ? 'bg-blue-500/20 border-blue-500/60 text-blue-400'
-                      : 'border-gray-700 text-gray-400 hover:border-gray-500'
+                      : 'border-gray-200 text-gray-500 hover:border-gray-400 dark:border-gray-700 dark:text-gray-400 dark:hover:border-gray-500'
                   }`}
                 >
                   OLED
@@ -278,7 +278,7 @@ export default function ViewingAngle() {
                   className={`px-4 py-2 text-sm rounded-lg border transition-colors ${
                     activePreset === 'lcd' && !comparisonMode
                       ? 'bg-blue-500/20 border-blue-500/60 text-blue-400'
-                      : 'border-gray-700 text-gray-400 hover:border-gray-500'
+                      : 'border-gray-200 text-gray-500 hover:border-gray-400 dark:border-gray-700 dark:text-gray-400 dark:hover:border-gray-500'
                   }`}
                 >
                   LCD (IPS)
@@ -299,7 +299,7 @@ export default function ViewingAngle() {
               <a
                 href="/templates/viewing-angle-template.csv"
                 download
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md border border-gray-700 text-gray-400 hover:border-gray-500 hover:text-gray-300 transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md border border-gray-200 text-gray-500 hover:border-gray-400 dark:border-gray-700 dark:text-gray-400 dark:hover:border-gray-500 hover:text-gray-300 transition-colors"
               >
                 <svg
                   className="w-3.5 h-3.5"
@@ -327,7 +327,7 @@ export default function ViewingAngle() {
                   className={`px-4 py-2 text-sm rounded-lg border transition-colors ${
                     comparisonMode
                       ? 'bg-amber-500/20 border-amber-500/60 text-amber-400'
-                      : 'border-gray-700 text-gray-400 hover:border-gray-500'
+                      : 'border-gray-200 text-gray-500 hover:border-gray-400 dark:border-gray-700 dark:text-gray-400 dark:hover:border-gray-500'
                   }`}
                 >
                   {comparisonMode ? 'Exit Comparison' : 'Compare Mode'}
@@ -346,8 +346,8 @@ export default function ViewingAngle() {
       {/* Loading */}
       {loading && (
         <div className="text-center py-8">
-          <div className="inline-block w-6 h-6 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
-          <p className="text-sm text-gray-400 mt-2">Loading preset data...</p>
+          <div className="inline-block w-6 h-6 border-2 border-blue-500 dark:border-blue-400 border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Loading preset data...</p>
         </div>
       )}
 
@@ -357,12 +357,12 @@ export default function ViewingAngle() {
           {/* Left column: Charts */}
           <div className="space-y-6">
             {/* Polar Plot */}
-            <div className="p-4 rounded-xl bg-gray-900 border border-gray-800">
+            <div className="p-4 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
               <div className="flex items-center justify-between mb-2">
-                <h2 className="text-sm font-medium text-gray-300">Polar Plot</h2>
+                <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300">Polar Plot</h2>
                 <button
                   onClick={() => handleDownloadSvg(polarRef, 'polar-plot.png')}
-                  className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
+                  className="text-xs text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
                   title="Download as PNG"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -383,12 +383,12 @@ export default function ViewingAngle() {
             </div>
 
             {/* Color Shift */}
-            <div className="p-4 rounded-xl bg-gray-900 border border-gray-800">
+            <div className="p-4 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
               <div className="flex items-center justify-between mb-2">
-                <h2 className="text-sm font-medium text-gray-300">Color Shift Trajectory</h2>
+                <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300">Color Shift Trajectory</h2>
                 <button
                   onClick={() => handleDownloadSvg(colorShiftRef, 'color-shift.png')}
-                  className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
+                  className="text-xs text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
                   title="Download as PNG"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -412,17 +412,17 @@ export default function ViewingAngle() {
           {/* Right column: Table + ΔE Chart */}
           <div className="space-y-6">
             {/* Data Table */}
-            <div className="p-4 rounded-xl bg-gray-900 border border-gray-800">
+            <div className="p-4 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
               <DataTable data={data} />
             </div>
 
             {/* ΔE Heatmap */}
-            <div className="p-4 rounded-xl bg-gray-900 border border-gray-800">
+            <div className="p-4 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
               <div className="flex items-center justify-between mb-2">
-                <h2 className="text-sm font-medium text-gray-300">Delta E Distribution</h2>
+                <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300">Delta E Distribution</h2>
                 <button
                   onClick={() => handleDownloadSvg(deltaERef, 'delta-e-heatmap.png')}
-                  className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
+                  className="text-xs text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
                   title="Download as PNG"
                 >
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -444,7 +444,7 @@ export default function ViewingAngle() {
 
             {/* Comparison Data Table */}
             {hasComparison && (
-              <div className="p-4 rounded-xl bg-gray-900 border border-gray-800">
+              <div className="p-4 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
                 <h3 className="text-sm font-medium text-amber-400 mb-3">
                   {comparisonLabel} Data
                 </h3>
@@ -457,23 +457,23 @@ export default function ViewingAngle() {
 
       {/* Empty state */}
       {!hasData && !loading && (
-        <div className="p-8 rounded-xl bg-gray-900 border border-gray-800 text-center mt-4">
-          <p className="text-sm text-gray-400 max-w-md mx-auto">
+        <div className="p-8 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800 text-center mt-4">
+          <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto">
             Upload a CSV file with viewing angle measurement data, or select a preset above
             to get started. The CSV should contain columns:{' '}
-            <code className="text-blue-400">angle, luminance, cieX, cieY</code>
+            <code className="text-blue-500 dark:text-blue-400">angle, luminance, cieX, cieY</code>
           </p>
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-lg mx-auto">
-            <div className="p-3 rounded-lg bg-gray-800">
-              <div className="text-sm font-medium text-gray-300">Polar Plot</div>
+            <div className="p-3 rounded-lg bg-gray-100 dark:bg-gray-800">
+              <div className="text-sm font-medium text-gray-700 dark:text-gray-300">Polar Plot</div>
               <div className="text-xs text-gray-500">Angular luminance</div>
             </div>
-            <div className="p-3 rounded-lg bg-gray-800">
-              <div className="text-sm font-medium text-gray-300">Color Shift</div>
+            <div className="p-3 rounded-lg bg-gray-100 dark:bg-gray-800">
+              <div className="text-sm font-medium text-gray-700 dark:text-gray-300">Color Shift</div>
               <div className="text-xs text-gray-500">CIE trajectory</div>
             </div>
-            <div className="p-3 rounded-lg bg-gray-800">
-              <div className="text-sm font-medium text-gray-300">Delta E Map</div>
+            <div className="p-3 rounded-lg bg-gray-100 dark:bg-gray-800">
+              <div className="text-sm font-medium text-gray-700 dark:text-gray-300">Delta E Map</div>
               <div className="text-xs text-gray-500">Angle heatmap</div>
             </div>
           </div>

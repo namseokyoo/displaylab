@@ -92,8 +92,8 @@ export default function GamutAnalyzer() {
       />
       {/* Page header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white mb-2">Color Gamut Analyzer</h1>
-        <p className="text-gray-400 text-sm sm:text-base">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Color Gamut Analyzer</h1>
+        <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base">
           Compare display color gamuts against industry standards. Input your display
           primaries or select from device presets.
         </p>
@@ -107,7 +107,7 @@ export default function GamutAnalyzer() {
           <div className="mb-4 space-y-3">
             {/* Mode toggle */}
             <div className="flex items-center gap-3">
-              <span className="text-xs text-gray-500 uppercase tracking-wider shrink-0">
+              <span className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider shrink-0">
                 Coordinate
               </span>
               <div className="flex gap-1">
@@ -116,7 +116,7 @@ export default function GamutAnalyzer() {
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                     mode === 'CIE1931'
                       ? 'bg-blue-600 text-white'
-                      : 'bg-gray-800 text-gray-400 hover:text-white'
+                      : 'bg-gray-100 text-gray-500 hover:text-gray-900 dark:bg-gray-800 dark:text-gray-400 dark:hover:text-white'
                   }`}
                 >
                   CIE 1931 xy
@@ -126,7 +126,7 @@ export default function GamutAnalyzer() {
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                     mode === 'CIE1976'
                       ? 'bg-blue-600 text-white'
-                      : 'bg-gray-800 text-gray-400 hover:text-white'
+                      : 'bg-gray-100 text-gray-500 hover:text-gray-900 dark:bg-gray-800 dark:text-gray-400 dark:hover:text-white'
                   }`}
                 >
                   CIE 1976 u&apos;v&apos;
@@ -136,7 +136,7 @@ export default function GamutAnalyzer() {
 
             {/* Standard gamut toggles */}
             <div className="flex items-center gap-3">
-              <span className="text-xs text-gray-500 uppercase tracking-wider shrink-0">
+              <span className="text-xs text-gray-400 dark:text-gray-500 uppercase tracking-wider shrink-0">
                 Standards
               </span>
               <div className="flex flex-wrap gap-1.5">
@@ -173,8 +173,8 @@ export default function GamutAnalyzer() {
         {/* Controls section */}
         <div className="order-2 space-y-6">
           {/* Comparison panel with tabs */}
-          <div className="bg-gray-900/30 rounded-xl border border-gray-800 p-4">
-            <h2 className="text-sm font-medium text-gray-300 mb-3">Display Gamuts</h2>
+          <div className="bg-white/50 rounded-xl border border-gray-200 dark:bg-gray-900/30 dark:border-gray-800 p-4">
+            <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Display Gamuts</h2>
             <ComparisonPanel
               displays={displays}
               onDisplaysChange={setDisplays}
@@ -185,11 +185,11 @@ export default function GamutAnalyzer() {
           </div>
 
           {/* Info card */}
-          <div className="bg-gray-900/30 rounded-xl border border-gray-800 p-4">
-            <h3 className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wider">
+          <div className="bg-white/50 rounded-xl border border-gray-200 dark:bg-gray-900/30 dark:border-gray-800 p-4">
+            <h3 className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">
               About Coverage Calculation
             </h3>
-            <p className="text-xs text-gray-500 leading-relaxed">
+            <p className="text-xs text-gray-400 dark:text-gray-500 leading-relaxed">
               Coverage is calculated as the area ratio of the display gamut triangle
               to each standard gamut triangle using the Shoelace formula. This method
               gives the overall area percentage, not the intersection-based coverage.

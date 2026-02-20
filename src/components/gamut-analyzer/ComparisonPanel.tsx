@@ -84,8 +84,8 @@ export default function ComparisonPanel({
               onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onActiveIndexChange(i); }}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm whitespace-nowrap transition-colors cursor-pointer
                 ${activeIndex === i
-                  ? 'bg-gray-700 text-white'
-                  : 'bg-gray-800/50 text-gray-500 hover:text-gray-300'
+                  ? 'bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-white'
+                  : 'bg-gray-100 text-gray-500 hover:text-gray-700 dark:bg-gray-800/50 dark:text-gray-500 dark:hover:text-gray-300'
                 }`}
             >
               <div
@@ -112,8 +112,9 @@ export default function ComparisonPanel({
         {displays.length < MAX_DISPLAYS && (
           <button
             onClick={addDisplay}
-            className="px-3 py-1.5 text-sm bg-gray-800 text-gray-400 rounded-lg
-              hover:bg-gray-700 hover:text-white transition-colors shrink-0"
+            className="px-3 py-1.5 text-sm bg-gray-100 text-gray-500 rounded-lg
+              hover:bg-gray-200 hover:text-gray-900 dark:bg-gray-800 dark:text-gray-400
+              dark:hover:bg-gray-700 dark:hover:text-white transition-colors shrink-0"
           >
             + Add
           </button>
@@ -168,17 +169,17 @@ function ComparisonSummary({
   }, [displays, mode]);
 
   return (
-    <div className="mt-4 p-3 bg-gray-900/50 rounded-lg border border-gray-800">
-      <h4 className="text-xs font-medium text-gray-400 mb-2 uppercase tracking-wider">
+    <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-800">
+      <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">
         Comparison Summary
       </h4>
       <div className="overflow-x-auto">
         <table className="w-full text-xs">
           <thead>
-            <tr className="border-b border-gray-700">
-              <th className="text-left py-1.5 px-2 text-gray-500">Display</th>
+            <tr className="border-b border-gray-200 dark:border-gray-700">
+              <th className="text-left py-1.5 px-2 text-gray-400 dark:text-gray-500">Display</th>
               {SUMMARY_STANDARDS.map((s) => (
-                <th key={s} className="text-right py-1.5 px-2 text-gray-500">
+                <th key={s} className="text-right py-1.5 px-2 text-gray-400 dark:text-gray-500">
                   {s}
                 </th>
               ))}
@@ -186,7 +187,7 @@ function ComparisonSummary({
           </thead>
           <tbody>
             {displays.map((d, i) => (
-              <tr key={i} className="border-b border-gray-800/50">
+              <tr key={i} className="border-b border-gray-100 dark:border-gray-800/50">
                 <td className="py-1 px-2">
                   <div className="flex items-center gap-1.5">
                     <div
@@ -195,7 +196,7 @@ function ComparisonSummary({
                         backgroundColor: COMPARISON_COLORS[i % COMPARISON_COLORS.length],
                       }}
                     />
-                    <span className="text-gray-300 truncate max-w-[100px]">
+                    <span className="text-gray-700 dark:text-gray-300 truncate max-w-[100px]">
                       {d.name || `Display ${i + 1}`}
                     </span>
                   </div>

@@ -96,11 +96,11 @@ export default function Home() {
       <section className="py-16 sm:py-24 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-            <span className="text-blue-400">Professional</span> Display
+            <span className="text-blue-500 dark:text-blue-400">Professional</span> Display
             <br />
             Analysis Tools
           </h1>
-          <p className="text-lg sm:text-xl text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl text-gray-500 dark:text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
             Free web-based tools for display engineers and researchers. Analyze viewing angles,
             compare color gamuts, and perform color science calculations — all in your browser.
           </p>
@@ -115,7 +115,7 @@ export default function Home() {
             </Link>
             <Link
               to="/color-calculator"
-              className="px-6 py-3 rounded-lg bg-gray-800 hover:bg-gray-700 text-white font-medium transition-colors text-sm border border-gray-700"
+              className="px-6 py-3 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-900 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white font-medium transition-colors text-sm border border-gray-200 dark:border-gray-700"
             >
               Open Color Calculator
             </Link>
@@ -123,7 +123,7 @@ export default function Home() {
 
           {/* Trust badges */}
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm text-green-400 bg-green-900/20 border-green-800/40">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm text-green-700 bg-green-50 border-green-200 dark:text-green-400 dark:bg-green-900/20 dark:border-green-800/40">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
                   strokeLinecap="round"
@@ -134,7 +134,7 @@ export default function Home() {
               </svg>
               Your data never leaves your browser
             </div>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm text-blue-400 bg-blue-900/20 border-blue-800/40">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm text-blue-700 bg-blue-50 border-blue-200 dark:text-blue-400 dark:bg-blue-900/20 dark:border-blue-800/40">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
                   strokeLinecap="round"
@@ -145,7 +145,7 @@ export default function Home() {
               </svg>
               Validated against CIE standards
             </div>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm text-purple-400 bg-purple-900/20 border-purple-800/40">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm text-purple-700 bg-purple-50 border-purple-200 dark:text-purple-400 dark:bg-purple-900/20 dark:border-purple-800/40">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
                   strokeLinecap="round"
@@ -163,26 +163,26 @@ export default function Home() {
       {/* Tools Grid */}
       <section className="py-12 px-4">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl font-bold text-white text-center mb-8">Analysis Tools</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-8">Analysis Tools</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {TOOLS.map((tool) => (
               <Link
                 key={tool.path}
                 to={tool.path}
-                className="group relative flex flex-col p-6 rounded-xl bg-gray-900 border border-gray-800 hover:border-gray-700 transition-all hover:shadow-lg hover:shadow-blue-900/10"
+                className="group relative flex flex-col p-6 rounded-xl bg-white border border-gray-200 hover:border-gray-300 dark:bg-gray-900 dark:border-gray-800 dark:hover:border-gray-700 transition-all hover:shadow-lg hover:shadow-blue-500/5 dark:hover:shadow-blue-900/10"
               >
-                <div className="text-blue-400 mb-4">{tool.icon}</div>
-                <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-blue-400 transition-colors">
+                <div className="text-blue-500 dark:text-blue-400 mb-4">{tool.icon}</div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
                   {tool.title}
                 </h3>
-                <p className="text-sm text-gray-400 leading-relaxed flex-1">{tool.description}</p>
-                <div className="mt-4 pt-4 border-t border-gray-800">
+                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed flex-1">{tool.description}</p>
+                <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
                   {tool.status === 'coming-soon' ? (
-                    <span className="text-xs px-2.5 py-1 rounded bg-amber-900/30 text-amber-400 border border-amber-800/50">
+                    <span className="text-xs px-2.5 py-1 rounded bg-amber-50 text-amber-600 border border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50">
                       Coming Soon (MVP-B)
                     </span>
                   ) : (
-                    <span className="text-sm text-blue-400 group-hover:text-blue-300 font-medium">
+                    <span className="text-sm text-blue-500 group-hover:text-blue-400 dark:text-blue-400 dark:group-hover:text-blue-300 font-medium">
                       {tool.cta} &rarr;
                     </span>
                   )}
@@ -197,20 +197,20 @@ export default function Home() {
       <section className="py-16 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
-            <div className="p-6 rounded-xl bg-gray-900/50 border border-gray-800/50">
-              <div className="text-3xl font-bold text-white mb-2">100%</div>
-              <div className="text-sm text-gray-400">Client-side Processing</div>
-              <div className="text-xs text-gray-600 mt-1">No data sent to servers</div>
+            <div className="p-6 rounded-xl bg-white/50 border border-gray-200/50 dark:bg-gray-900/50 dark:border-gray-800/50">
+              <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">100%</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">Client-side Processing</div>
+              <div className="text-xs text-gray-400 dark:text-gray-600 mt-1">No data sent to servers</div>
             </div>
-            <div className="p-6 rounded-xl bg-gray-900/50 border border-gray-800/50">
-              <div className="text-3xl font-bold text-white mb-2">CIE</div>
-              <div className="text-sm text-gray-400">Standard Validated</div>
-              <div className="text-xs text-gray-600 mt-1">Sharma 2005, CIE 15:2004</div>
+            <div className="p-6 rounded-xl bg-white/50 border border-gray-200/50 dark:bg-gray-900/50 dark:border-gray-800/50">
+              <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">CIE</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">Standard Validated</div>
+              <div className="text-xs text-gray-400 dark:text-gray-600 mt-1">Sharma 2005, CIE 15:2004</div>
             </div>
-            <div className="p-6 rounded-xl bg-gray-900/50 border border-gray-800/50">
-              <div className="text-3xl font-bold text-white mb-2">Free</div>
-              <div className="text-sm text-gray-400">No Account Required</div>
-              <div className="text-xs text-gray-600 mt-1">Open for everyone</div>
+            <div className="p-6 rounded-xl bg-white/50 border border-gray-200/50 dark:bg-gray-900/50 dark:border-gray-800/50">
+              <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Free</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">No Account Required</div>
+              <div className="text-xs text-gray-400 dark:text-gray-600 mt-1">Open for everyone</div>
             </div>
           </div>
         </div>
@@ -218,13 +218,13 @@ export default function Home() {
 
       {/* SidequestLab credit */}
       <section className="py-8 px-4 text-center">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-400 dark:text-gray-600">
           Built by{' '}
           <a
             href="https://github.com/namseokyoo"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
           >
             SidequestLab
           </a>
