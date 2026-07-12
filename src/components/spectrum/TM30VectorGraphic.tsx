@@ -10,7 +10,7 @@
 import { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import type { TM30Result } from '@/lib/cri';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useTheme } from '@/contexts/useTheme';
 
 interface TM30VectorGraphicProps {
   result: TM30Result | null;

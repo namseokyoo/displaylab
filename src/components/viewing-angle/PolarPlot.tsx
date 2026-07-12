@@ -8,7 +8,7 @@
 
 import { useEffect, useRef, useMemo } from 'react';
 import * as d3 from 'd3';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useTheme } from '@/contexts/useTheme';
 import { getChartColors } from '@/lib/chart-theme';
 import type { ViewingAngleData } from '@/types';
 

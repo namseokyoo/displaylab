@@ -17,7 +17,7 @@ import { useEffect, useRef, useMemo } from 'react';
 import * as d3 from 'd3';
 import { SPECTRAL_LOCUS_XY, COLOR_GAMUTS } from '@/data/cie1931';
 import { xyToUV } from '@/lib/cie';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useTheme } from '@/contexts/useTheme';
 import { getChartColors } from '@/lib/chart-theme';
 import type { DiagramMode, GamutType, DiagramMarker, CustomPrimaries, CIE1931Coordinates } from '@/types';
 

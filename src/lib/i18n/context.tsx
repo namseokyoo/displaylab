@@ -2,30 +2,21 @@
  * i18n Context
  *
  * Self-implemented internationalization for Display Lab.
- * Follows the ThemeContext pattern: createContext + Provider + useTranslation hook.
+ * Follows the ThemeContext pattern: context + Provider + useTranslation hook.
  *
  * - localStorage persistence at `displaylab::settings::language`
  * - Browser language auto-detection via navigator.language
  * - Dot-notation key resolution (e.g. "home.hero.title")
  */
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { I18nContext, type I18nContextValue } from './i18n-context';
 import type { Locale } from './types';
 import en from './translations/en';
 import ko from './translations/ko';
 
 // ---------------------------------------------------------------------------
 // Types
-// ---------------------------------------------------------------------------
-
-interface I18nContextValue {
-  locale: Locale;
-  setLocale: (locale: Locale) => void;
-  t: (key: string) => string;
-}
-
-// ---------------------------------------------------------------------------
-// Constants
 // ---------------------------------------------------------------------------
 
 const STORAGE_KEY = 'displaylab::settings::language';
@@ -73,16 +64,6 @@ function resolve(key: string, obj: Record<string, unknown>): string {
   return key; // fallback: return the key itself
 }
 
-// ---------------------------------------------------------------------------
-// Context
-// ---------------------------------------------------------------------------
-
-const I18nContext = createContext<I18nContextValue | null>(null);
-
-// ---------------------------------------------------------------------------
-// Provider
-// ---------------------------------------------------------------------------
-
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(getInitialLocale);
 
@@ -114,16 +95,4 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   );
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
-}
-
-// ---------------------------------------------------------------------------
-// Hook
-// ---------------------------------------------------------------------------
-
-export function useTranslation(): I18nContextValue {
-  const ctx = useContext(I18nContext);
-  if (!ctx) {
-    throw new Error('useTranslation must be used within an I18nProvider');
-  }
-  return ctx;
 }

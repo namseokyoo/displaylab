@@ -12,7 +12,7 @@ export const SITE_JSON_LD = {
   '@type': 'WebApplication',
   name: 'Display Lab',
   description:
-    'Professional display analysis tools for engineers and researchers. Color gamut comparison, color science calculations, and viewing angle analysis.',
+    'Professional display analysis tools for engineers and researchers, including gamut, color science, viewing angle, spectrum, HDR, and panel technology workflows.',
   url: BASE_URL,
   applicationCategory: 'ScienceApplication',
   operatingSystem: 'Web',

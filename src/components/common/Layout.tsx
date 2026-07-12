@@ -7,7 +7,7 @@
 
 import { useCallback, useState } from 'react';
 import { Link, useLocation, Outlet } from 'react-router-dom';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useTheme } from '@/contexts/useTheme';
 import { useTranslation } from '@/lib/i18n';
 import AdBanner from '@/components/ad/AdBanner';
 import { Analytics } from '@vercel/analytics/react';

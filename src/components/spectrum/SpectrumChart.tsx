@@ -1,7 +1,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import type { SpectrumPoint } from '@/types';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useTheme } from '@/contexts/useTheme';
 import { getChartColors } from '@/lib/chart-theme';
 
 interface SpectrumChartProps {

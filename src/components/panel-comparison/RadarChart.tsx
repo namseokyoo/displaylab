@@ -7,7 +7,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useTheme } from '@/contexts/useTheme';
 import { getChartColors } from '@/lib/chart-theme';
 import { SPEC_LABELS } from '@/data/panel-technologies';
 import type { PanelTechnology } from '@/data/panel-technologies';

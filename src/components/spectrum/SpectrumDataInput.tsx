@@ -106,7 +106,7 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
     } finally {
       setIsLoading(false);
     }
-  }, [applyData]);
+  }, [applyData, t]);
 
   const handlePasteApply = useCallback(() => {
     if (!pasteText.trim()) {
@@ -130,7 +130,7 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
     const autoWarnings = getInputWarningKeys(result.data);
     applyData(result.data, [...result.warnings, ...autoWarnings]);
     setIsLoading(false);
-  }, [applyData, pasteText]);
+  }, [applyData, pasteText, t]);
 
   const handlePresetSelect = useCallback((key: PresetKey) => {
     const rawData = PRESETS[key].data;
@@ -169,7 +169,7 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
     } catch {
       setError(t('spectrum.clipboardUnavailable'));
     }
-  }, []);
+  }, [t]);
 
   return (
     <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
