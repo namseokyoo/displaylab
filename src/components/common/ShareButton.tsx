@@ -33,13 +33,14 @@ export default function ShareButton({ getShareUrl, className = '' }: ShareButton
     <div className={`relative inline-flex items-center ${className}`}>
       <button
         onClick={handleShare}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-500 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 dark:text-gray-400 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors"
+        aria-label={t('common.copyShareLink')}
+        className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-sm font-medium text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-900 sm:w-auto sm:gap-1.5 sm:px-3 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white bg-gray-100"
         title={t('common.copyShareLink')}
       >
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
         </svg>
-        {t('common.share')}
+        <span className="hidden whitespace-nowrap sm:inline">{t('common.share')}</span>
       </button>
       {showToast && (
         <div
