@@ -3,12 +3,10 @@
  *
  * Displays:
  * - CRI Ra gauge (large prominent display)
- * - R1-R14 individual scores as horizontal bar chart
  * - Reference illuminant info
  */
 
 import type { CRIResult } from '@/lib/cri';
-import { TCS_SHORT_LABELS } from '@/lib/cri';
 import { useTranslation } from '@/lib/i18n';
 
 interface CRIResultsProps {
@@ -68,48 +66,9 @@ export default function CRIResults({ result }: CRIResultsProps) {
         </div>
       </div>
 
-      {/* R1-R14 Bar Chart */}
-      <div className="space-y-1.5">
-        <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('cri.individualScores')}</p>
-        {result.Ri.map((ri, idx) => (
-          <div key={idx} className="flex items-center gap-2">
-            <span className="text-xs font-mono text-gray-500 dark:text-gray-400 w-8 text-right">
-              {TCS_SHORT_LABELS[idx]}
-            </span>
-            <div className="flex-1 h-4 bg-gray-100 dark:bg-gray-800 rounded overflow-hidden">
-              <div
-                className="h-full rounded bg-gray-500 transition-all duration-300"
-                style={{ width: `${getBarWidth(ri)}%` }}
-              />
-            </div>
-            <span className="text-xs font-mono text-gray-600 dark:text-gray-300 w-10 text-right">
-              {ri.toFixed(1)}
-            </span>
-          </div>
-        ))}
-      </div>
-
-      {/* Key scores highlight */}
-      <div className="mt-4 grid grid-cols-3 gap-2">
-        <div className="rounded-lg border border-gray-200 bg-gray-50 p-2.5 dark:border-gray-700/60 dark:bg-gray-800/50 text-center">
-          <p className="text-xs text-gray-500 dark:text-gray-400">{t('cri.r9Red')}</p>
-          <p className="text-lg font-semibold text-gray-900 dark:text-white">
-            {result.Ri[8].toFixed(1)}
-          </p>
-        </div>
-        <div className="rounded-lg border border-gray-200 bg-gray-50 p-2.5 dark:border-gray-700/60 dark:bg-gray-800/50 text-center">
-          <p className="text-xs text-gray-500 dark:text-gray-400">{t('cri.r13Skin')}</p>
-          <p className="text-lg font-semibold text-gray-900 dark:text-white">
-            {result.Ri[12].toFixed(1)}
-          </p>
-        </div>
-        <div className="rounded-lg border border-gray-200 bg-gray-50 p-2.5 dark:border-gray-700/60 dark:bg-gray-800/50 text-center">
-          <p className="text-xs text-gray-500 dark:text-gray-400">{t('cri.r14Leaf')}</p>
-          <p className="text-lg font-semibold text-gray-900 dark:text-white">
-            {result.Ri[13].toFixed(1)}
-          </p>
-        </div>
-      </div>
+      <p className="text-xs text-gray-500 dark:text-gray-400">
+        {t('cri.raOnlyNotice')}
+      </p>
     </div>
   );
 }

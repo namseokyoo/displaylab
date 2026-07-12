@@ -230,7 +230,7 @@ export default function SpectrumAnalyzer() {
         </div>
       </div>
 
-      {/* Light Quality Metrics (CRI / TM-30 / TLCI) */}
+      {/* General CRI Ra estimate */}
       {spectrumData.length >= 10 && (
         <div className="mt-8">
           <LightQualityDashboard spectrumData={spectrumData} />

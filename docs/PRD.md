@@ -4,6 +4,10 @@
 > **작성일**: 2026-02-20
 > **작성자**: CEO Agent
 > **상태**: ✅ 승인 완료
+> **현재 정정 (2026-07-12)**: 이 승인은 역사적 제품 범위 기록입니다. 광질
+> 지표의 현재 실행 계약은 `docs/light-quality-accuracy-validation.md`가
+> 우선하며, 일반 CRI Ra만 실험적으로 제공하고 개별 Ri/TM-30/TLCI는
+> authority gate가 해소될 때까지 비활성화합니다.
 
 ---
 
@@ -265,7 +269,7 @@ function deltaE2000(lab1: Lab, lab2: Lab): number;
 ### Phase 2 - 확장 (+3개월)
 | 기능 | 설명 |
 |------|------|
-| SPD 분석 | 분광분포 업로드 → CIE, CCT, CRI (Ra, R1~R15) |
+| SPD 분석 | 분광분포 업로드 → CIE, CCT, 실험적 일반 CRI Ra (개별 Ri는 authority-gated) |
 | PDF 리포트 | 분석 결과 자동 PDF 생성 |
 | Supabase 통합 | 사용자 계정, 데이터 클라우드 저장 |
 | 프로젝트 관리 | 사용자별 프로젝트/데이터셋 관리 |

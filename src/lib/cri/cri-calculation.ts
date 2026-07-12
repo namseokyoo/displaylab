@@ -26,8 +26,6 @@ import { getReferenceIlluminant, TCS_REFLECTANCE } from './cri-reference-illumin
 export interface CRIResult {
   /** General CRI (Ra) - average of R1..R8 */
   Ra: number;
-  /** Individual Ri values for all 14 TCS (R1-R14) */
-  Ri: number[];
   /** CCT of the test source (K) */
   cct: number;
   /** Reference illuminant type used */
@@ -279,7 +277,7 @@ function resampleTo5nm(spectrum: SpectrumPoint[]): SpectrumPoint[] {
  * Calculate CRI (Color Rendering Index) for a given test source SPD.
  *
  * @param testSpectrum - SPD of the test light source
- * @returns CRI result with Ra and individual Ri values
+ * @returns Experimental general CRI Ra result
  */
 export function calculateCRI(testSpectrum: SpectrumPoint[]): CRIResult {
   validateSpectrum(testSpectrum);
@@ -316,10 +314,10 @@ export function calculateCRI(testSpectrum: SpectrumPoint[]): CRIResult {
   const testWhiteUV = xyzToUCS(testXYZ);
   const refWhiteUV = xyzToUCS(refXYZ);
 
-  // Step 4: For each TCS, calculate color under test and reference
-  const Ri: number[] = [];
+  // Step 4: Calculate only the eight indices used by general CRI Ra.
+  const generalIndices: number[] = [];
 
-  for (let tcsIdx = 0; tcsIdx < 14; tcsIdx++) {
+  for (let tcsIdx = 0; tcsIdx < 8; tcsIdx++) {
     const reflectance = TCS_REFLECTANCE[tcsIdx];
 
     // Color of TCS under test source
@@ -343,15 +341,13 @@ export function calculateCRI(testSpectrum: SpectrumPoint[]): CRIResult {
 
     // Step 8: Calculate Ri
     const ri = 100 - 4.6 * dE;
-    Ri.push(ri);
+    generalIndices.push(ri);
   }
 
-  // Ra = average of R1..R8 (first 8 TCS only)
-  const Ra = Ri.slice(0, 8).reduce((sum, r) => sum + r, 0) / 8;
+  const Ra = generalIndices.reduce((sum, value) => sum + value, 0) / 8;
 
   return {
     Ra: Math.round(Ra * 10) / 10,
-    Ri: Ri.map((r) => Math.round(r * 10) / 10),
     cct: Math.round(cct),
     referenceType,
   };

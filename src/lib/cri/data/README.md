@@ -36,3 +36,10 @@ The oracle project is BSD-3-Clause licensed; source and dataset provenance are
 pinned to Colour v0.4.7 at
 <https://github.com/colour-science/colour/tree/v0.4.7> and its
 <https://github.com/colour-science/colour/blob/v0.4.7/LICENSE>.
+
+The current fixture is retained as historical validation evidence. Its source
+objects carried Sprague interpolation metadata that is not represented in the
+serialized JSON values. A future regeneration must score a reconstructed copy
+of the committed values with an explicit `linear` interpolation contract and
+record the integration grid, observer, and CCT method. Runtime individual Ri
+values remain withheld until that reproducibility gap is closed.

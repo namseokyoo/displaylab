@@ -2,25 +2,38 @@ import { describe, expect, it } from 'vitest';
 import {
   LIGHT_QUALITY_VALIDATION,
   calculateCRI,
-  calculateTLCI,
-  calculateTM30,
   dIlluminantSPD,
   illuminantA_SPD,
+  isMetricAvailable,
   isStandardsValidated,
 } from '../cri';
+import * as lightQuality from '../cri';
 import oracleSpds from '../cri/data/oracle-spds.json';
 import criDomainHoldouts from '../cri/data/cri-domain-holdouts.json';
 
 describe('light-quality accuracy claim gate', () => {
   it.each(['cri', 'tm30', 'tlci'] as const)('%s fails closed until standards validation passes', (metric) => {
     expect(isStandardsValidated(metric)).toBe(false);
-    expect(LIGHT_QUALITY_VALIDATION[metric].status).toBe('experimental');
     expect(LIGHT_QUALITY_VALIDATION[metric].blockingGaps.length).toBeGreaterThan(0);
   });
 
-  it('pins the current TM-30 target edition separately from the legacy numerical probe', () => {
+  it('exposes only the narrowed general CRI Ra calculation', () => {
+    expect(LIGHT_QUALITY_VALIDATION.cri.status).toBe('experimental');
+    expect(LIGHT_QUALITY_VALIDATION.cri.availability).toBe('ra-only');
+    expect(isMetricAvailable('cri')).toBe(true);
+    expect('calculateTM30' in lightQuality).toBe(false);
+    expect('calculateTLCI' in lightQuality).toBe(false);
+  });
+
+  it.each(['tm30', 'tlci'] as const)('%s remains disabled in the public contract', (metric) => {
+    expect(LIGHT_QUALITY_VALIDATION[metric].status).toBe('disabled');
+    expect(LIGHT_QUALITY_VALIDATION[metric].availability).toBe('disabled');
+    expect(isMetricAvailable(metric)).toBe(false);
+  });
+
+  it('pins the current TM-30 target edition', () => {
     expect(LIGHT_QUALITY_VALIDATION.tm30.reference).toBe('ANSI/IES TM-30-24');
-    expect(LIGHT_QUALITY_VALIDATION.tm30.blockingGaps.join(' ')).toContain('TM-30-18');
+    expect(LIGHT_QUALITY_VALIDATION.tm30.blockingGaps.join(' ')).toContain('legally reusable');
   });
 
   it.each([
@@ -28,9 +41,6 @@ describe('light-quality accuracy claim gate', () => {
     ['D65', dIlluminantSPD(6504)],
   ])('%s reference identity is stable', (_name, spectrum) => {
     expect(calculateCRI(spectrum).Ra).toBeCloseTo(100, 1);
-    expect(calculateTM30(spectrum).Rf).toBeCloseTo(100, 1);
-    expect(calculateTM30(spectrum).Rg).toBeCloseTo(100, 1);
-    expect(calculateTLCI(spectrum).Qa).toBeCloseTo(100, 1);
   });
 
   it.each([
@@ -54,24 +64,8 @@ describe('light-quality accuracy claim gate', () => {
     },
   );
 
-  it('records the six individual-Ri holdout misses instead of promoting CRI', () => {
-    const misses = criDomainHoldouts.fixtures.flatMap((fixture) => {
-      const result = calculateCRI(fixture.spectrum);
-      return fixture.Ri.flatMap((expected, index) => {
-        const error = Math.abs(result.Ri[index] - expected);
-        return error > 1 ? [{ id: `${fixture.name}:R${index + 1}`, error }] : [];
-      });
-    });
-
-    expect(misses.map(({ id }) => id)).toEqual([
-      'HP1:R3',
-      'HP1:R7',
-      'HP1:R8',
-      'HP1:R9',
-      'HP1:R12',
-      'LED-RGB1:R9',
-    ]);
-    expect(Math.max(...misses.map(({ error }) => error))).toBeLessThan(2.3);
+  it('withholds individual Ri values from the runtime result', () => {
+    expect(calculateCRI(oracleSpds.FL2)).not.toHaveProperty('Ri');
   });
 
   it.each([

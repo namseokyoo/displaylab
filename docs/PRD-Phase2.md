@@ -4,6 +4,11 @@
 > **작성일**: 2026-02-20
 > **작성자**: CEO Agent (노이만)
 > **상태**: ✅ 회장님 승인 완료
+> **현재 정정 (2026-07-12)**: 이 승인은 역사적 Phase 2 범위 기록입니다.
+> 광질 지표의 현재 disposition은 `docs/light-quality-accuracy-validation.md`가
+> 우선합니다. 일반 CRI Ra만 실험적으로 제공하며 개별 Ri/TM-30/TLCI는
+> authoritative source, reuse rights, fixtures, tolerance, independent review가
+> 모두 확보될 때까지 비활성화합니다.
 
 ---
 
@@ -233,23 +238,24 @@ https://displaylab.vercel.app/gamut-analyzer?r=0.64,0.33&g=0.30,0.60&b=0.15,0.06
 
 ---
 
-### 2-B-3. SPD 분석 - CRI/TLCI (Spectrum Analyzer 확장)
+### 2-B-3. SPD 분석 - 광질 지표 (authority-gated)
 
 | 항목 | 내용 |
 |------|------|
 | **현재 상태** | Phase 2-A-4에서 기본 SPD 분석 기능 편입 예정 |
-| **목표** | 광원 품질 분석 기능 확장 (CRI, TLCI, TM-30) |
+| **목표** | 검증된 범위에서만 광원 품질 분석 기능 제공 |
 | **전제조건** | Phase 2-A-4 (Spectrum Visualizer 편입) 완료 후 확장 |
-| **우선순위** | P1 |
+| **우선순위** | DISABLED / authority gate 이후 재평가 |
 
 **기능 요구사항**:
 
 | 기능 | 설명 | 우선순위 |
 |------|------|----------|
-| CRI (Ra) 자동 계산 | Color Rendering Index R1-R14 계산 | P0 |
-| TLCI 계산 | Television Lighting Consistency Index | P1 |
-| IES TM-30 Rf/Rg | Fidelity Index (Rf), Gamut Index (Rg) 계산 | P1 |
-| 색재현 벡터 그래프 | 기준 광원 대비 색재현 벡터 시각화 | P1 |
+| 일반 CRI Ra 추정 | R1-R8 평균, experimental 표시와 의사결정 금지 문구 유지 | 제한 제공 |
+| 개별 CRI Ri | 재현 가능한 fixture와 CRI 전용 CCT 및 D008 비교 필요 | 비활성 |
+| EBU TLCI | 재사용 권리, 정확한 파이프라인, 공식 oracle 필요 | 비활성 |
+| ANSI/IES TM-30-24 | 정확한 방법/CES, 재사용 권리, 공식 oracle 필요 | 비활성 |
+| 색재현 벡터 그래프 | TM-30-24 검증과 함께 독립 시각 검토 필요 | 비활성 |
 
 ---
 
@@ -437,7 +443,7 @@ https://displaylab.vercel.app/gamut-analyzer?r=0.64,0.33&g=0.30,0.60&b=0.15,0.06
 | 서브페이즈 | 항목 | 예상 기간 |
 |-----------|------|----------|
 | Phase 2-A | CIE 스무스 곡선, 테마 변경, localStorage, Spectrum 편입, Universal Converter, 공유 링크 | 2-3주 |
-| Phase 2-B | i18n, HDR Analyzer, CRI/TLCI, Panel Comparator, 카카오 애드핏 | 3-4주 |
+| Phase 2-B | i18n, HDR Analyzer, Ra-only 광질 지표, Panel Comparator, 카카오 애드핏 | 3-4주 |
 | Phase 2-C | 디스플레이 DB, PDF 리포트, API 제공 | 4-6주 |
 | **총 예상** | **14개 항목** | **약 2-3개월** |
 
@@ -453,7 +459,7 @@ https://displaylab.vercel.app/gamut-analyzer?r=0.64,0.33&g=0.30,0.60&b=0.15,0.06
 | 6 | 데이터 공유 링크 | 1-2일 | 2-A |
 | 7 | 영어/한글 i18n | 3-5일 | 2-B |
 | 8 | HDR Analyzer | 5-7일 | 2-B |
-| 9 | SPD 분석 - CRI/TLCI | 3-5일 | 2-B |
+| 9 | SPD 분석 - authority-gated 광질 지표 | 재평가 필요 | 2-B |
 | 10 | Panel Technology Comparator | 3-4일 | 2-B |
 | 11 | 카카오 애드핏 광고 삽입 | 1-2일 | 2-B |
 | 12 | 디스플레이 데이터베이스 | 7-10일 | 2-C |
@@ -479,7 +485,7 @@ https://displaylab.vercel.app/gamut-analyzer?r=0.64,0.33&g=0.30,0.60&b=0.15,0.06
 | 도구 수 | 7개+ (HDR Analyzer, Panel Comparator 추가) |
 | i18n | 영어/한글 듀얼 언어 |
 | 광고 수익 | 카카오 애드핏 수익 시작 |
-| 광원 분석 | CRI, TLCI 자동 계산 |
+| 광원 분석 | 실험적 일반 CRI Ra 제공; 그 외 지표는 authority gate 유지 |
 
 ### 8.3 Phase 2-C 완료 시
 | 지표 | 목표 |
