@@ -38,7 +38,7 @@ export const PRESET_GREEN: SpectrumPoint[] = generateGaussianSpectrum(530, 12);
 export const PRESET_RED: SpectrumPoint[] = generateGaussianSpectrum(620, 12);
 
 /**
- * Preset: White LED spectrum (approximation)
+ * Preset: two-peak LED demo spectrum (approximation)
  * Blue peak + phosphor-converted yellow.
  */
 export function generateWhiteSpectrum(): SpectrumPoint[] {
@@ -58,7 +58,7 @@ export const PRESETS = {
   blue: { name: 'Blue (470nm)', data: PRESET_BLUE },
   green: { name: 'Green (530nm)', data: PRESET_GREEN },
   red: { name: 'Red (620nm)', data: PRESET_RED },
-  white: { name: 'White LED', data: PRESET_WHITE },
+  white: { name: 'Two-peak LED demo', data: PRESET_WHITE },
 } as const;
 
 export type PresetKey = keyof typeof PRESETS;
