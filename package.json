@@ -4,6 +4,9 @@
   "version": "0.1.0",
   "description": "Professional Display Analysis Tools - Viewing Angle, Color Gamut, Color Science",
   "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -19,7 +22,7 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-helmet-async": "^2.0.5",
-    "react-router-dom": "^7.2.0"
+    "react-router-dom": "^7.18.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
