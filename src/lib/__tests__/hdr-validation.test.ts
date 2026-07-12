@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { validateHDR10Metadata, type HDR10Metadata } from '@/lib/hdr';
+import {
+  analyzeHDR10,
+  buildHDRShareUrl,
+  validateHDR10Metadata,
+  type HDR10Metadata,
+} from '@/lib/hdr';
 
 const validMetadata: HDR10Metadata = {
   maxCLL: 1000,
@@ -36,5 +41,52 @@ describe('validateHDR10Metadata', () => {
         masterDisplayMinLuminance: 1000,
       }),
     ).toContain('invalidLuminanceRange');
+  });
+
+  it.each([
+    { maxCLL: Number.NaN },
+    { maxCLL: 0 },
+    { maxFALL: -1 },
+    { masterDisplayMaxLuminance: Number.POSITIVE_INFINITY },
+    { masterDisplayMinLuminance: Number.NaN },
+  ])('rejects non-finite or out-of-range luminance metadata: %o', (override) => {
+    expect(validateHDR10Metadata({ ...validMetadata, ...override })).toContain(
+      'invalidLuminanceRange',
+    );
+  });
+});
+
+describe('analyzeHDR10', () => {
+  it('analyzes valid metadata', () => {
+    expect(analyzeHDR10(validMetadata).hdr10Grade).toBe('Premium');
+  });
+
+  it('fails closed for invalid metadata', () => {
+    expect(() => analyzeHDR10({ ...validMetadata, maxFALL: 1200 })).toThrow(
+      /Invalid HDR10 metadata: maxFallExceedsMaxCll/,
+    );
+  });
+});
+
+describe('buildHDRShareUrl', () => {
+  it('includes valid derived analysis', () => {
+    const url = new URL(
+      buildHDRShareUrl('https://displaylab.example', '/hdr-analyzer', validMetadata, analyzeHDR10(validMetadata)),
+    );
+    expect(url.searchParams.has('analysis')).toBe(true);
+  });
+
+  it('omits derived analysis when validation failed', () => {
+    const invalid = { ...validMetadata, maxFALL: 1200 };
+    const url = new URL(
+      buildHDRShareUrl(
+        'https://displaylab.example',
+        '/hdr-analyzer',
+        invalid,
+        analyzeHDR10(validMetadata),
+      ),
+    );
+    expect(url.searchParams.has('analysis')).toBe(false);
+    expect(JSON.parse(url.searchParams.get('metadata') ?? '{}').maxFALL).toBe(1200);
   });
 });

@@ -64,6 +64,12 @@ export function validateHDR10Metadata(metadata: HDR10Metadata): HDRMetadataIssue
   }
 
   if (
+    !Number.isFinite(metadata.maxCLL) ||
+    !Number.isFinite(metadata.maxFALL) ||
+    !Number.isFinite(metadata.masterDisplayMaxLuminance) ||
+    !Number.isFinite(metadata.masterDisplayMinLuminance) ||
+    metadata.maxCLL <= 0 ||
+    metadata.maxFALL < 0 ||
     metadata.masterDisplayMaxLuminance <= 0 ||
     metadata.masterDisplayMinLuminance < 0 ||
     metadata.masterDisplayMinLuminance >= metadata.masterDisplayMaxLuminance
@@ -126,6 +132,11 @@ function determineHDR10Grade(
  * Analyze HDR10 metadata and derive summary metrics.
  */
 export function analyzeHDR10(metadata: HDR10Metadata): HDRAnalysisResult {
+  const issues = validateHDR10Metadata(metadata);
+  if (issues.length > 0) {
+    throw new RangeError(`Invalid HDR10 metadata: ${issues.join(', ')}`);
+  }
+
   const dynamicRange = calculateDynamicRange(
     metadata.masterDisplayMaxLuminance,
     metadata.masterDisplayMinLuminance,

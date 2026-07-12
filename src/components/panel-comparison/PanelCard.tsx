@@ -26,7 +26,7 @@ const PRICE_BADGE_STYLES: Record<PanelTechnology['priceRange'], string> = {
 };
 
 export default function PanelCard({ panel }: PanelCardProps) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
 
   return (
     <article className="relative rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-6">
@@ -45,18 +45,18 @@ export default function PanelCard({ panel }: PanelCardProps) {
         </span>
       </header>
 
-      <p className="mt-3 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{panel.description}</p>
+      <p className="mt-3 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{panel.description[locale]}</p>
 
       <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
         <section>
           <h4 className="text-xs font-semibold uppercase tracking-wide text-green-700 dark:text-green-400 mb-2">{t('panel.pros')}</h4>
           <ul className="space-y-1.5">
             {panel.pros.map((item) => (
-              <li key={item} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
+              <li key={item.en} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
                 <svg className="w-4 h-4 mt-0.5 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span>{item}</span>
+                <span>{item[locale]}</span>
               </li>
             ))}
           </ul>
@@ -66,11 +66,11 @@ export default function PanelCard({ panel }: PanelCardProps) {
           <h4 className="text-xs font-semibold uppercase tracking-wide text-red-700 dark:text-red-400 mb-2">{t('panel.cons')}</h4>
           <ul className="space-y-1.5">
             {panel.cons.map((item) => (
-              <li key={item} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
+              <li key={item.en} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
                 <svg className="w-4 h-4 mt-0.5 text-red-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
-                <span>{item}</span>
+                <span>{item[locale]}</span>
               </li>
             ))}
           </ul>
@@ -82,10 +82,10 @@ export default function PanelCard({ panel }: PanelCardProps) {
         <div className="flex flex-wrap gap-2">
           {panel.bestFor.map((item) => (
             <span
-              key={item}
+              key={item.en}
               className="px-2.5 py-1 rounded-full text-xs bg-gray-100 text-gray-700 border border-gray-200 dark:bg-gray-700/60 dark:text-gray-200 dark:border-gray-600"
             >
-              {item}
+              {item[locale]}
             </span>
           ))}
         </div>

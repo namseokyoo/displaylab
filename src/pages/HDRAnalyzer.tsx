@@ -7,7 +7,7 @@ import SEO from '@/components/common/SEO';
 import ShareButton from '@/components/common/ShareButton';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { useTranslation } from '@/lib/i18n';
-import { analyzeHDR10, validateHDR10Metadata } from '@/lib/hdr';
+import { analyzeHDR10, buildHDRShareUrl, validateHDR10Metadata } from '@/lib/hdr';
 import { toolJsonLd } from '@/lib/seo-data';
 import type { HDR10Metadata } from '@/lib/hdr';
 
@@ -39,15 +39,19 @@ export default function HDRAnalyzer() {
     cloneDefaultMetadata(),
   );
 
-  const analysisResult = useMemo(() => analyzeHDR10(metadata), [metadata]);
   const metadataIssues = useMemo(() => validateHDR10Metadata(metadata), [metadata]);
+  const analysisResult = useMemo(
+    () => metadataIssues.length === 0 ? analyzeHDR10(metadata) : null,
+    [metadata, metadataIssues],
+  );
 
   const getShareUrl = useCallback(() => {
-    const params = new URLSearchParams();
-    params.set('metadata', JSON.stringify(metadata));
-    params.set('analysis', JSON.stringify(analysisResult));
-
-    return `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+    return buildHDRShareUrl(
+      window.location.origin,
+      window.location.pathname,
+      metadata,
+      analysisResult,
+    );
   }, [analysisResult, metadata]);
 
   return (
@@ -75,7 +79,7 @@ export default function HDRAnalyzer() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
         <div className="space-y-6">
           <HDR10MetadataInput value={metadata} onChange={setMetadata} />
-          {metadataIssues.length === 0 ? (
+          {analysisResult !== null ? (
             <HDRAnalysisResults result={analysisResult} />
           ) : (
             <div

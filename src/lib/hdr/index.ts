@@ -5,3 +5,4 @@
 export * from './eotf';
 export * from './tone-mapping';
 export * from './hdr-analysis';
+export * from './hdr-share';
