@@ -116,6 +116,36 @@ function illuminantToXYZ(illuminant: SpectrumPoint[]): XYZColor {
   return { X, Y, Z };
 }
 
+function validateSpectrum(spectrum: SpectrumPoint[]): void {
+  if (spectrum.length < 2) {
+    throw new Error('CRI requires at least two spectral samples.');
+  }
+
+  const wavelengths = new Set<number>();
+  let minWavelength = Infinity;
+  let maxWavelength = -Infinity;
+
+  for (const point of spectrum) {
+    if (!Number.isFinite(point.wavelength) || !Number.isFinite(point.intensity)) {
+      throw new Error('CRI spectrum values must be finite.');
+    }
+    if (point.intensity < 0) {
+      throw new Error('CRI spectrum intensities must be non-negative.');
+    }
+    if (wavelengths.has(point.wavelength)) {
+      throw new Error('CRI spectrum wavelengths must be unique.');
+    }
+
+    wavelengths.add(point.wavelength);
+    minWavelength = Math.min(minWavelength, point.wavelength);
+    maxWavelength = Math.max(maxWavelength, point.wavelength);
+  }
+
+  if (minWavelength > 380 || maxWavelength < 780) {
+    throw new Error('CRI spectrum must cover 380-780 nm.');
+  }
+}
+
 /**
  * Convert XYZ to CIE 1960 UCS (u, v) coordinates.
  * Note: CIE 1960 v, not CIE 1976 v'.
@@ -252,14 +282,29 @@ function resampleTo5nm(spectrum: SpectrumPoint[]): SpectrumPoint[] {
  * @returns CRI result with Ra and individual Ri values
  */
 export function calculateCRI(testSpectrum: SpectrumPoint[]): CRIResult {
+  validateSpectrum(testSpectrum);
+
   // Step 0: Resample test spectrum to 5nm intervals
   const testSPD = resampleTo5nm(testSpectrum);
+  const analysisEnergy = testSPD.reduce((sum, point) => sum + point.intensity, 0);
+  if (!Number.isFinite(analysisEnergy) || analysisEnergy <= 0) {
+    throw new Error('CRI spectrum must contain finite positive energy from 380-780 nm.');
+  }
 
   // Step 1: Calculate chromaticity and CCT of the test source
   const testXYZ = illuminantToXYZ(testSPD);
   const sumTest = testXYZ.X + testXYZ.Y + testXYZ.Z;
-  const testX = sumTest > 0 ? testXYZ.X / sumTest : 0.3127;
-  const testY = sumTest > 0 ? testXYZ.Y / sumTest : 0.3290;
+  if (
+    !Number.isFinite(testXYZ.X)
+    || !Number.isFinite(testXYZ.Y)
+    || !Number.isFinite(testXYZ.Z)
+    || !Number.isFinite(sumTest)
+    || sumTest <= 0
+  ) {
+    throw new Error('CRI spectrum must produce a finite positive tristimulus value.');
+  }
+  const testX = testXYZ.X / sumTest;
+  const testY = testXYZ.Y / sumTest;
   const cct = calculateCCT(testX, testY);
 
   // Step 2: Get reference illuminant at same CCT

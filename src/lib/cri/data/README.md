@@ -15,3 +15,24 @@ and row order are unchanged.
 
 `oracle-spds.json` is a test-only fixture generated from the pinned
 `colour-science==0.4.7` illuminant datasets by the validation workflow.
+
+## CRI domain holdouts
+
+`cri-domain-holdouts.json` is a validation-only fixture generated with
+`colour-science==0.4.7`; it is not imported by the runtime bundle. It contains
+31 named reference, fluorescent, high-intensity-discharge, and LED spectral
+distributions plus independent CIE 1995 Ra and R1-R14 results. Regenerate it
+with:
+
+```sh
+uv run --with colour-science==0.4.7 \
+  python scripts/reference-light-quality-oracle.py --cri-domain \
+  > src/lib/cri/data/cri-domain-holdouts.json
+```
+
+SHA-256:
+`811f68bf169f90698dd31be227824a775de5da9b171045208226d174ee843361`.
+The oracle project is BSD-3-Clause licensed; source and dataset provenance are
+pinned to Colour v0.4.7 at
+<https://github.com/colour-science/colour/tree/v0.4.7> and its
+<https://github.com/colour-science/colour/blob/v0.4.7/LICENSE>.

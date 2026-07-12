@@ -22,7 +22,8 @@ export const LIGHT_QUALITY_VALIDATION: Record<LightQualityMetric, LightQualityVa
     status: 'experimental',
     claimPolicy: 'not-a-standard-score',
     blockingGaps: [
-      'The four-fixture oracle set passes, but broader holdout and method-applicability coverage is not complete.',
+      'Ra passes all 31 declared reference, fluorescent, HID, and LED holdouts within +/- 1.0.',
+      '428 of 434 individual Ri comparisons pass +/- 1.0; five HP1 indices and LED-RGB1 R9 remain outside tolerance.',
       'The implementation has not been cross-checked against the CIE D008 program across its supported input domain.',
     ],
   },

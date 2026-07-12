@@ -13,7 +13,7 @@ decision guidance until the corresponding validation gate passes.
 
 | Metric | Reference | Current blocker | Verdict |
 | --- | --- | --- | --- |
-| CRI | CIE 13.3-1995 | Official TCS data and four fixtures pass; broader holdout/domain validation remains | PARTIAL |
+| CRI | CIE 13.3-1995 | Ra passes 31 domain holdouts; six individual Ri comparisons and direct CIE D008 comparison remain | PARTIAL |
 | TM-30 | ANSI/IES TM-30-24 | Synthetic CES set and CIELAB instead of CAM02-UCS | FAIL |
 | TLCI | EBU Tech 3355 | Approximate reflectances/camera response and non-EBU Qa pipeline | FAIL |
 
@@ -54,6 +54,27 @@ the LF-normalized repository copy is
 `83c4bbb7bf774b90fb671820fa22342a174e0abe5e26a281872b7c792d5179ec`,
 licensed CC BY-SA 4.0. Golden SPD fixtures are committed in
 `src/lib/cri/data/oracle-spds.json`.
+
+## CRI domain holdout
+
+The broader matrix contains 31 spectra: A; D50, D55, D65, and D75; FL1-FL12;
+HP1-HP5; and LED-B1-B5, LED-BH1, LED-RGB1, LED-V1, and LED-V2. The exact input,
+Ra, and R1-R14 values are pinned in `cri-domain-holdouts.json` with SHA-256
+`811f68bf169f90698dd31be227824a775de5da9b171045208226d174ee843361`.
+
+- Ra: 31 of 31 comparisons pass the predeclared +/- 1.0 tolerance.
+- Individual indices: 428 of 434 comparisons pass +/- 1.0.
+- Remaining misses: HP1 R3, R7, R8, R9, and R12 plus LED-RGB1 R9. The
+  maximum absolute discrepancy is `2.265` points.
+- Malformed, incomplete-range, duplicate-wavelength, negative-intensity,
+  analysis-range-zero-energy, and overflowing spectra now fail closed instead
+  of producing a CRI value.
+
+The six individual-index misses prevent CRI promotion. A speculative
+replacement of the CCT estimator was tested and rejected because it increased
+the HP1 discrepancy; the production estimator was left unchanged. The next CRI remediation must
+compare spectral interpolation/integration and CCT selection directly against
+CIE D008 rather than tune constants to these fixtures.
 
 ## Promotion criteria
 
