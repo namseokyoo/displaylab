@@ -15,34 +15,12 @@ interface CRIResultsProps {
   result: CRIResult | null;
 }
 
-function getRatingColor(value: number): string {
-  if (value >= 90) return 'text-green-600 dark:text-green-400';
-  if (value >= 80) return 'text-blue-600 dark:text-blue-400';
-  if (value >= 60) return 'text-yellow-600 dark:text-yellow-400';
-  return 'text-red-600 dark:text-red-400';
-}
-
-function getBarColor(value: number): string {
-  if (value >= 90) return 'bg-green-500';
-  if (value >= 80) return 'bg-blue-500';
-  if (value >= 60) return 'bg-yellow-500';
-  if (value >= 0) return 'bg-red-500';
-  return 'bg-gray-400';
-}
-
 function getBarWidth(value: number): number {
   return Math.max(0, Math.min(100, value));
 }
 
 export default function CRIResults({ result }: CRIResultsProps) {
   const { t } = useTranslation();
-
-  const getRatingLabel = (value: number): string => {
-    if (value >= 90) return t('cri.excellent');
-    if (value >= 80) return t('cri.good');
-    if (value >= 60) return t('cri.fair');
-    return t('cri.poor');
-  };
 
   if (!result) {
     return (
@@ -70,17 +48,15 @@ export default function CRIResults({ result }: CRIResultsProps) {
       <div className="flex items-center gap-4 mb-6 p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/60">
         <div className="text-center">
           <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('cri.generalCri')}</p>
-          <p className={`text-4xl font-bold ${getRatingColor(result.Ra)}`}>
+          <p className="text-4xl font-bold text-gray-900 dark:text-white">
             {result.Ra.toFixed(1)}
           </p>
-          <p className={`text-sm mt-1 ${getRatingColor(result.Ra)}`}>
-            {getRatingLabel(result.Ra)}
-          </p>
+          <p className="text-sm mt-1 text-gray-500 dark:text-gray-400">{t('cri.experimentalEstimate')}</p>
         </div>
         <div className="flex-1">
           <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all duration-500 ${getBarColor(result.Ra)}`}
+              className="h-full rounded-full bg-gray-500 transition-all duration-500"
               style={{ width: `${getBarWidth(result.Ra)}%` }}
             />
           </div>
@@ -102,7 +78,7 @@ export default function CRIResults({ result }: CRIResultsProps) {
             </span>
             <div className="flex-1 h-4 bg-gray-100 dark:bg-gray-800 rounded overflow-hidden">
               <div
-                className={`h-full rounded transition-all duration-300 ${getBarColor(ri)}`}
+                className="h-full rounded bg-gray-500 transition-all duration-300"
                 style={{ width: `${getBarWidth(ri)}%` }}
               />
             </div>
@@ -117,19 +93,19 @@ export default function CRIResults({ result }: CRIResultsProps) {
       <div className="mt-4 grid grid-cols-3 gap-2">
         <div className="rounded-lg border border-gray-200 bg-gray-50 p-2.5 dark:border-gray-700/60 dark:bg-gray-800/50 text-center">
           <p className="text-xs text-gray-500 dark:text-gray-400">{t('cri.r9Red')}</p>
-          <p className={`text-lg font-semibold ${getRatingColor(result.Ri[8])}`}>
+          <p className="text-lg font-semibold text-gray-900 dark:text-white">
             {result.Ri[8].toFixed(1)}
           </p>
         </div>
         <div className="rounded-lg border border-gray-200 bg-gray-50 p-2.5 dark:border-gray-700/60 dark:bg-gray-800/50 text-center">
           <p className="text-xs text-gray-500 dark:text-gray-400">{t('cri.r13Skin')}</p>
-          <p className={`text-lg font-semibold ${getRatingColor(result.Ri[12])}`}>
+          <p className="text-lg font-semibold text-gray-900 dark:text-white">
             {result.Ri[12].toFixed(1)}
           </p>
         </div>
         <div className="rounded-lg border border-gray-200 bg-gray-50 p-2.5 dark:border-gray-700/60 dark:bg-gray-800/50 text-center">
           <p className="text-xs text-gray-500 dark:text-gray-400">{t('cri.r14Leaf')}</p>
-          <p className={`text-lg font-semibold ${getRatingColor(result.Ri[13])}`}>
+          <p className="text-lg font-semibold text-gray-900 dark:text-white">
             {result.Ri[13].toFixed(1)}
           </p>
         </div>

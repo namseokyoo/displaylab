@@ -7,7 +7,7 @@
 
 import { useMemo, useRef, useState, useEffect } from 'react';
 import type { SpectrumPoint } from '@/types';
-import { calculateCRI, calculateTLCI, calculateTM30 } from '@/lib/cri';
+import { calculateCRI, calculateTLCI, calculateTM30, LIGHT_QUALITY_VALIDATION } from '@/lib/cri';
 import type { CRIResult, TLCIResult, TM30Result } from '@/lib/cri';
 import { useTranslation } from '@/lib/i18n';
 import CRIResults from './CRIResults';
@@ -18,21 +18,6 @@ interface LightQualityDashboardProps {
 }
 
 type TabKey = 'cri' | 'tm30' | 'tlci';
-
-function getRatingColor(value: number): string {
-  if (value >= 90) return 'text-green-600 dark:text-green-400';
-  if (value >= 80) return 'text-blue-600 dark:text-blue-400';
-  if (value >= 60) return 'text-yellow-600 dark:text-yellow-400';
-  return 'text-red-600 dark:text-red-400';
-}
-
-function getBarColor(value: number): string {
-  if (value >= 90) return 'bg-green-500';
-  if (value >= 80) return 'bg-blue-500';
-  if (value >= 60) return 'bg-yellow-500';
-  if (value >= 0) return 'bg-red-500';
-  return 'bg-gray-400';
-}
 
 function MetricCard({
   label,
@@ -50,7 +35,7 @@ function MetricCard({
   return (
     <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700/60 dark:bg-gray-800/50">
       <p className="text-xs text-gray-500 dark:text-gray-400">{label}</p>
-      <p className={`text-2xl font-bold mt-0.5 ${value !== null ? getRatingColor(value) : 'text-gray-400'}`}>
+      <p className={`text-2xl font-bold mt-0.5 ${value !== null ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
         {displayValue}
         {value !== null && suffix && (
           <span className="text-sm font-normal text-gray-500 dark:text-gray-400 ml-0.5">{suffix}</span>
@@ -134,6 +119,11 @@ export default function LightQualityDashboard({ spectrumData }: LightQualityDash
           {t('cri.lightQualityDesc')}
         </p>
 
+        <div className="mb-4 border-l-4 border-amber-500 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:bg-amber-950/30 dark:text-amber-200">
+          <p className="font-medium">{t('cri.experimentalStatus')}</p>
+          <p className="mt-0.5 text-xs">{t('cri.experimentalStatusDesc')}</p>
+        </div>
+
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <MetricCard
             label={t('cri.criRa')}
@@ -157,23 +147,11 @@ export default function LightQualityDashboard({ spectrumData }: LightQualityDash
           />
         </div>
 
-        {/* Quick interpretation */}
-        {criResult && (
-          <div className="mt-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/60">
-            <div className="flex items-center gap-2">
-              <div className={`h-2.5 w-2.5 rounded-full ${getBarColor(criResult.Ra)}`} />
-              <p className="text-sm text-gray-700 dark:text-gray-300">
-                {criResult.Ra >= 90
-                  ? t('cri.interpretExcellent')
-                  : criResult.Ra >= 80
-                    ? t('cri.interpretGood')
-                    : criResult.Ra >= 60
-                      ? t('cri.interpretFair')
-                      : t('cri.interpretPoor')}
-              </p>
-            </div>
-          </div>
-        )}
+        <p className="mt-3 text-xs text-gray-500 dark:text-gray-400">
+          {Object.values(LIGHT_QUALITY_VALIDATION).every((item) => item.status === 'experimental')
+            ? t('cri.noDecisionUse')
+            : null}
+        </p>
       </div>
 
       {/* Tabbed Detail View */}
@@ -220,27 +198,17 @@ export default function LightQualityDashboard({ spectrumData }: LightQualityDash
                 <div className="mt-4 grid grid-cols-2 gap-3">
                   <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700/60 dark:bg-gray-800/50 text-center">
                     <p className="text-xs text-gray-500 dark:text-gray-400">{t('cri.fidelity')}</p>
-                    <p className={`text-3xl font-bold ${getRatingColor(tm30Result.Rf)}`}>
+                    <p className="text-3xl font-bold text-gray-900 dark:text-white">
                       {tm30Result.Rf.toFixed(1)}
                     </p>
-                    <p className="text-xs text-gray-400 mt-1">
-                      {tm30Result.Rf >= 85 ? t('cri.excellent') : tm30Result.Rf >= 75 ? t('cri.good') : tm30Result.Rf >= 65 ? t('cri.fair') : t('cri.poor')}
-                    </p>
+                    <p className="text-xs text-gray-400 mt-1">{t('cri.experimentalEstimate')}</p>
                   </div>
                   <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700/60 dark:bg-gray-800/50 text-center">
                     <p className="text-xs text-gray-500 dark:text-gray-400">{t('cri.gamut')}</p>
-                    <p className={`text-3xl font-bold ${
-                      tm30Result.Rg >= 95 && tm30Result.Rg <= 105
-                        ? 'text-green-600 dark:text-green-400'
-                        : tm30Result.Rg >= 90 && tm30Result.Rg <= 110
-                          ? 'text-blue-600 dark:text-blue-400'
-                          : 'text-yellow-600 dark:text-yellow-400'
-                    }`}>
+                    <p className="text-3xl font-bold text-gray-900 dark:text-white">
                       {tm30Result.Rg.toFixed(1)}
                     </p>
-                    <p className="text-xs text-gray-400 mt-1">
-                      {tm30Result.Rg > 105 ? t('cri.expandedGamut') : tm30Result.Rg < 95 ? t('cri.reducedGamut') : t('cri.neutralGamut')}
-                    </p>
+                    <p className="text-xs text-gray-400 mt-1">{t('cri.experimentalEstimate')}</p>
                   </div>
                 </div>
               )}
@@ -268,23 +236,15 @@ export default function LightQualityDashboard({ spectrumData }: LightQualityDash
                 <div className="flex items-center gap-4 mb-6 p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/60">
                   <div className="text-center">
                     <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('cri.tlciScore')}</p>
-                    <p className={`text-4xl font-bold ${getRatingColor(tlciResult.Qa)}`}>
+                    <p className="text-4xl font-bold text-gray-900 dark:text-white">
                       {tlciResult.Qa.toFixed(1)}
                     </p>
-                    <p className={`text-sm mt-1 ${getRatingColor(tlciResult.Qa)}`}>
-                      {tlciResult.Qa >= 85
-                        ? t('cri.broadcastReady')
-                        : tlciResult.Qa >= 75
-                          ? t('cri.acceptable')
-                          : tlciResult.Qa >= 50
-                            ? t('cri.needsCorrection')
-                            : t('cri.notRecommended')}
-                    </p>
+                    <p className="text-sm mt-1 text-gray-500 dark:text-gray-400">{t('cri.experimentalEstimate')}</p>
                   </div>
                   <div className="flex-1">
                     <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                       <div
-                        className={`h-full rounded-full transition-all duration-500 ${getBarColor(tlciResult.Qa)}`}
+                        className="h-full rounded-full bg-gray-500 transition-all duration-500"
                         style={{ width: `${Math.max(0, Math.min(100, tlciResult.Qa))}%` }}
                       />
                     </div>
@@ -296,33 +256,7 @@ export default function LightQualityDashboard({ spectrumData }: LightQualityDash
                   </div>
                 </div>
 
-                {/* TLCI Interpretation Guide */}
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('cri.interpretationGuide')}</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                    {[
-                      { range: '85-100', label: t('cri.excellent'), desc: t('cri.tlci85'), color: 'bg-green-500' },
-                      { range: '75-85', label: t('cri.good'), desc: t('cri.tlci75'), color: 'bg-blue-500' },
-                      { range: '50-75', label: t('cri.fair'), desc: t('cri.tlci50'), color: 'bg-yellow-500' },
-                      { range: '0-50', label: t('cri.poor'), desc: t('cri.tlci0'), color: 'bg-red-500' },
-                    ].map((item) => (
-                      <div
-                        key={item.range}
-                        className="flex items-center gap-2 p-2 rounded border border-gray-200 dark:border-gray-700/60"
-                      >
-                        <span className={`w-2.5 h-2.5 rounded-full ${item.color} shrink-0`} />
-                        <div>
-                          <span className="font-medium text-gray-700 dark:text-gray-300">
-                            {item.range}: {item.label}
-                          </span>
-                          <span className="text-gray-500 dark:text-gray-400 ml-1">
-                            &mdash; {item.desc}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                <p className="text-xs text-gray-500 dark:text-gray-400">{t('cri.noDecisionUse')}</p>
               </>
             )}
           </div>

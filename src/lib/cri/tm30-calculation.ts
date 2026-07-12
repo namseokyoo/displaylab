@@ -1,11 +1,11 @@
 /**
- * IES TM-30-20 Calculation
+ * TM-30-style experimental calculation
  *
  * Implements simplified Fidelity Index (Rf) and Gamut Index (Rg).
  *
- * TM-30-20 is the modern replacement for CRI, using:
+ * The actual TM-30 method uses:
  * - 99 Color Evaluation Samples (CES) instead of 14 TCS
- * - CIELAB color difference (CIEDE2000) instead of CIE 1964 W*U*V*
+ * - CAM02-UCS color differences instead of CIE 1964 W*U*V*
  * - Fidelity Index (Rf) for overall color accuracy
  * - Gamut Index (Rg) for gamut area relative to reference
  * - 16 hue-angle bins for color vector graphic
@@ -14,8 +14,8 @@
  * This implementation uses a representative subset of spectral reflectances
  * distributed across 16 hue bins. The Rf and Rg values are approximate.
  *
- * Reference: IES TM-30-20 "IES Method for Evaluating Light Source
- * Color Rendition"
+ * This module is not an implementation of the current ANSI/IES TM-30-24
+ * standard and must not be exposed as a standards result.
  */
 
 import { interpolateObserver } from '@/lib/cie';
@@ -318,19 +318,11 @@ function resampleTo5nm(spectrum: SpectrumPoint[]): SpectrumPoint[] {
 }
 
 /**
- * Calculate IES TM-30-20 Rf (Fidelity Index) and Rg (Gamut Index).
+ * Calculate experimental Rf-style and Rg-style outputs.
  *
- * Rf interpretation:
- * - 100: Perfect color fidelity
- * - 80+: Excellent
- * - 70-80: Good
- * - 60-70: Fair
- * - <60: Poor
- *
- * Rg interpretation:
- * - 100: Same gamut area as reference
- * - >100: Increased saturation (larger gamut)
- * - <100: Decreased saturation (smaller gamut)
+ * These values have no standards-grade or qualitative interpretation. They
+ * remain available only for exploratory comparison while the complete
+ * ANSI/IES TM-30-24 method is not implemented.
  */
 export function calculateTM30(testSpectrum: SpectrumPoint[]): TM30Result {
   const testSPD = resampleTo5nm(testSpectrum);
