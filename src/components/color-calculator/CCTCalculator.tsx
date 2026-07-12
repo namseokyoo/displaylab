@@ -62,11 +62,11 @@ export default function CCTCalculator() {
   };
 
   return (
-    <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{t('color.cctTitle')}</h2>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-        {t('color.cctSubtitle')}
-      </p>
+    <div className="rounded-xl border border-gray-200 bg-white p-4 [&_input]:min-h-11 [&_input]:text-base dark:border-gray-800 dark:bg-gray-900 sm:p-6 sm:[&_input]:min-h-0 sm:[&_input]:text-sm">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+        {t('color.cctTitle')}
+      </h2>
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{t('color.cctSubtitle')}</p>
 
       {/* Presets */}
       <div className="mb-4">
@@ -76,7 +76,7 @@ export default function CCTCalculator() {
             <button
               key={key}
               onClick={() => loadPreset(key)}
-              className="px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white transition-colors border border-gray-300 dark:border-gray-700"
+              className="min-h-11 px-3 py-2 rounded-md text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white transition-colors border border-gray-300 dark:border-gray-700"
             >
               {key}
             </button>

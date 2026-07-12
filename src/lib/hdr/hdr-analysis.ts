@@ -38,15 +38,44 @@ export interface HDRAnalysisResult {
   gamutCoverage: number;
 }
 
-function triangleArea(p1: ChromaticityPoint, p2: ChromaticityPoint, p3: ChromaticityPoint): number {
-  return (
-    0.5 *
-    Math.abs(
-      p1.x * (p2.y - p3.y) +
-      p2.x * (p3.y - p1.y) +
-      p3.x * (p1.y - p2.y),
+export type HDRMetadataIssue = 'chromaticity' | 'maxFallExceedsMaxCll' | 'invalidLuminanceRange';
+
+/** Validate relationships that native number-input bounds cannot express. */
+export function validateHDR10Metadata(metadata: HDR10Metadata): HDRMetadataIssue[] {
+  const issues: HDRMetadataIssue[] = [];
+  const chromaticities = [
+    metadata.primaryR,
+    metadata.primaryG,
+    metadata.primaryB,
+    metadata.whitePoint,
+  ];
+
+  if (
+    chromaticities.some(
+      ({ x, y }) =>
+        !Number.isFinite(x) || !Number.isFinite(y) || x < 0 || x > 1 || y < 0 || y > 1 || x + y > 1,
     )
-  );
+  ) {
+    issues.push('chromaticity');
+  }
+
+  if (metadata.maxFALL > metadata.maxCLL) {
+    issues.push('maxFallExceedsMaxCll');
+  }
+
+  if (
+    metadata.masterDisplayMaxLuminance <= 0 ||
+    metadata.masterDisplayMinLuminance < 0 ||
+    metadata.masterDisplayMinLuminance >= metadata.masterDisplayMaxLuminance
+  ) {
+    issues.push('invalidLuminanceRange');
+  }
+
+  return issues;
+}
+
+function triangleArea(p1: ChromaticityPoint, p2: ChromaticityPoint, p3: ChromaticityPoint): number {
+  return 0.5 * Math.abs(p1.x * (p2.y - p3.y) + p2.x * (p3.y - p1.y) + p3.x * (p1.y - p2.y));
 }
 
 function calculateBT2020Coverage(metadata: HDR10Metadata): number {
@@ -128,21 +157,36 @@ export function calculateDynamicRange(maxNits: number, minNits: number): number 
 /**
  * Classify peak brightness capability.
  */
-export function calculatePeakBrightnessScore(maxNits: number): { score: string; description: string } {
+export function calculatePeakBrightnessScore(maxNits: number): {
+  score: string;
+  description: string;
+} {
   if (maxNits < 400) {
     return { score: 'Basic SDR', description: 'Insufficient peak brightness for HDR highlights.' };
   }
   if (maxNits < 600) {
-    return { score: 'HDR Entry', description: 'Entry-level HDR highlights with limited specular intensity.' };
+    return {
+      score: 'HDR Entry',
+      description: 'Entry-level HDR highlights with limited specular intensity.',
+    };
   }
   if (maxNits < 1000) {
-    return { score: 'HDR Standard', description: 'Solid HDR rendering for mainstream HDR10 content.' };
+    return {
+      score: 'HDR Standard',
+      description: 'Solid HDR rendering for mainstream HDR10 content.',
+    };
   }
   if (maxNits < 2000) {
-    return { score: 'HDR Premium', description: 'High-impact HDR highlights with strong contrast perception.' };
+    return {
+      score: 'HDR Premium',
+      description: 'High-impact HDR highlights with strong contrast perception.',
+    };
   }
   if (maxNits <= 4000) {
-    return { score: 'HDR Reference', description: 'Reference-class highlight reproduction for demanding content.' };
+    return {
+      score: 'HDR Reference',
+      description: 'Reference-class highlight reproduction for demanding content.',
+    };
   }
   return { score: 'HDR Mastering', description: 'Mastering-level peak brightness headroom.' };
 }

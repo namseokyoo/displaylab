@@ -31,6 +31,11 @@ const en = {
     result: 'Result',
     invalid: 'Invalid input',
     language: 'Language',
+    routeLoadError: 'This analysis tool could not load',
+    routeLoadErrorHelp:
+      'The app may have been updated while this tab was open. Reload the page to request the current tool files.',
+    reloadPage: 'Reload page',
+    goHome: 'Back to tools',
   },
 
   // ============================================================
@@ -52,7 +57,8 @@ const en = {
     heroTitle1: 'Professional',
     heroTitle2: 'Display',
     heroTitle3: 'Analysis Tools',
-    heroSubtitle: 'Free web-based tools for display engineers and researchers. Analyze viewing angles, compare color gamuts, and perform color science calculations locally in your browser.',
+    heroSubtitle:
+      'Free web-based tools for display engineers and researchers. Analyze viewing angles, compare color gamuts, and perform color science calculations locally in your browser.',
     ctaGamut: 'Try Gamut Analyzer',
     ctaColor: 'Open Color Calculator',
     badgePrivacy: 'Uploaded analysis data stays in your browser',
@@ -68,22 +74,28 @@ const en = {
     builtBy: 'Built by',
     // Tool cards
     toolGamutTitle: 'Color Gamut Analyzer',
-    toolGamutDesc: 'Compare display color gamuts against sRGB, DCI-P3, BT.2020 standards. Calculate coverage percentage with CIE 1931 and 1976 diagrams.',
+    toolGamutDesc:
+      'Compare display color gamuts against sRGB, DCI-P3, BT.2020 standards. Calculate coverage percentage with CIE 1931 and 1976 diagrams.',
     toolGamutCta: 'Analyze Gamut',
     toolColorTitle: 'Color Science Calculator',
-    toolColorDesc: 'Quick CIE color calculations: XYZ to xyY conversion, CCT & Duv, Delta E (CIE76, CIE94, CIEDE2000).',
+    toolColorDesc:
+      'Quick CIE color calculations: XYZ to xyY conversion, CCT & Duv, Delta E (CIE76, CIE94, CIEDE2000).',
     toolColorCta: 'Open Calculator',
     toolViewingTitle: 'Viewing Angle Analyzer',
-    toolViewingDesc: 'Upload goniometer CSV data to visualize display viewing angle performance: polar plots, color shift tracking, and Delta E heatmaps.',
+    toolViewingDesc:
+      'Upload goniometer CSV data to visualize display viewing angle performance: polar plots, color shift tracking, and Delta E heatmaps.',
     toolViewingCta: 'Analyze Viewing Angle',
     toolSpectrumTitle: 'Spectrum Analyzer',
-    toolSpectrumDesc: 'Analyze emission spectra (SPD): calculate CIE chromaticity, CCT, Duv, FWHM, and visualize on CIE diagram.',
+    toolSpectrumDesc:
+      'Analyze emission spectra (SPD): calculate CIE chromaticity, CCT, Duv, FWHM, and visualize on CIE diagram.',
     toolSpectrumCta: 'Analyze Spectrum',
     toolPanelTitle: 'Panel Technology Comparator',
-    toolPanelDesc: 'Compare display panel technologies side by side: IPS, VA, OLED, Mini-LED, QD-OLED. Interactive radar charts and detailed specifications.',
+    toolPanelDesc:
+      'Compare display panel technologies side by side: IPS, VA, OLED, Mini-LED, QD-OLED. Interactive radar charts and detailed specifications.',
     toolPanelCta: 'Compare Panels',
     toolHdrTitle: 'HDR Analyzer',
-    toolHdrDesc: 'Visualize PQ/HLG EOTF curves, compare tone mapping algorithms, and analyze HDR10 metadata including peak brightness and dynamic range.',
+    toolHdrDesc:
+      'Visualize PQ/HLG EOTF curves, compare tone mapping algorithms, and analyze HDR10 metadata including peak brightness and dynamic range.',
     toolHdrCta: 'Analyze HDR',
   },
 
@@ -92,10 +104,12 @@ const en = {
   // ============================================================
   gamut: {
     title: 'Color Gamut Analyzer',
-    subtitle: 'Compare display color gamuts against industry standards. Input your display primaries or select from device presets.',
+    subtitle:
+      'Compare display color gamuts against industry standards. Input your display primaries or select from device presets.',
     displayGamuts: 'Display Gamuts',
     aboutCoverage: 'About Coverage Calculation',
-    aboutCoverageText: 'Coverage is calculated as the area ratio of the display gamut triangle to each standard gamut triangle using the Shoelace formula. This method gives the overall area percentage, not the intersection-based coverage. Intersection-based calculation will be available in a future update.',
+    aboutCoverageText:
+      'Coverage is calculated as the area ratio of the display gamut triangle to each standard gamut triangle using the Shoelace formula. This method gives the overall area percentage, not the intersection-based coverage. Intersection-based calculation will be available in a future update.',
     addDisplay: '+ Add',
     removeDisplay: 'Remove display',
     comparisonSummary: 'Comparison Summary',
@@ -108,7 +122,8 @@ const en = {
     areaRatioNote: '* Area ratio method. Intersection-based coverage in Phase 2.',
     // SEO
     seoTitle: 'Color Gamut Analyzer - Display Lab',
-    seoDesc: 'Compare display color gamuts against sRGB, DCI-P3, BT.2020 standards. Calculate coverage percentage with CIE 1931 and 1976 diagrams.',
+    seoDesc:
+      'Compare display color gamuts against sRGB, DCI-P3, BT.2020 standards. Calculate coverage percentage with CIE 1931 and 1976 diagrams.',
   },
 
   // ============================================================
@@ -116,7 +131,8 @@ const en = {
   // ============================================================
   color: {
     title: 'Color Science Calculator',
-    subtitle: 'Quick CIE color calculations: coordinate conversion, CCT & Duv, Delta E, and universal color space converter.',
+    subtitle:
+      'Quick CIE color calculations: coordinate conversion, CCT & Duv, Delta E, and universal color space converter.',
     // Coordinate Converter
     coordTitle: 'Coordinate Converter',
     coordSubtitle: 'Bidirectional XYZ \u2194 xyY conversion',
@@ -159,7 +175,8 @@ const en = {
     source: '(source)',
     // SEO
     seoTitle: 'Color Science Calculator - Display Lab',
-    seoDesc: 'Quick CIE color calculations: XYZ to xyY conversion, CCT & Duv, Delta E (CIE76, CIE94, CIEDE2000), and universal color space converter (10 color spaces).',
+    seoDesc:
+      'Quick CIE color calculations: XYZ to xyY conversion, CCT & Duv, Delta E (CIE76, CIE94, CIEDE2000), and universal color space converter (10 color spaces).',
   },
 
   // ============================================================
@@ -167,7 +184,8 @@ const en = {
   // ============================================================
   viewing: {
     title: 'Viewing Angle Analyzer',
-    subtitle: 'Upload goniometer CSV data or select a preset to analyze display viewing angle performance. Visualize angular luminance, color shift trajectory, and Delta E distribution.',
+    subtitle:
+      'Upload goniometer CSV data or select a preset to analyze display viewing angle performance. Visualize angular luminance, color shift trajectory, and Delta E distribution.',
     polarPlot: 'Polar Plot',
     colorShift: 'Color Shift Trajectory',
     deltaEDist: 'Delta E Distribution',
@@ -177,7 +195,10 @@ const en = {
     comparePrompt: 'Upload a second CSV or select a preset to compare.',
     loadingPreset: 'Loading preset data...',
     measurementData: 'Measurement Data',
-    emptyState: 'Upload a CSV file with viewing angle measurement data, or select a preset above to get started. The CSV should contain columns:',
+    scrollHint: 'Swipe horizontally to inspect every measurement column.',
+    dataTableLabel: 'Scrollable viewing angle measurement table',
+    emptyState:
+      'Upload a CSV file with viewing angle measurement data, or select a preset above to get started. The CSV should contain columns:',
     emptyPolar: 'Polar Plot',
     emptyPolarSub: 'Angular luminance',
     emptyColorShift: 'Color Shift',
@@ -197,7 +218,8 @@ const en = {
     data: 'Data',
     // SEO
     seoTitle: 'Viewing Angle Analyzer - Display Lab',
-    seoDesc: 'Upload goniometer CSV data to visualize display viewing angle performance: polar plots, color shift tracking, and Delta E heatmaps.',
+    seoDesc:
+      'Upload goniometer CSV data to visualize display viewing angle performance: polar plots, color shift tracking, and Delta E heatmaps.',
   },
 
   // ============================================================
@@ -216,7 +238,8 @@ const en = {
   // ============================================================
   spectrum: {
     title: 'Spectrum Analyzer',
-    subtitle: 'Analyze emission spectra (SPD) to estimate chromaticity, CCT, Duv, and spectral width metrics.',
+    subtitle:
+      'Analyze emission spectra (SPD) to estimate chromaticity, CCT, Duv, and spectral width metrics.',
     spectrumChart: 'Spectrum Chart',
     spectrumChartDesc: 'Wavelength versus normalized intensity (380-780nm).',
     cieDiagram: 'CIE Diagram',
@@ -239,7 +262,8 @@ const en = {
     processingFailed: 'Spectrum processing failed.',
     fileOnly: 'Only CSV, TSV, or TXT files are supported.',
     clipboardUnavailable: 'Clipboard access is unavailable. Please paste data manually.',
-    warnCoverage: 'Input does not fully cover 380-780nm; edge regions may be filled with zeros after interpolation.',
+    warnCoverage:
+      'Input does not fully cover 380-780nm; edge regions may be filled with zeros after interpolation.',
     warnLowCount: 'Data point count is low; analysis accuracy may be reduced.',
     // Spectrum Results
     resultsTitle: 'Spectrum Analysis Results',
@@ -253,7 +277,8 @@ const en = {
     estimatedColor: 'Estimated Color',
     // SEO
     seoTitle: 'Spectrum Analyzer - Display Lab',
-    seoDesc: 'Analyze emission spectra (SPD): calculate CIE chromaticity, CCT, Duv, FWHM, and visualize on CIE diagram.',
+    seoDesc:
+      'Analyze emission spectra (SPD): calculate CIE chromaticity, CCT, Duv, FWHM, and visualize on CIE diagram.',
   },
 
   // ============================================================
@@ -261,9 +286,11 @@ const en = {
   // ============================================================
   cri: {
     lightQualityTitle: 'General CRI Ra Estimate',
-    lightQualityDesc: 'An experimental general color-rendering estimate based on the eight CIE test samples used for Ra.',
+    lightQualityDesc:
+      'An experimental general color-rendering estimate based on the eight CIE test samples used for Ra.',
     experimentalStatus: 'Limited validation',
-    experimentalStatusDesc: 'Ra passes the declared holdout tolerance, but has not been directly compared with the CIE D008 program.',
+    experimentalStatusDesc:
+      'Ra passes the declared holdout tolerance, but has not been directly compared with the CIE D008 program.',
     experimentalEstimate: 'Experimental estimate',
     noDecisionUse: 'Do not use this estimate for procurement, compliance, or safety decisions.',
     criRa: 'General CRI Ra estimate',
@@ -283,7 +310,8 @@ const en = {
     criPlanckian: 'Planckian',
     criDSeries: 'CIE D-series',
     criAt: 'at',
-    raOnlyNotice: 'Individual R1-R14 values are withheld until their fixture and CCT validation gaps are resolved.',
+    raOnlyNotice:
+      'Individual R1-R14 values are withheld until their fixture and CCT validation gaps are resolved.',
   },
 
   // ============================================================
@@ -291,14 +319,24 @@ const en = {
   // ============================================================
   hdr: {
     title: 'HDR Analyzer',
-    subtitle: 'Visualize HDR transfer functions and evaluate HDR10 metadata quality for mastering and playback targets.',
+    subtitle:
+      'Visualize HDR transfer functions and evaluate HDR10 metadata quality for mastering and playback targets.',
     eotfTitle: 'EOTF Curves',
     eotfDesc: 'Compare PQ, HLG, and SDR gamma response against display luminance.',
     toneMappingTitle: 'Tone Mapping Curves',
-    toneMappingDesc: 'Compare Reinhard, Hable, and ACES operators from HDR luminance to normalized output.',
+    toneMappingDesc:
+      'Compare Reinhard, Hable, and ACES operators from HDR luminance to normalized output.',
     // Metadata Input
     metadataTitle: 'HDR10 Metadata Input',
-    metadataDesc: 'Enter static metadata values or load a preset profile for instant HDR capability analysis.',
+    metadataDesc:
+      'Enter static metadata values or load a preset profile for instant HDR capability analysis.',
+    invalidMetadata: 'Correct the metadata before using the analysis.',
+    invalidChromaticity:
+      'Chromaticity x and y must be between 0 and 1, with x + y no greater than 1.',
+    invalidMaxFall: 'MaxFALL cannot exceed MaxCLL.',
+    invalidLuminanceRange:
+      'Master display minimum luminance must be lower than its positive maximum.',
+    analysisPaused: 'Analysis is paused until the invalid metadata is corrected.',
     luminanceMetadata: 'Luminance Metadata',
     primaries: 'Primaries (x, y)',
     whitePoint: 'White Point (x, y)',
@@ -315,7 +353,8 @@ const en = {
     hdr10Grade: 'HDR10 Grade',
     // SEO
     seoTitle: 'HDR Analyzer - Display Lab',
-    seoDesc: 'Visualize PQ/HLG EOTF curves, compare tone mapping algorithms, and analyze HDR10 metadata including peak brightness and dynamic range.',
+    seoDesc:
+      'Visualize PQ/HLG EOTF curves, compare tone mapping algorithms, and analyze HDR10 metadata including peak brightness and dynamic range.',
   },
 
   // ============================================================
@@ -323,14 +362,19 @@ const en = {
   // ============================================================
   panel: {
     title: 'Panel Technology Comparator',
-    subtitle: 'Compare IPS, VA, OLED, Mini-LED, and QD-OLED using normalized performance scores. Toggle panel types to overlay them on a radar chart, then inspect detailed strengths and tradeoffs.',
+    subtitle:
+      'Compare IPS, VA, OLED, Mini-LED, and QD-OLED using normalized performance scores. Toggle panel types to overlay them on a radar chart, then inspect detailed strengths and tradeoffs.',
     selectPanels: 'Select Panels',
     selectPanelsDesc: 'Choose one or more panel technologies to compare.',
     radarComparison: 'Radar Comparison',
     specComparison: 'Specification Comparison',
     panelTechnologies: 'Panel Technologies',
     bestByUseCase: 'Best Panel by Use Case',
+    globalRecommendations:
+      'Recommendations consider every panel technology, independent of the current comparison selection.',
     emptyTable: 'Select at least one panel technology to show comparison data.',
+    scrollHint: 'Swipe horizontally to compare every selected panel.',
+    comparisonTableLabel: 'Scrollable panel technology comparison table',
     spec: 'Spec',
     pros: 'Pros',
     cons: 'Cons',
@@ -353,7 +397,8 @@ const en = {
     reasonGeneral: 'Balanced performance profile with reasonable total ownership cost.',
     // SEO
     seoTitle: 'Panel Technology Comparator - Display Lab',
-    seoDesc: 'Compare panel technologies side by side: IPS, VA, OLED, Mini-LED, and QD-OLED with interactive radar charts and detailed specs.',
+    seoDesc:
+      'Compare panel technologies side by side: IPS, VA, OLED, Mini-LED, and QD-OLED with interactive radar charts and detailed specs.',
   },
 
   // ============================================================
@@ -361,7 +406,8 @@ const en = {
   // ============================================================
   seo: {
     homeTitle: 'Display Lab - Professional Display Analysis Tools',
-    homeDesc: 'Free web-based tools for display engineers: viewing angle analysis, color gamut comparison, and color science calculations.',
+    homeDesc:
+      'Free web-based tools for display engineers: viewing angle analysis, color gamut comparison, and color science calculations.',
   },
 } as const;
 

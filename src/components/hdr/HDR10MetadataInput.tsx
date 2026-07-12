@@ -1,4 +1,4 @@
-import type { HDR10Metadata } from '@/lib/hdr';
+import { validateHDR10Metadata, type HDR10Metadata } from '@/lib/hdr';
 import { useTranslation } from '@/lib/i18n';
 
 interface HDR10MetadataInputProps {
@@ -70,6 +70,18 @@ function parseNumericInput(rawValue: string): number {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
+function isChromaticityInvalid(point: { x: number; y: number }): boolean {
+  return (
+    !Number.isFinite(point.x) ||
+    !Number.isFinite(point.y) ||
+    point.x < 0 ||
+    point.x > 1 ||
+    point.y < 0 ||
+    point.y > 1 ||
+    point.x + point.y > 1
+  );
+}
+
 function NumericField({
   label,
   value,
@@ -77,6 +89,7 @@ function NumericField({
   min,
   max,
   step,
+  invalid = false,
 }: {
   label: string;
   value: number;
@@ -84,6 +97,7 @@ function NumericField({
   min?: number;
   max?: number;
   step?: number | 'any';
+  invalid?: boolean;
 }) {
   return (
     <label className="flex flex-col gap-1 text-sm">
@@ -95,7 +109,12 @@ function NumericField({
         min={min}
         max={max}
         step={step ?? 'any'}
-        className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-900 focus:border-blue-500 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+        aria-invalid={invalid}
+        className={`min-h-11 rounded-lg border bg-white px-3 py-2 text-base text-gray-900 focus:outline-none dark:bg-gray-800 dark:text-white sm:text-sm ${
+          invalid
+            ? 'border-red-500 focus:border-red-500'
+            : 'border-gray-200 focus:border-blue-500 dark:border-gray-700'
+        }`}
       />
     </label>
   );
@@ -103,6 +122,8 @@ function NumericField({
 
 export default function HDR10MetadataInput({ value, onChange }: HDR10MetadataInputProps) {
   const { t } = useTranslation();
+  const issues = validateHDR10Metadata(value);
+  const hasIssue = (issue: (typeof issues)[number]) => issues.includes(issue);
   const updateNumericField = (
     key: NumericMetadataKey,
     rawValue: string,
@@ -132,36 +153,48 @@ export default function HDR10MetadataInput({ value, onChange }: HDR10MetadataInp
   };
 
   return (
-    <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
+    <div className="p-4 sm:p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
       <div className="mb-4">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
           {t('hdr.metadataTitle')}
         </h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          {t('hdr.metadataDesc')}
-        </p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{t('hdr.metadataDesc')}</p>
       </div>
 
       <div className="mb-5 flex flex-wrap gap-2">
         <button
           onClick={() => onChange(cloneMetadata(HDR10_BASIC_PRESET))}
-          className="px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-900/60 transition-colors"
+          className="min-h-11 px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-100 text-blue-700 hover:bg-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:hover:bg-blue-900/60 transition-colors"
         >
           HDR10 Basic (1000 nits)
         </button>
         <button
           onClick={() => onChange(cloneMetadata(HDR10_PLUS_PRESET))}
-          className="px-3 py-1.5 rounded-lg text-xs font-medium bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900/40 dark:text-purple-300 dark:hover:bg-purple-900/60 transition-colors"
+          className="min-h-11 px-3 py-1.5 rounded-lg text-xs font-medium bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900/40 dark:text-purple-300 dark:hover:bg-purple-900/60 transition-colors"
         >
           HDR10+ (4000 nits)
         </button>
         <button
           onClick={() => onChange(cloneMetadata(DOLBY_VISION_PRESET))}
-          className="px-3 py-1.5 rounded-lg text-xs font-medium bg-rose-100 text-rose-700 hover:bg-rose-200 dark:bg-rose-900/40 dark:text-rose-300 dark:hover:bg-rose-900/60 transition-colors"
+          className="min-h-11 px-3 py-1.5 rounded-lg text-xs font-medium bg-rose-100 text-rose-700 hover:bg-rose-200 dark:bg-rose-900/40 dark:text-rose-300 dark:hover:bg-rose-900/60 transition-colors"
         >
           Dolby Vision (10000 nits)
         </button>
       </div>
+
+      {issues.length > 0 && (
+        <div
+          className="mb-5 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-900/60 dark:bg-red-950/30 dark:text-red-300"
+          role="alert"
+        >
+          <p className="font-medium">{t('hdr.invalidMetadata')}</p>
+          <ul className="mt-1 list-disc space-y-1 pl-5">
+            {hasIssue('chromaticity') && <li>{t('hdr.invalidChromaticity')}</li>}
+            {hasIssue('maxFallExceedsMaxCll') && <li>{t('hdr.invalidMaxFall')}</li>}
+            {hasIssue('invalidLuminanceRange') && <li>{t('hdr.invalidLuminanceRange')}</li>}
+          </ul>
+        </div>
+      )}
 
       <div className="space-y-5">
         <div>
@@ -183,6 +216,7 @@ export default function HDR10MetadataInput({ value, onChange }: HDR10MetadataInp
               min={0}
               max={10000}
               step={1}
+              invalid={hasIssue('maxFallExceedsMaxCll')}
               onValueChange={(rawValue) => updateNumericField('maxFALL', rawValue, 0, 10000)}
             />
             <NumericField
@@ -190,6 +224,7 @@ export default function HDR10MetadataInput({ value, onChange }: HDR10MetadataInp
               value={value.masterDisplayMaxLuminance}
               min={0}
               step={1}
+              invalid={hasIssue('invalidLuminanceRange')}
               onValueChange={(rawValue) =>
                 updateNumericField('masterDisplayMaxLuminance', rawValue, 0)
               }
@@ -199,6 +234,7 @@ export default function HDR10MetadataInput({ value, onChange }: HDR10MetadataInp
               value={value.masterDisplayMinLuminance}
               min={0}
               step="any"
+              invalid={hasIssue('invalidLuminanceRange')}
               onValueChange={(rawValue) =>
                 updateNumericField('masterDisplayMinLuminance', rawValue, 0)
               }
@@ -214,37 +250,55 @@ export default function HDR10MetadataInput({ value, onChange }: HDR10MetadataInp
             <NumericField
               label="Primary R x"
               value={value.primaryR.x}
+              min={0}
+              max={1}
               step="any"
+              invalid={isChromaticityInvalid(value.primaryR)}
               onValueChange={(rawValue) => updateChromaticity('primaryR', 'x', rawValue)}
             />
             <NumericField
               label="Primary R y"
               value={value.primaryR.y}
+              min={0}
+              max={1}
               step="any"
+              invalid={isChromaticityInvalid(value.primaryR)}
               onValueChange={(rawValue) => updateChromaticity('primaryR', 'y', rawValue)}
             />
             <NumericField
               label="Primary G x"
               value={value.primaryG.x}
+              min={0}
+              max={1}
               step="any"
+              invalid={isChromaticityInvalid(value.primaryG)}
               onValueChange={(rawValue) => updateChromaticity('primaryG', 'x', rawValue)}
             />
             <NumericField
               label="Primary G y"
               value={value.primaryG.y}
+              min={0}
+              max={1}
               step="any"
+              invalid={isChromaticityInvalid(value.primaryG)}
               onValueChange={(rawValue) => updateChromaticity('primaryG', 'y', rawValue)}
             />
             <NumericField
               label="Primary B x"
               value={value.primaryB.x}
+              min={0}
+              max={1}
               step="any"
+              invalid={isChromaticityInvalid(value.primaryB)}
               onValueChange={(rawValue) => updateChromaticity('primaryB', 'x', rawValue)}
             />
             <NumericField
               label="Primary B y"
               value={value.primaryB.y}
+              min={0}
+              max={1}
               step="any"
+              invalid={isChromaticityInvalid(value.primaryB)}
               onValueChange={(rawValue) => updateChromaticity('primaryB', 'y', rawValue)}
             />
           </div>
@@ -258,13 +312,19 @@ export default function HDR10MetadataInput({ value, onChange }: HDR10MetadataInp
             <NumericField
               label="White Point x"
               value={value.whitePoint.x}
+              min={0}
+              max={1}
               step="any"
+              invalid={isChromaticityInvalid(value.whitePoint)}
               onValueChange={(rawValue) => updateChromaticity('whitePoint', 'x', rawValue)}
             />
             <NumericField
               label="White Point y"
               value={value.whitePoint.y}
+              min={0}
+              max={1}
               step="any"
+              invalid={isChromaticityInvalid(value.whitePoint)}
               onValueChange={(rawValue) => updateChromaticity('whitePoint', 'y', rawValue)}
             />
           </div>

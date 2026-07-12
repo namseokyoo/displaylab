@@ -7,7 +7,7 @@ import SEO from '@/components/common/SEO';
 import ShareButton from '@/components/common/ShareButton';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { useTranslation } from '@/lib/i18n';
-import { analyzeHDR10 } from '@/lib/hdr';
+import { analyzeHDR10, validateHDR10Metadata } from '@/lib/hdr';
 import { toolJsonLd } from '@/lib/seo-data';
 import type { HDR10Metadata } from '@/lib/hdr';
 
@@ -40,6 +40,7 @@ export default function HDRAnalyzer() {
   );
 
   const analysisResult = useMemo(() => analyzeHDR10(metadata), [metadata]);
+  const metadataIssues = useMemo(() => validateHDR10Metadata(metadata), [metadata]);
 
   const getShareUrl = useCallback(() => {
     const params = new URLSearchParams();
@@ -68,29 +69,34 @@ export default function HDRAnalyzer() {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('hdr.title')}</h1>
           <ShareButton getShareUrl={getShareUrl} />
         </div>
-        <p className="text-gray-500 dark:text-gray-400">
-          {t('hdr.subtitle')}
-        </p>
+        <p className="text-gray-500 dark:text-gray-400">{t('hdr.subtitle')}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
         <div className="space-y-6">
           <HDR10MetadataInput value={metadata} onChange={setMetadata} />
-          <HDRAnalysisResults result={analysisResult} />
+          {metadataIssues.length === 0 ? (
+            <HDRAnalysisResults result={analysisResult} />
+          ) : (
+            <div
+              className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300"
+              role="status"
+            >
+              {t('hdr.analysisPaused')}
+            </div>
+          )}
         </div>
 
         <div className="space-y-6">
-          <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
+          <div className="p-4 sm:p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
               {t('hdr.eotfTitle')}
             </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              {t('hdr.eotfDesc')}
-            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{t('hdr.eotfDesc')}</p>
             <EOTFChart />
           </div>
 
-          <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
+          <div className="p-4 sm:p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
               {t('hdr.toneMappingTitle')}
             </h2>

@@ -42,23 +42,40 @@ export default function DataTable({ data }: DataTableProps) {
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('viewing.measurementData')}</h3>
+        <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          {t('viewing.measurementData')}
+        </h3>
         <button
           onClick={handleExport}
           className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md border border-gray-300 text-gray-500 hover:border-gray-400 hover:text-gray-700 dark:border-gray-700 dark:text-gray-400 dark:hover:border-gray-500 dark:hover:text-gray-300 transition-colors"
         >
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
           </svg>
           {t('common.exportCsv')}
         </button>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-800">
-        <table className="w-full text-sm">
+      <p className="mb-2 text-xs text-gray-500 dark:text-gray-400 sm:hidden">
+        {t('viewing.scrollHint')}
+      </p>
+      <div
+        className="overflow-x-auto rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-800"
+        tabIndex={0}
+        role="region"
+        aria-label={t('viewing.dataTableLabel')}
+      >
+        <table className="min-w-[500px] text-sm">
           <thead>
             <tr className="bg-gray-50 dark:bg-gray-800/50 text-gray-500 dark:text-gray-400 text-xs">
-              <th className="px-3 py-2 text-right font-medium">{t('viewing.colAngle')}</th>
+              <th className="sticky left-0 z-10 bg-gray-50 px-3 py-2 text-right font-medium shadow-[1px_0_0_0] shadow-gray-200 dark:bg-gray-800 dark:shadow-gray-700">
+                {t('viewing.colAngle')}
+              </th>
               <th className="px-3 py-2 text-right font-medium">{t('viewing.colLuminance')}</th>
               <th className="px-3 py-2 text-right font-medium">{t('viewing.colCieX')}</th>
               <th className="px-3 py-2 text-right font-medium">{t('viewing.colCieY')}</th>
@@ -75,7 +92,9 @@ export default function DataTable({ data }: DataTableProps) {
                   i % 2 === 0 ? 'bg-gray-50/50 dark:bg-gray-900/30' : ''
                 }`}
               >
-                <td className="px-3 py-1.5 text-right text-gray-700 dark:text-gray-300 font-mono">
+                <td
+                  className={`sticky left-0 z-10 px-3 py-1.5 text-right text-gray-700 shadow-[1px_0_0_0] shadow-gray-100 dark:text-gray-300 dark:shadow-gray-800 font-mono ${i % 2 === 0 ? 'bg-gray-50 dark:bg-gray-900' : 'bg-white dark:bg-gray-900'}`}
+                >
                   {d.angle}&deg;
                 </td>
                 <td className="px-3 py-1.5 text-right text-gray-700 dark:text-gray-300 font-mono">
@@ -94,9 +113,7 @@ export default function DataTable({ data }: DataTableProps) {
                   {formatNum(d.deltaE_2000, 2)}
                 </td>
                 <td className="px-3 py-1.5 text-right text-gray-500 dark:text-gray-400 font-mono">
-                  {d.contrastRatio !== undefined
-                    ? `${(d.contrastRatio * 100).toFixed(1)}%`
-                    : '-'}
+                  {d.contrastRatio !== undefined ? `${(d.contrastRatio * 100).toFixed(1)}%` : '-'}
                 </td>
               </tr>
             ))}

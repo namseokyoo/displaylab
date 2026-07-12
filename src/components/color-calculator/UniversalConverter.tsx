@@ -155,7 +155,18 @@ const COLOR_SPACES: ColorSpaceDefinition[] = [
   },
 ];
 
-const COLOR_SPACE_IDS: ColorSpaceId[] = ['xyz', 'xyY', 'uvY', 'lab', 'lch', 'srgb', 'linear-rgb', 'hsl', 'hex', 'cmyk'];
+const COLOR_SPACE_IDS: ColorSpaceId[] = [
+  'xyz',
+  'xyY',
+  'uvY',
+  'lab',
+  'lch',
+  'srgb',
+  'linear-rgb',
+  'hsl',
+  'hex',
+  'cmyk',
+];
 
 // ============================================================
 // Default values
@@ -353,15 +364,24 @@ function ResultCard({
           : 'bg-gray-50 border-gray-200 dark:bg-gray-800/50 dark:border-gray-700/50'
       }`}
     >
-      <div className={`text-xs mb-2 font-medium ${isSource ? 'text-blue-500 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'}`}>
+      <div
+        className={`text-xs mb-2 font-medium ${isSource ? 'text-blue-500 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'}`}
+      >
         {label}
         {isSource && <span className="ml-1 text-blue-500">{sourceLabel}</span>}
       </div>
-      <div className={`grid gap-1 ${values.length === 4 ? 'grid-cols-4' : values.length === 1 ? 'grid-cols-1' : 'grid-cols-3'}`}>
+      <div
+        className={`grid gap-1 ${values.length === 4 ? 'grid-cols-4' : values.length === 1 ? 'grid-cols-1' : 'grid-cols-3'}`}
+      >
         {values.map((v) => (
           <div key={v.label}>
             <div className="text-[10px] text-gray-400 dark:text-gray-500">{v.label}</div>
-            <div className="text-xs font-mono text-gray-900 dark:text-white truncate" title={v.value}>{v.value}</div>
+            <div
+              className="text-xs font-mono text-gray-900 dark:text-white truncate"
+              title={v.value}
+            >
+              {v.value}
+            </div>
           </div>
         ))}
       </div>
@@ -379,7 +399,11 @@ interface UniversalConverterProps {
   onStateChange?: (space: string, values: Record<string, string>) => void;
 }
 
-export default function UniversalConverter({ initialSpace, initialValues, onStateChange }: UniversalConverterProps) {
+export default function UniversalConverter({
+  initialSpace,
+  initialValues,
+  onStateChange,
+}: UniversalConverterProps) {
   const { t } = useTranslation();
   const hasValidInitialSpace = initialSpace
     ? COLOR_SPACE_IDS.includes(initialSpace as ColorSpaceId)
@@ -508,15 +532,17 @@ export default function UniversalConverter({ initialSpace, initialValues, onStat
   })();
 
   return (
-    <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{t('color.uniTitle')}</h2>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-        {t('color.uniSubtitle')}
-      </p>
+    <div className="rounded-xl border border-gray-200 bg-white p-4 [&_input]:min-h-11 [&_input]:text-base [&_select]:min-h-11 [&_select]:text-base dark:border-gray-800 dark:bg-gray-900 sm:p-6 sm:[&_input]:min-h-0 sm:[&_input]:text-sm sm:[&_select]:min-h-0 sm:[&_select]:text-sm">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+        {t('color.uniTitle')}
+      </h2>
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{t('color.uniSubtitle')}</p>
 
       {/* Source color space selector */}
       <div className="mb-4">
-        <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">{t('color.sourceColorSpace')}</label>
+        <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+          {t('color.sourceColorSpace')}
+        </label>
         <select
           value={sourceSpace}
           onChange={(e) => handleSourceChange(e.target.value as ColorSpaceId)}
@@ -567,14 +593,12 @@ export default function UniversalConverter({ initialSpace, initialValues, onStat
           />
           <div className="flex-1">
             <div className="text-xs text-gray-500 dark:text-gray-400">{t('color.previewSrgb')}</div>
-            <div className="text-sm font-mono text-gray-900 dark:text-white">{results.previewHex}</div>
+            <div className="text-sm font-mono text-gray-900 dark:text-white">
+              {results.previewHex}
+            </div>
             {!results.inGamut && (
               <div className="text-xs text-amber-400 mt-1 flex items-center gap-1">
-                <svg
-                  className="w-3.5 h-3.5 flex-shrink-0"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
+                <svg className="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fillRule="evenodd"
                     d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
@@ -591,7 +615,9 @@ export default function UniversalConverter({ initialSpace, initialValues, onStat
       {/* Conversion results */}
       {results ? (
         <div className="space-y-2">
-          <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t('color.allColorSpaces')}</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+            {t('color.allColorSpaces')}
+          </div>
           {resultCards.map((card) => (
             <ResultCard
               key={card.id}

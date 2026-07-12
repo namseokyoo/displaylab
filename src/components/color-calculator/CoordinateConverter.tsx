@@ -33,9 +33,12 @@ export default function CoordinateConverter() {
   });
   const { xyzX, xyzY, xyzZ, xyX, xyY, xyYY } = values;
 
-  const updateValues = useCallback((patch: Partial<CoordinateValues>) => {
-    setValues({ ...values, ...patch });
-  }, [setValues, values]);
+  const updateValues = useCallback(
+    (patch: Partial<CoordinateValues>) => {
+      setValues({ ...values, ...patch });
+    },
+    [setValues, values],
+  );
 
   const parseNum = (s: string): number => {
     const n = parseFloat(s);
@@ -59,14 +62,16 @@ export default function CoordinateConverter() {
   }, [xyX, xyY, xyYY]);
 
   return (
-    <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{t('color.coordTitle')}</h2>
+    <div className="rounded-xl border border-gray-200 bg-white p-4 [&_input]:min-h-11 [&_input]:text-base dark:border-gray-800 dark:bg-gray-900 sm:p-6 sm:[&_input]:min-h-0 sm:[&_input]:text-sm">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+        {t('color.coordTitle')}
+      </h2>
       <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{t('color.coordSubtitle')}</p>
 
       {/* Mode toggle */}
       <div className="flex gap-1 mb-4 p-1 rounded-lg bg-gray-100 dark:bg-gray-800">
         <button
-          className={`flex-1 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+          className={`flex-1 min-h-11 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
             mode === 'xyz-to-xyY'
               ? 'bg-blue-600 text-white'
               : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
@@ -76,7 +81,7 @@ export default function CoordinateConverter() {
           XYZ &rarr; xyY
         </button>
         <button
-          className={`flex-1 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+          className={`flex-1 min-h-11 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
             mode === 'xyY-to-xyz'
               ? 'bg-blue-600 text-white'
               : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
@@ -102,7 +107,9 @@ export default function CoordinateConverter() {
               />
             </label>
             <label className="block">
-              <span className="text-xs text-gray-500 dark:text-gray-400">{t('color.yLuminance')}</span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                {t('color.yLuminance')}
+              </span>
               <input
                 type="number"
                 step="any"
@@ -125,22 +132,30 @@ export default function CoordinateConverter() {
 
           {/* xyY Result */}
           <div className="p-4 rounded-lg bg-gray-50 border border-gray-200 dark:bg-gray-800/50 dark:border-gray-700/50">
-            <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">{t('color.coordResultXyY')}</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+              {t('color.coordResultXyY')}
+            </div>
             {(() => {
               const result = getXYZResult();
               return (
                 <div className="grid grid-cols-3 gap-3">
                   <div>
                     <div className="text-xs text-gray-400 dark:text-gray-500">x</div>
-                    <div className="text-sm font-mono text-gray-900 dark:text-white">{result.x.toFixed(6)}</div>
+                    <div className="text-sm font-mono text-gray-900 dark:text-white">
+                      {result.x.toFixed(6)}
+                    </div>
                   </div>
                   <div>
                     <div className="text-xs text-gray-400 dark:text-gray-500">y</div>
-                    <div className="text-sm font-mono text-gray-900 dark:text-white">{result.y.toFixed(6)}</div>
+                    <div className="text-sm font-mono text-gray-900 dark:text-white">
+                      {result.y.toFixed(6)}
+                    </div>
                   </div>
                   <div>
                     <div className="text-xs text-gray-400 dark:text-gray-500">Y</div>
-                    <div className="text-sm font-mono text-gray-900 dark:text-white">{result.Y.toFixed(4)}</div>
+                    <div className="text-sm font-mono text-gray-900 dark:text-white">
+                      {result.Y.toFixed(4)}
+                    </div>
                   </div>
                 </div>
               );
@@ -172,7 +187,9 @@ export default function CoordinateConverter() {
               />
             </label>
             <label className="block">
-              <span className="text-xs text-gray-500 dark:text-gray-400">{t('color.yLuminance')}</span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                {t('color.yLuminance')}
+              </span>
               <input
                 type="number"
                 step="any"
@@ -185,22 +202,30 @@ export default function CoordinateConverter() {
 
           {/* XYZ Result */}
           <div className="p-4 rounded-lg bg-gray-50 border border-gray-200 dark:bg-gray-800/50 dark:border-gray-700/50">
-            <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">{t('color.coordResultXYZ')}</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+              {t('color.coordResultXYZ')}
+            </div>
             {(() => {
               const result = getXyYResult();
               return (
                 <div className="grid grid-cols-3 gap-3">
                   <div>
                     <div className="text-xs text-gray-400 dark:text-gray-500">X</div>
-                    <div className="text-sm font-mono text-gray-900 dark:text-white">{result.X.toFixed(4)}</div>
+                    <div className="text-sm font-mono text-gray-900 dark:text-white">
+                      {result.X.toFixed(4)}
+                    </div>
                   </div>
                   <div>
                     <div className="text-xs text-gray-400 dark:text-gray-500">Y</div>
-                    <div className="text-sm font-mono text-gray-900 dark:text-white">{result.Y.toFixed(4)}</div>
+                    <div className="text-sm font-mono text-gray-900 dark:text-white">
+                      {result.Y.toFixed(4)}
+                    </div>
                   </div>
                   <div>
                     <div className="text-xs text-gray-400 dark:text-gray-500">Z</div>
-                    <div className="text-sm font-mono text-gray-900 dark:text-white">{result.Z.toFixed(4)}</div>
+                    <div className="text-sm font-mono text-gray-900 dark:text-white">
+                      {result.Z.toFixed(4)}
+                    </div>
                   </div>
                 </div>
               );

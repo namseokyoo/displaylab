@@ -92,11 +92,11 @@ export default function DeltaECalculator() {
   const interpretation = interpretDeltaE(result.de2000);
 
   return (
-    <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{t('color.deltaETitle')}</h2>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-        {t('color.deltaESubtitle')}
-      </p>
+    <div className="rounded-xl border border-gray-200 bg-white p-4 [&_input]:min-h-11 [&_input]:text-base dark:border-gray-800 dark:bg-gray-900 sm:p-6 sm:[&_input]:min-h-0 sm:[&_input]:text-sm">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+        {t('color.deltaETitle')}
+      </h2>
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{t('color.deltaESubtitle')}</p>
 
       {/* Presets */}
       <div className="mb-4">
@@ -106,7 +106,7 @@ export default function DeltaECalculator() {
             <button
               key={preset.name}
               onClick={() => loadPreset(preset)}
-              className="px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white transition-colors border border-gray-300 dark:border-gray-700"
+              className="min-h-11 px-3 py-2 rounded-md text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white transition-colors border border-gray-300 dark:border-gray-700"
             >
               {t(preset.name)}
             </button>
@@ -118,7 +118,9 @@ export default function DeltaECalculator() {
       <div className="grid grid-cols-2 gap-4 mb-4">
         {/* Color 1 */}
         <div>
-          <div className="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">{t('color.color1')}</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">
+            {t('color.color1')}
+          </div>
           <div className="space-y-2">
             <label className="block">
               <span className="text-xs text-gray-400 dark:text-gray-500">L*</span>
@@ -155,7 +157,9 @@ export default function DeltaECalculator() {
 
         {/* Color 2 */}
         <div>
-          <div className="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">{t('color.color2')}</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">
+            {t('color.color2')}
+          </div>
           <div className="space-y-2">
             <label className="block">
               <span className="text-xs text-gray-400 dark:text-gray-500">L*</span>
@@ -224,7 +228,9 @@ export default function DeltaECalculator() {
 
       {/* Reference guide */}
       <div className="mt-4 p-3 rounded-lg bg-gray-50 border border-gray-200 dark:bg-gray-800/30 dark:border-gray-700/30">
-        <div className="text-xs text-gray-400 dark:text-gray-500 mb-2 font-medium">{t('color.interpretGuide')}</div>
+        <div className="text-xs text-gray-400 dark:text-gray-500 mb-2 font-medium">
+          {t('color.interpretGuide')}
+        </div>
         <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
           <div className="text-green-400">{t('color.deGuideImperceptible')}</div>
           <div className="text-emerald-400">{t('color.deGuideBarelyPerceptible')}</div>

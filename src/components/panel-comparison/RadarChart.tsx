@@ -60,7 +60,8 @@ export default function RadarChart({ panels }: RadarChartProps) {
       return;
     }
 
-    const margin = 80;
+    const compact = size < 380;
+    const margin = compact ? 56 : 80;
     const radius = size / 2 - margin;
     const axisCount = SPEC_LABELS.length;
     const angleStep = (Math.PI * 2) / axisCount;
@@ -100,8 +101,9 @@ export default function RadarChart({ panels }: RadarChartProps) {
         .attr('stroke', chartColors.axis)
         .attr('stroke-width', 1);
 
-      const labelX = (scoreScale(10) + 25) * Math.cos(angle);
-      const labelY = (scoreScale(10) + 25) * Math.sin(angle);
+      const labelOffset = compact ? 18 : 25;
+      const labelX = (scoreScale(10) + labelOffset) * Math.cos(angle);
+      const labelY = (scoreScale(10) + labelOffset) * Math.sin(angle);
       const anchor = labelX > 8 ? 'start' : labelX < -8 ? 'end' : 'middle';
 
       root
@@ -111,7 +113,7 @@ export default function RadarChart({ panels }: RadarChartProps) {
         .attr('text-anchor', anchor)
         .attr('dominant-baseline', 'middle')
         .attr('fill', chartColors.axisLabel)
-        .attr('font-size', 11)
+        .attr('font-size', compact ? 10 : 11)
         .text(spec.label);
     });
 
@@ -151,12 +153,24 @@ export default function RadarChart({ panels }: RadarChartProps) {
         .attr('stroke', chartColors.background)
         .attr('stroke-width', 1);
     });
-  }, [chartColors.axis, chartColors.axisLabel, chartColors.background, chartColors.grid, panels, size]);
+  }, [
+    chartColors.axis,
+    chartColors.axisLabel,
+    chartColors.background,
+    chartColors.grid,
+    panels,
+    size,
+  ]);
 
   return (
     <div className="space-y-4">
       <div ref={containerRef} className="w-full aspect-square max-w-lg mx-auto">
-        <svg ref={svgRef} className="w-full h-full" role="img" aria-label="Panel technology radar chart" />
+        <svg
+          ref={svgRef}
+          className="w-full h-full"
+          role="img"
+          aria-label="Panel technology radar chart"
+        />
       </div>
 
       <div className="flex flex-wrap justify-center gap-3">

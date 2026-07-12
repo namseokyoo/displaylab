@@ -25,19 +25,22 @@ import type { DiagramMode, GamutType, GamutData } from '@/types';
 const GAMUT_OPTIONS: GamutType[] = ['sRGB', 'DCI-P3', 'BT.2020', 'AdobeRGB', 'NTSC'];
 
 const GAMUT_TOGGLE_COLORS: Record<string, string> = {
-  sRGB: 'border-white/50 text-white',
-  'DCI-P3': 'border-green-500/50 text-green-400',
-  'BT.2020': 'border-amber-500/50 text-amber-400',
-  AdobeRGB: 'border-purple-500/50 text-purple-400',
-  NTSC: 'border-red-500/50 text-red-400',
+  sRGB: 'border-gray-300 text-gray-600 dark:border-gray-600 dark:text-gray-300',
+  'DCI-P3': 'border-green-600/50 text-green-700 dark:text-green-400',
+  'BT.2020': 'border-amber-600/50 text-amber-700 dark:text-amber-400',
+  AdobeRGB: 'border-purple-600/50 text-purple-700 dark:text-purple-400',
+  NTSC: 'border-red-600/50 text-red-700 dark:text-red-400',
 };
 
 const GAMUT_TOGGLE_ACTIVE: Record<string, string> = {
-  sRGB: 'bg-white/10 border-white/60 text-white',
-  'DCI-P3': 'bg-green-500/10 border-green-500/60 text-green-400',
-  'BT.2020': 'bg-amber-500/10 border-amber-500/60 text-amber-400',
-  AdobeRGB: 'bg-purple-500/10 border-purple-500/60 text-purple-400',
-  NTSC: 'bg-red-500/10 border-red-500/60 text-red-400',
+  sRGB: 'bg-blue-50 border-blue-600 text-blue-700 dark:bg-blue-500/10 dark:border-blue-400 dark:text-blue-300',
+  'DCI-P3':
+    'bg-green-50 border-green-600 text-green-700 dark:bg-green-500/10 dark:border-green-400 dark:text-green-300',
+  'BT.2020':
+    'bg-amber-50 border-amber-600 text-amber-700 dark:bg-amber-500/10 dark:border-amber-400 dark:text-amber-300',
+  AdobeRGB:
+    'bg-purple-50 border-purple-600 text-purple-700 dark:bg-purple-500/10 dark:border-purple-400 dark:text-purple-300',
+  NTSC: 'bg-red-50 border-red-600 text-red-700 dark:bg-red-500/10 dark:border-red-400 dark:text-red-300',
 };
 
 export default function GamutAnalyzer() {
@@ -92,13 +95,16 @@ export default function GamutAnalyzer() {
     return () => observer.disconnect();
   }, []);
 
-  const toggleGamut = useCallback((gamut: GamutType) => {
-    setEnabledGamuts(
-      enabledGamuts.includes(gamut)
-        ? enabledGamuts.filter((g) => g !== gamut)
-        : [...enabledGamuts, gamut],
-    );
-  }, [enabledGamuts, setEnabledGamuts]);
+  const toggleGamut = useCallback(
+    (gamut: GamutType) => {
+      setEnabledGamuts(
+        enabledGamuts.includes(gamut)
+          ? enabledGamuts.filter((g) => g !== gamut)
+          : [...enabledGamuts, gamut],
+      );
+    },
+    [enabledGamuts, setEnabledGamuts],
+  );
 
   const getShareUrl = useCallback(() => {
     const params = encodeGamutState(displays, mode);
@@ -124,7 +130,9 @@ export default function GamutAnalyzer() {
       />
       {/* Page header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{t('gamut.title')}</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          {t('gamut.title')}
+        </h1>
         <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base">
           {t('gamut.subtitle')}
         </p>
@@ -144,7 +152,7 @@ export default function GamutAnalyzer() {
               <div className="flex gap-1">
                 <button
                   onClick={() => setMode('CIE1931')}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  className={`min-h-11 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors sm:min-h-0 ${
                     mode === 'CIE1931'
                       ? 'bg-blue-600 text-white'
                       : 'bg-gray-100 text-gray-500 hover:text-gray-900 dark:bg-gray-800 dark:text-gray-400 dark:hover:text-white'
@@ -154,7 +162,7 @@ export default function GamutAnalyzer() {
                 </button>
                 <button
                   onClick={() => setMode('CIE1976')}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  className={`min-h-11 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors sm:min-h-0 ${
                     mode === 'CIE1976'
                       ? 'bg-blue-600 text-white'
                       : 'bg-gray-100 text-gray-500 hover:text-gray-900 dark:bg-gray-800 dark:text-gray-400 dark:hover:text-white'
@@ -176,10 +184,12 @@ export default function GamutAnalyzer() {
                   <button
                     key={gamut}
                     onClick={() => toggleGamut(gamut)}
-                    className={`px-2.5 py-1 rounded text-xs font-medium border transition-colors
-                      ${enabledGamuts.includes(gamut)
-                        ? GAMUT_TOGGLE_ACTIVE[gamut]
-                        : `${GAMUT_TOGGLE_COLORS[gamut]} opacity-40 hover:opacity-70 bg-transparent`
+                    aria-pressed={enabledGamuts.includes(gamut)}
+                    className={`min-h-11 px-3 py-2 rounded text-sm font-medium border transition-colors sm:min-h-0 sm:px-2.5 sm:py-1 sm:text-xs
+                      ${
+                        enabledGamuts.includes(gamut)
+                          ? GAMUT_TOGGLE_ACTIVE[gamut]
+                          : `${GAMUT_TOGGLE_COLORS[gamut]} bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800`
                       }`}
                   >
                     {gamut}
@@ -206,7 +216,9 @@ export default function GamutAnalyzer() {
         <div className="order-2 space-y-6">
           {/* Comparison panel with tabs */}
           <div className="bg-white/50 rounded-xl border border-gray-200 dark:bg-gray-900/30 dark:border-gray-800 p-4">
-            <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">{t('gamut.displayGamuts')}</h2>
+            <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+              {t('gamut.displayGamuts')}
+            </h2>
             <ComparisonPanel
               displays={displays}
               onDisplaysChange={setDisplays}

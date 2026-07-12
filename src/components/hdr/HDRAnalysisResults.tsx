@@ -50,13 +50,11 @@ export default function HDRAnalysisResults({ result }: HDRAnalysisResultsProps) 
 
   if (!result) {
     return (
-      <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
+      <div className="p-4 sm:p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
           {t('hdr.resultsTitle')}
         </h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          {t('hdr.resultsEmpty')}
-        </p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{t('hdr.resultsEmpty')}</p>
       </div>
     );
   }
@@ -67,17 +65,17 @@ export default function HDRAnalysisResults({ result }: HDRAnalysisResultsProps) 
       : '--';
 
   return (
-    <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
+    <div className="p-4 sm:p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
       <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
         {t('hdr.resultsTitle')}
       </h2>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-        {t('hdr.resultsDesc')}
-      </p>
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{t('hdr.resultsDesc')}</p>
 
       <div className="mb-4 space-y-3">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm text-gray-600 dark:text-gray-300">{t('hdr.peakBrightnessScore')}</span>
+          <span className="text-sm text-gray-600 dark:text-gray-300">
+            {t('hdr.peakBrightnessScore')}
+          </span>
           <span
             className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold ${getPeakScoreBadgeClass(result.peakBrightnessScore.score)}`}
           >
@@ -89,7 +87,9 @@ export default function HDRAnalysisResults({ result }: HDRAnalysisResultsProps) 
         </p>
 
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-sm text-gray-600 dark:text-gray-300">{t('hdr.hdr10Compatibility')}</span>
+          <span className="text-sm text-gray-600 dark:text-gray-300">
+            {t('hdr.hdr10Compatibility')}
+          </span>
           <span
             className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold ${getHDRGradeBadgeClass(result.hdr10Grade)}`}
           >

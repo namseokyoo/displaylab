@@ -25,51 +25,81 @@ export default function ComparisonTable({ panels }: ComparisonTableProps) {
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-      <table className="w-full min-w-[720px] text-sm">
-        <thead>
-          <tr className="border-b border-gray-200 dark:border-gray-700">
-            <th className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-200">{t('panel.spec')}</th>
-            {panels.map((panel) => (
-              <th key={panel.id} className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-200">
-                <span className="inline-flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: panel.color }} />
-                  {panel.shortName}
-                </span>
+    <div className="space-y-2">
+      <p className="text-xs text-gray-500 dark:text-gray-400 sm:hidden">{t('panel.scrollHint')}</p>
+      <div
+        className="overflow-x-auto rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        tabIndex={0}
+        role="region"
+        aria-label={t('panel.comparisonTableLabel')}
+      >
+        <table className="w-full min-w-[640px] sm:min-w-[720px] text-sm">
+          <thead>
+            <tr className="border-b border-gray-200 dark:border-gray-700">
+              <th className="sticky left-0 z-10 bg-white px-4 py-3 text-left font-semibold text-gray-700 shadow-[1px_0_0_0] shadow-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:shadow-gray-700">
+                {t('panel.spec')}
               </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {SPEC_LABELS.map((spec) => {
-            const maxScore = Math.max(...panels.map((panel) => panel.specs[spec.key]));
+              {panels.map((panel) => (
+                <th
+                  key={panel.id}
+                  className="px-4 py-3 text-left font-semibold text-gray-700 dark:text-gray-200"
+                >
+                  <span className="inline-flex items-center gap-2">
+                    <span
+                      className="w-2.5 h-2.5 rounded-full"
+                      style={{ backgroundColor: panel.color }}
+                    />
+                    {panel.shortName}
+                  </span>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {SPEC_LABELS.map((spec) => {
+              const maxScore = Math.max(...panels.map((panel) => panel.specs[spec.key]));
 
-            return (
-              <tr key={spec.key} className="border-b last:border-0 border-gray-100 dark:border-gray-700/60">
-                <td className="px-4 py-3 font-medium text-gray-600 dark:text-gray-300">{spec.label}</td>
-                {panels.map((panel) => {
-                  const score = panel.specs[spec.key];
-                  const isBest = score === maxScore;
+              return (
+                <tr
+                  key={spec.key}
+                  className="border-b last:border-0 border-gray-100 dark:border-gray-700/60"
+                >
+                  <td className="sticky left-0 z-10 bg-white px-4 py-3 font-medium text-gray-600 shadow-[1px_0_0_0] shadow-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:shadow-gray-700">
+                    {spec.label}
+                  </td>
+                  {panels.map((panel) => {
+                    const score = panel.specs[spec.key];
+                    const isBest = score === maxScore;
 
-                  return (
-                    <td key={`${spec.key}-${panel.id}`} className="px-4 py-3">
-                      <div className={isBest ? 'font-semibold text-blue-600 dark:text-blue-400' : 'text-gray-700 dark:text-gray-300'}>
-                        {score}
-                      </div>
-                      <div className="mt-1 h-1.5 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
+                    return (
+                      <td key={`${spec.key}-${panel.id}`} className="px-4 py-3">
                         <div
-                          className="h-full rounded-full"
-                          style={{ width: `${(score / 10) * 100}%`, backgroundColor: panel.color }}
-                        />
-                      </div>
-                    </td>
-                  );
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+                          className={
+                            isBest
+                              ? 'font-semibold text-blue-600 dark:text-blue-400'
+                              : 'text-gray-700 dark:text-gray-300'
+                          }
+                        >
+                          {score}
+                        </div>
+                        <div className="mt-1 h-1.5 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
+                          <div
+                            className="h-full rounded-full"
+                            style={{
+                              width: `${(score / 10) * 100}%`,
+                              backgroundColor: panel.color,
+                            }}
+                          />
+                        </div>
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

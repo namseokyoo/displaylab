@@ -48,7 +48,7 @@ function calculateExcitationPurity(
   const spectralPoint = interpolateLocusPoint(dominantWavelength);
   if (!spectralPoint) return undefined;
 
-  const white = { x: 0.3127, y: 0.3290 };
+  const white = { x: 0.3127, y: 0.329 };
   const sampleDistance = Math.hypot(x - white.x, y - white.y);
   const spectralDistance = Math.hypot(spectralPoint.x - white.x, spectralPoint.y - white.y);
   if (spectralDistance === 0) return undefined;
@@ -166,12 +166,12 @@ export default function SpectrumAnalyzer() {
 
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('spectrum.title')}</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            {t('spectrum.title')}
+          </h1>
           <ShareButton getShareUrl={getShareUrl} />
         </div>
-        <p className="text-gray-500 dark:text-gray-400">
-          {t('spectrum.subtitle')}
-        </p>
+        <p className="text-gray-500 dark:text-gray-400">{t('spectrum.subtitle')}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
@@ -189,17 +189,21 @@ export default function SpectrumAnalyzer() {
         </div>
 
         <div className="space-y-6">
-          <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{t('spectrum.spectrumChart')}</h2>
+          <div className="p-4 sm:p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+              {t('spectrum.spectrumChart')}
+            </h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
               {t('spectrum.spectrumChartDesc')}
             </p>
             <SpectrumChart data={spectrumData} peakWavelength={analysis?.peakWavelength} />
           </div>
 
-          <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
+          <div className="p-4 sm:p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
             <div className="flex flex-wrap items-center gap-3 mb-4">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t('spectrum.cieDiagram')}</h2>
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                {t('spectrum.cieDiagram')}
+              </h2>
               <div className="flex gap-1">
                 <button
                   onClick={() => setMode('CIE1931')}

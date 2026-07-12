@@ -143,11 +143,7 @@ export default function PolarPlot({
     });
 
     // --- Plot data curve ---
-    const plotCurve = (
-      dataset: ViewingAngleData[],
-      color: string,
-      fillOpacity: number,
-    ) => {
+    const plotCurve = (dataset: ViewingAngleData[], color: string, fillOpacity: number) => {
       // Build symmetric points: positive and negative angles
       const points: [number, number][] = [];
       const sorted = [...dataset].sort((a, b) => a.angle - b.angle);
@@ -273,7 +269,7 @@ export default function PolarPlot({
 
   return (
     <div className="inline-block">
-      <svg ref={svgRef} className="bg-white dark:bg-gray-900 rounded-lg" />
+      <svg ref={svgRef} className="h-auto max-w-full rounded-lg bg-white dark:bg-gray-900" />
     </div>
   );
 }

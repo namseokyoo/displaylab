@@ -214,10 +214,7 @@ export default function ColorShiftTrack({
       .text('D65');
 
     // --- Draw trajectory ---
-    const drawTrajectory = (
-      dataset: ViewingAngleData[],
-      baseColor: string,
-    ) => {
+    const drawTrajectory = (dataset: ViewingAngleData[], baseColor: string) => {
       const sorted = [...dataset].sort((a, b) => a.angle - b.angle);
       const maxAngle = d3.max(sorted, (d) => d.angle) ?? 80;
 
@@ -284,7 +281,9 @@ export default function ColorShiftTrack({
 
     // --- Legend ---
     if (comparisonData && comparisonData.length > 0) {
-      const legendG = g.append('g').attr('transform', `translate(${innerWidth - 160}, ${innerHeight - 40})`);
+      const legendG = g
+        .append('g')
+        .attr('transform', `translate(${innerWidth - 160}, ${innerHeight - 40})`);
 
       legendG
         .append('rect')
@@ -296,12 +295,7 @@ export default function ColorShiftTrack({
         .attr('fill-opacity', 0.8)
         .attr('rx', 4);
 
-      legendG
-        .append('circle')
-        .attr('cx', 10)
-        .attr('cy', 10)
-        .attr('r', 4)
-        .attr('fill', '#3b82f6');
+      legendG.append('circle').attr('cx', 10).attr('cy', 10).attr('r', 4).attr('fill', '#3b82f6');
       legendG
         .append('text')
         .attr('x', 18)
@@ -310,12 +304,7 @@ export default function ColorShiftTrack({
         .attr('font-size', '10px')
         .text(dataLabel);
 
-      legendG
-        .append('circle')
-        .attr('cx', 10)
-        .attr('cy', 26)
-        .attr('r', 4)
-        .attr('fill', '#f59e0b');
+      legendG.append('circle').attr('cx', 10).attr('cy', 26).attr('r', 4).attr('fill', '#f59e0b');
       legendG
         .append('text')
         .attr('x', 18)
@@ -328,7 +317,7 @@ export default function ColorShiftTrack({
 
   return (
     <div className="inline-block">
-      <svg ref={svgRef} className="bg-white dark:bg-gray-900 rounded-lg" />
+      <svg ref={svgRef} className="h-auto max-w-full rounded-lg bg-white dark:bg-gray-900" />
     </div>
   );
 }

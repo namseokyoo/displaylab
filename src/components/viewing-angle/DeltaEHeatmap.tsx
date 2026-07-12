@@ -71,19 +71,13 @@ export default function DeltaEHeatmap({
     const filteredComparison = comparisonData?.filter((d) => d.angle > 0) ?? [];
 
     const allAngles = [
-      ...new Set([
-        ...filteredData.map((d) => d.angle),
-        ...filteredComparison.map((d) => d.angle),
-      ]),
+      ...new Set([...filteredData.map((d) => d.angle), ...filteredComparison.map((d) => d.angle)]),
     ].sort((a, b) => a - b);
 
     const hasComparison = filteredComparison.length > 0;
 
     // Scales
-    const allDeltaE = [
-      ...filteredData.map(getDeltaE),
-      ...filteredComparison.map(getDeltaE),
-    ];
+    const allDeltaE = [...filteredData.map(getDeltaE), ...filteredComparison.map(getDeltaE)];
     const maxDeltaE = Math.max(d3.max(allDeltaE) ?? 1, 3.5);
 
     const xScale = d3
@@ -113,11 +107,7 @@ export default function DeltaEHeatmap({
     // Axes
     g.append('g')
       .attr('transform', `translate(0,${innerHeight})`)
-      .call(
-        d3
-          .axisBottom(xScale)
-          .tickFormat((d) => `${d}\u00B0`),
-      )
+      .call(d3.axisBottom(xScale).tickFormat((d) => `${d}\u00B0`))
       .attr('color', colors.axis)
       .selectAll('text')
       .attr('fill', colors.axisLabel)
@@ -289,7 +279,7 @@ export default function DeltaEHeatmap({
         </button>
       </div>
       <div className="inline-block">
-        <svg ref={svgRef} className="bg-white dark:bg-gray-900 rounded-lg" />
+        <svg ref={svgRef} className="h-auto max-w-full rounded-lg bg-white dark:bg-gray-900" />
       </div>
     </div>
   );

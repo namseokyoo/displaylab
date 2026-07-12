@@ -33,7 +33,11 @@ export default function Layout() {
     if (!confirmed) return;
 
     for (const key of Object.keys(window.localStorage)) {
-      if (key.startsWith('displaylab::') && key !== 'displaylab::theme' && key !== 'displaylab::settings::language') {
+      if (
+        key.startsWith('displaylab::') &&
+        key !== 'displaylab::theme' &&
+        key !== 'displaylab::settings::language'
+      ) {
         window.localStorage.removeItem(key);
       }
     }
@@ -55,14 +59,14 @@ export default function Layout() {
             {/* Logo */}
             <Link
               to="/"
-              className="flex items-center gap-2 font-bold text-xl text-gray-900 dark:text-white"
+              className="flex items-center gap-1 text-lg font-bold text-gray-900 dark:text-white sm:gap-2 sm:text-xl"
             >
               <span className="text-blue-500 dark:text-blue-400">Display</span>
               <span>Lab</span>
             </Link>
 
             {/* Desktop nav + toggles */}
-            <div className="hidden md:flex items-center gap-1">
+            <div className="hidden xl:flex items-center gap-1">
               {NAV_KEYS.map((item) => (
                 <Link
                   key={item.path}
@@ -134,10 +138,10 @@ export default function Layout() {
             </div>
 
             {/* Mobile: toggles + menu button */}
-            <div className="flex items-center gap-1 md:hidden">
+            <div className="flex items-center gap-0.5 xl:hidden">
               <button
                 onClick={handleResetSettings}
-                className="p-2 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800 transition-colors"
+                className="flex min-h-11 min-w-11 items-center justify-center rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800 transition-colors"
                 aria-label={t('common.resetSettings')}
                 title={t('common.resetSettings')}
               >
@@ -152,14 +156,14 @@ export default function Layout() {
               </button>
               <button
                 onClick={toggleLocale}
-                className="px-2 py-1.5 rounded-lg text-xs font-bold text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800 transition-colors"
+                className="flex min-h-11 min-w-11 items-center justify-center rounded-lg text-xs font-bold text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800 transition-colors"
                 aria-label={locale === 'en' ? 'Switch to Korean' : 'Switch to English'}
               >
                 {locale === 'en' ? 'KR' : 'EN'}
               </button>
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800 transition-colors"
+                className="flex min-h-11 min-w-11 items-center justify-center rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800 transition-colors"
                 aria-label={isDark ? t('common.switchToLight') : t('common.switchToDark')}
               >
                 {isDark ? (
@@ -183,7 +187,7 @@ export default function Layout() {
                 )}
               </button>
               <button
-                className="p-2 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800"
+                className="flex min-h-11 min-w-11 items-center justify-center rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label="Toggle navigation menu"
               >
@@ -210,12 +214,12 @@ export default function Layout() {
 
           {/* Mobile nav */}
           {mobileMenuOpen && (
-            <nav className="md:hidden pb-4 space-y-1">
+            <nav className="xl:hidden pb-4 space-y-1">
               {NAV_KEYS.map((item) => (
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`block px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`flex min-h-11 items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                     location.pathname === item.path
                       ? 'bg-blue-600/20 text-blue-600 dark:text-blue-400'
                       : 'text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800'
@@ -242,7 +246,7 @@ export default function Layout() {
       <footer className="border-t border-gray-200 dark:border-gray-800 py-8 mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2 text-sm text-gray-400 dark:text-gray-500">
+            <div className="flex flex-col items-center gap-2 text-center text-sm text-gray-400 dark:text-gray-500 sm:flex-row sm:text-left">
               <span>&copy; {new Date().getFullYear()} SidequestLab</span>
               <span className="hidden sm:inline">&middot;</span>
               <span className="text-xs px-2 py-0.5 rounded bg-green-100 text-green-700 border border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800/50">

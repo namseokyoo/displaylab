@@ -63,50 +63,56 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
 
   const exampleFormat = useMemo(() => getExampleFormat(), []);
 
-  const applyData = useCallback((rawData: SpectrumPoint[], extraWarnings: string[] = []) => {
-    if (rawData.length === 0) {
-      setError(t('spectrum.noDataPoints'));
-      return;
-    }
+  const applyData = useCallback(
+    (rawData: SpectrumPoint[], extraWarnings: string[] = []) => {
+      if (rawData.length === 0) {
+        setError(t('spectrum.noDataPoints'));
+        return;
+      }
 
-    const processed = processSpectrum(rawData);
-    if (processed.length === 0) {
-      setError(t('spectrum.processingFailed'));
-      return;
-    }
+      const processed = processSpectrum(rawData);
+      if (processed.length === 0) {
+        setError(t('spectrum.processingFailed'));
+        return;
+      }
 
-    setError(null);
-    setWarnings(extraWarnings);
-    onDataLoaded(processed);
-  }, [onDataLoaded, t]);
+      setError(null);
+      setWarnings(extraWarnings);
+      onDataLoaded(processed);
+    },
+    [onDataLoaded, t],
+  );
 
-  const handleFileSelect = useCallback(async (files: FileList | null) => {
-    if (!files || files.length === 0) return;
+  const handleFileSelect = useCallback(
+    async (files: FileList | null) => {
+      if (!files || files.length === 0) return;
 
-    const file = files[0];
-    const dotIndex = file.name.lastIndexOf('.');
-    const extension = dotIndex >= 0 ? file.name.slice(dotIndex).toLowerCase() : '';
+      const file = files[0];
+      const dotIndex = file.name.lastIndexOf('.');
+      const extension = dotIndex >= 0 ? file.name.slice(dotIndex).toLowerCase() : '';
 
-    if (!EXTENSIONS.includes(extension)) {
-      setError(t('spectrum.fileOnly'));
+      if (!EXTENSIONS.includes(extension)) {
+        setError(t('spectrum.fileOnly'));
+        setWarnings([]);
+        return;
+      }
+
+      setIsLoading(true);
+      setError(null);
       setWarnings([]);
-      return;
-    }
 
-    setIsLoading(true);
-    setError(null);
-    setWarnings([]);
-
-    try {
-      const rawData = await parseSpectrumFile(file);
-      const autoWarnings = getInputWarningKeys(rawData);
-      applyData(rawData, autoWarnings);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred while parsing the file.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [applyData, t]);
+      try {
+        const rawData = await parseSpectrumFile(file);
+        const autoWarnings = getInputWarningKeys(rawData);
+        applyData(rawData, autoWarnings);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred while parsing the file.');
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [applyData, t],
+  );
 
   const handlePasteApply = useCallback(() => {
     if (!pasteText.trim()) {
@@ -132,22 +138,31 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
     setIsLoading(false);
   }, [applyData, pasteText, t]);
 
-  const handlePresetSelect = useCallback((key: PresetKey) => {
-    const rawData = PRESETS[key].data;
-    applyData(rawData);
-  }, [applyData]);
+  const handlePresetSelect = useCallback(
+    (key: PresetKey) => {
+      const rawData = PRESETS[key].data;
+      applyData(rawData);
+    },
+    [applyData],
+  );
 
-  const handleGeneratedPresetSelect = useCallback((peak: number, fwhm: number) => {
-    const rawData = generateGaussianSpectrum(peak, fwhm);
-    applyData(rawData);
-  }, [applyData]);
+  const handleGeneratedPresetSelect = useCallback(
+    (peak: number, fwhm: number) => {
+      const rawData = generateGaussianSpectrum(peak, fwhm);
+      applyData(rawData);
+    },
+    [applyData],
+  );
 
-  const handleDrop = useCallback((event: DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setIsDragging(false);
-    void handleFileSelect(event.dataTransfer.files);
-  }, [handleFileSelect]);
+  const handleDrop = useCallback(
+    (event: DragEvent<HTMLDivElement>) => {
+      event.preventDefault();
+      event.stopPropagation();
+      setIsDragging(false);
+      void handleFileSelect(event.dataTransfer.files);
+    },
+    [handleFileSelect],
+  );
 
   const handleDragOver = useCallback((event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -172,17 +187,17 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
   }, [t]);
 
   return (
-    <div className="p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">{t('spectrum.dataInputTitle')}</h2>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-        {t('spectrum.dataInputDesc')}
-      </p>
+    <div className="p-4 sm:p-6 rounded-xl bg-white border border-gray-200 dark:bg-gray-900 dark:border-gray-800">
+      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+        {t('spectrum.dataInputTitle')}
+      </h2>
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{t('spectrum.dataInputDesc')}</p>
 
       <div className="flex gap-1 mb-4 p-1 rounded-lg bg-gray-100 dark:bg-gray-800">
         <button
           type="button"
           onClick={() => setActiveTab('preset')}
-          className={`flex-1 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+          className={`flex-1 min-h-11 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
             activeTab === 'preset'
               ? 'bg-blue-600 text-white'
               : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
@@ -193,7 +208,7 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
         <button
           type="button"
           onClick={() => setActiveTab('file')}
-          className={`flex-1 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+          className={`flex-1 min-h-11 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
             activeTab === 'file'
               ? 'bg-blue-600 text-white'
               : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
@@ -204,7 +219,7 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
         <button
           type="button"
           onClick={() => setActiveTab('paste')}
-          className={`flex-1 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+          className={`flex-1 min-h-11 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
             activeTab === 'paste'
               ? 'bg-blue-600 text-white'
               : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
@@ -231,14 +246,16 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
       {activeTab === 'preset' && (
         <div className="space-y-4">
           <div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">{t('spectrum.builtInPresets')}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+              {t('spectrum.builtInPresets')}
+            </p>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
               {Object.entries(PRESETS).map(([key, preset]) => (
                 <button
                   type="button"
                   key={key}
                   onClick={() => handlePresetSelect(key as PresetKey)}
-                  className="rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-left text-sm text-gray-700 transition-colors hover:border-blue-400 hover:bg-blue-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:border-blue-500 dark:hover:bg-gray-700"
+                  className="min-h-11 rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-left text-sm text-gray-700 transition-colors hover:border-blue-400 hover:bg-blue-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:border-blue-500 dark:hover:bg-gray-700"
                 >
                   {preset.name}
                 </button>
@@ -247,14 +264,16 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
           </div>
 
           <div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">{t('spectrum.generatedPresets')}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+              {t('spectrum.generatedPresets')}
+            </p>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
               {CUSTOM_PRESETS.map((preset) => (
                 <button
                   type="button"
                   key={preset.key}
                   onClick={() => handleGeneratedPresetSelect(preset.peak, preset.fwhm)}
-                  className="rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-left text-sm text-gray-700 transition-colors hover:border-blue-400 hover:bg-blue-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:border-blue-500 dark:hover:bg-gray-700"
+                  className="min-h-11 rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-left text-sm text-gray-700 transition-colors hover:border-blue-400 hover:bg-blue-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:border-blue-500 dark:hover:bg-gray-700"
                 >
                   {preset.name}
                 </button>
@@ -281,13 +300,21 @@ export default function SpectrumDataInput({ onDataLoaded }: SpectrumDataInputPro
               ref={fileInputRef}
               type="file"
               accept=".csv,.tsv,.txt"
-              onChange={(event: ChangeEvent<HTMLInputElement>) => void handleFileSelect(event.target.files)}
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                void handleFileSelect(event.target.files)
+              }
               className="hidden"
             />
-            <p className="text-sm font-medium text-gray-700 dark:text-gray-200">{t('spectrum.fileDragDrop')}</p>
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{t('spectrum.fileFormats')}</p>
+            <p className="text-sm font-medium text-gray-700 dark:text-gray-200">
+              {t('spectrum.fileDragDrop')}
+            </p>
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+              {t('spectrum.fileFormats')}
+            </p>
           </div>
-          {isLoading && <p className="text-sm text-gray-500 dark:text-gray-400">{t('spectrum.processing')}</p>}
+          {isLoading && (
+            <p className="text-sm text-gray-500 dark:text-gray-400">{t('spectrum.processing')}</p>
+          )}
         </div>
       )}
 

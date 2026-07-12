@@ -53,7 +53,7 @@ export default function PanelComparison() {
   }, [selectedPanelIds]);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8 space-y-12">
+    <div className="max-w-6xl mx-auto px-4 py-6 sm:py-8 space-y-8 sm:space-y-12">
       <SEO
         title={t('panel.seoTitle')}
         description={t('panel.seoDesc')}
@@ -67,15 +67,21 @@ export default function PanelComparison() {
       />
 
       <section className="space-y-3">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">{t('panel.title')}</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
+          {t('panel.title')}
+        </h1>
         <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 max-w-3xl">
           {t('panel.subtitle')}
         </p>
       </section>
 
-      <section className="rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-5">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{t('panel.selectPanels')}</h2>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t('panel.selectPanelsDesc')}</p>
+      <section className="rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 sm:p-5">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+          {t('panel.selectPanels')}
+        </h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          {t('panel.selectPanelsDesc')}
+        </p>
 
         <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           {PANEL_TECHNOLOGIES.map((panel) => {
@@ -84,7 +90,7 @@ export default function PanelComparison() {
             return (
               <label
                 key={panel.id}
-                className="flex items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 cursor-pointer bg-gray-50/60 dark:bg-gray-900/40"
+                className="flex min-h-11 items-center gap-3 rounded-lg border border-gray-200 dark:border-gray-700 px-3 py-2 cursor-pointer bg-gray-50/60 dark:bg-gray-900/40"
               >
                 <input
                   type="checkbox"
@@ -92,7 +98,10 @@ export default function PanelComparison() {
                   onChange={() => handleTogglePanel(panel.id)}
                   className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700"
                 />
-                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: panel.color }} />
+                <span
+                  className="w-2.5 h-2.5 rounded-full"
+                  style={{ backgroundColor: panel.color }}
+                />
                 <span className="text-sm text-gray-700 dark:text-gray-200">{panel.shortName}</span>
               </label>
             );
@@ -100,27 +109,38 @@ export default function PanelComparison() {
         </div>
       </section>
 
-      <section className="rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-6">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">{t('panel.radarComparison')}</h2>
+      <section className="rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-4 sm:p-6">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+          {t('panel.radarComparison')}
+        </h2>
         <RadarChart panels={selectedPanels} />
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{t('panel.specComparison')}</h2>
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+          {t('panel.specComparison')}
+        </h2>
         <ComparisonTable panels={selectedPanels} />
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{t('panel.panelTechnologies')}</h2>
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+          {t('panel.panelTechnologies')}
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {PANEL_TECHNOLOGIES.map((panel) => (
+          {selectedPanels.map((panel) => (
             <PanelCard key={panel.id} panel={panel} />
           ))}
         </div>
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{t('panel.bestByUseCase')}</h2>
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+          {t('panel.bestByUseCase')}
+        </h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          {t('panel.globalRecommendations')}
+        </p>
         <UseCaseRecommendation />
       </section>
 
