@@ -7,6 +7,7 @@ import { useTranslation } from '@/lib/i18n';
 
 const GamutAnalyzer = lazy(() => import('@/pages/GamutAnalyzer'));
 const ColorCalculator = lazy(() => import('@/pages/ColorCalculator'));
+const DeltaECalculatorLanding = lazy(() => import('@/pages/DeltaECalculatorLanding'));
 const ViewingAngle = lazy(() => import('@/pages/ViewingAngle'));
 const SpectrumAnalyzer = lazy(() => import('@/pages/SpectrumAnalyzer'));
 const HDRAnalyzer = lazy(() => import('@/pages/HDRAnalyzer'));
@@ -87,6 +88,14 @@ export default function App() {
             element={
               <DeferredPage>
                 <ColorCalculator />
+              </DeferredPage>
+            }
+          />
+          <Route
+            path="/delta-e-calculator"
+            element={
+              <DeferredPage>
+                <DeltaECalculatorLanding />
               </DeferredPage>
             }
           />

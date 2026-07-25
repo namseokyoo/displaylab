@@ -10,6 +10,7 @@ vi.mock('@/components/common/Layout', async () => {
 vi.mock('@/pages/Home', () => ({ default: () => <h1>Home route</h1> }));
 vi.mock('@/pages/GamutAnalyzer', () => ({ default: () => <h1>Gamut route</h1> }));
 vi.mock('@/pages/ColorCalculator', () => ({ default: () => <h1>Color route</h1> }));
+vi.mock('@/pages/DeltaECalculatorLanding', () => ({ default: () => <h1>Delta E route</h1> }));
 vi.mock('@/pages/ViewingAngle', () => ({ default: () => <h1>Viewing route</h1> }));
 vi.mock('@/pages/SpectrumAnalyzer', () => ({ default: () => <h1>Spectrum route</h1> }));
 vi.mock('@/pages/HDRAnalyzer', () => ({ default: () => <h1>HDR route</h1> }));
@@ -19,6 +20,7 @@ const routes = [
   ['/', 'Home route'],
   ['/gamut-analyzer', 'Gamut route'],
   ['/color-calculator', 'Color route'],
+  ['/delta-e-calculator', 'Delta E route'],
   ['/viewing-angle', 'Viewing route'],
   ['/spectrum-analyzer', 'Spectrum route'],
   ['/hdr-analyzer', 'HDR route'],
